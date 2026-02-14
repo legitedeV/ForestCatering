@@ -30,7 +30,6 @@ infra/
     backup-files.sh
     restore-files.sh
     rotate-backups.sh
-    publish-mirror.sh
   nginx/
     ip-only.conf
   systemd/
