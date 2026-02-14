@@ -43,8 +43,6 @@ PRESTASHOP_ADMIN_PASSWORD=${PS_ADMIN_PASS}
 PRESTASHOP_INSTALL_AUTO=1
 
 BACKUP_RETENTION_DAYS=14
-MIRROR_BASE_DIR=/var/www/mirror/forestcatering-infra
-MIRROR_BASE_URL=http://${SERVER_IP_VALUE}/mirror/forestcatering-infra
 EOT
 
 chmod 600 "${ENV_FILE}"
