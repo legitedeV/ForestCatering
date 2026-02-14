@@ -1,0 +1,6 @@
+infra/.env
+infra/logs/*
+!infra/logs/.gitkeep
+infra/backups/*
+!infra/backups/.gitkeep
+agent/*.log
