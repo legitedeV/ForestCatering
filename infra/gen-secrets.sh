@@ -18,6 +18,7 @@ fi
 
 ROOT_PASS="$(openssl rand -base64 36 | tr -d '\n' | tr '/+' 'AB' | cut -c1-40)"
 APP_PASS="$(openssl rand -base64 30 | tr -d '\n' | tr '/+' 'CD' | cut -c1-34)"
+DEFAULT_MIRROR_BASE_URL="http://51.68.151.159/mirror/forestcatering-infra"
 
 cat > "${ENV_FILE}" <<EOT
 TZ=Europe/Warsaw
