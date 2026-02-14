@@ -18,7 +18,7 @@ fi
 source "${ENV_FILE}"
 
 MIRROR_BASE_DIR="${MIRROR_BASE_DIR:-/var/www/mirror/forestcatering-infra}"
-MIRROR_BASE_URL="${MIRROR_BASE_URL:-http://kadryhr.pl/mirror/forestcatering-infra}"
+MIRROR_BASE_URL="${MIRROR_BASE_URL:-http://51.68.151.159/mirror/forestcatering-infra}"
 
 if [[ ! -d "${RUN_DIR}" ]]; then
   echo "Run directory does not exist: ${RUN_DIR}" >&2

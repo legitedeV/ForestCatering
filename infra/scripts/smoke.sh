@@ -14,16 +14,17 @@ if [[ ! -f "${ENV_FILE}" ]]; then
   exit 1
 fi
 
+# shellcheck disable=SC1090
 source "${ENV_FILE}"
 
 exec > >(tee "${RUN_DIR}/smoke.log") 2>&1
 
 echo "== ForestCatering infra smoke test: ${TIMESTAMP} =="
 
-echo "[1/9] docker compose config"
+echo "[1/10] docker compose config"
 docker compose -f "${BASE_DIR}/compose.yml" --env-file "${ENV_FILE}" config > "${RUN_DIR}/compose-config.yml"
 
-echo "[2/9] start services"
+echo "[2/10] start services"
 docker compose -f "${BASE_DIR}/compose.yml" --env-file "${ENV_FILE}" up -d
 
 wait_for_health() {
@@ -31,6 +32,7 @@ wait_for_health() {
   local timeout_seconds="$2"
   local elapsed=0
   local container
+  local status
   container="$(docker compose -f "${BASE_DIR}/compose.yml" --env-file "${ENV_FILE}" ps -q "${service}")"
   if [[ -z "${container}" ]]; then
     echo "Service ${service} container not found" >&2
@@ -51,11 +53,11 @@ wait_for_health() {
   return 1
 }
 
-echo "[3/9] wait for health"
+echo "[3/10] wait for health"
 wait_for_health mariadb 180
 wait_for_health redis 120
 
-echo "[4/9] DB functional test"
+echo "[4/10] DB functional test"
 TMP_DB="smoke_${TIMESTAMP//-/}"
 docker compose -f "${BASE_DIR}/compose.yml" --env-file "${ENV_FILE}" exec -T mariadb sh -lc "mysql -uroot -p\"$MARIADB_ROOT_PASSWORD\" <<SQL
 CREATE DATABASE ${TMP_DB};
@@ -66,10 +68,20 @@ SELECT * FROM health_test;
 DROP DATABASE ${TMP_DB};
 SQL"
 
-echo "[5/9] Redis ping"
+echo "[5/10] Redis ping"
 docker compose -f "${BASE_DIR}/compose.yml" --env-file "${ENV_FILE}" exec -T redis redis-cli ping
 
-echo "[6/9] versions"
+echo "[6/10] HTTP check (PrestaShop over loopback)"
+HTTP_STATUS="$(curl -sS -L -o "${RUN_DIR}/http-home.html" -w "%{http_code}" http://127.0.0.1:8080/)"
+if [[ "${HTTP_STATUS}" != "200" ]]; then
+  echo "Unexpected HTTP status from PrestaShop endpoint: ${HTTP_STATUS}" >&2
+  exit 1
+fi
+if ! rg -qi "prestashop|installer|installation" "${RUN_DIR}/http-home.html"; then
+  echo "Warning: marker not found in HTTP response body." | tee "${RUN_DIR}/http-marker-warning.txt"
+fi
+
+echo "[7/10] versions"
 {
   docker --version
   docker compose version
@@ -77,20 +89,21 @@ echo "[6/9] versions"
   docker compose -f "${BASE_DIR}/compose.yml" --env-file "${ENV_FILE}" exec -T redis redis-server --version
 } | tee "${RUN_DIR}/versions.txt"
 
-echo "[7/9] backup and listing"
-"${BASE_DIR}/scripts/backup-db.sh" | tee "${RUN_DIR}/backup-create.txt"
+echo "[8/10] backup and listing"
+"${BASE_DIR}/scripts/backup-db.sh" | tee "${RUN_DIR}/backup-db-create.txt"
+"${BASE_DIR}/scripts/backup-files.sh" | tee "${RUN_DIR}/backup-files-create.txt"
 "${BASE_DIR}/scripts/rotate-backups.sh" | tee "${RUN_DIR}/backup-rotate.txt"
 ls -lah "${BASE_DIR}/backups" | tee "${RUN_DIR}/backup-list.txt"
 
-echo "[8/9] compose diagnostics"
+echo "[9/10] compose diagnostics"
 docker compose -f "${BASE_DIR}/compose.yml" --env-file "${ENV_FILE}" ps | tee "${RUN_DIR}/compose-ps.txt"
 docker compose -f "${BASE_DIR}/compose.yml" --env-file "${ENV_FILE}" logs --tail=200 > "${RUN_DIR}/compose-logs-tail200.txt"
 cp "${RUN_DIR}/compose-ps.txt" "${RUN_DIR}/infra-screenshot-compose-ps.txt"
 
-echo "[9/9] publish mirror"
+echo "[10/10] publish mirror"
 "${BASE_DIR}/scripts/publish-mirror.sh" "${RUN_DIR}" | tee "${RUN_DIR}/mirror-publish.txt"
 
-MIRROR_BASE_URL="${MIRROR_BASE_URL:-http://kadryhr.pl/mirror/forestcatering-infra}"
+MIRROR_BASE_URL="${MIRROR_BASE_URL:-http://51.68.151.159/mirror/forestcatering-infra}"
 RUN_NAME="$(basename "${RUN_DIR}")"
 
 echo "Smoke test completed."
