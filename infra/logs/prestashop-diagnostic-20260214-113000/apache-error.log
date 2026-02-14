@@ -1,0 +1,2 @@
+$ docker compose -f infra/compose.yml exec -T prestashop sh -lc "tail -n 300 /var/log/apache2/error.log"
+bash: command not found: docker

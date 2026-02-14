@@ -1,0 +1,2 @@
+$ docker compose -f infra/compose.yml exec -T prestashop sh -lc "getent hosts api.prestashop.com || nslookup api.prestashop.com || ping -c1 api.prestashop.com"
+bash: command not found: docker
