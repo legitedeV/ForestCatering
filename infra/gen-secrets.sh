@@ -18,15 +18,29 @@ fi
 
 ROOT_PASS="$(openssl rand -base64 36 | tr -d '\n' | tr '/+' 'AB' | cut -c1-40)"
 APP_PASS="$(openssl rand -base64 30 | tr -d '\n' | tr '/+' 'CD' | cut -c1-34)"
-DEFAULT_MIRROR_BASE_URL="http://51.68.151.159/mirror/forestcatering-infra"
+PS_ADMIN_PASS="$(openssl rand -base64 36 | tr -d '\n' | tr '/+' 'EF' | cut -c1-40)"
+
+DEFAULT_SERVER_IP="$(hostname -I | awk '{print $1}')"
+if [[ -f "${ENV_FILE}" ]]; then
+  EXISTING_SERVER_IP="$(awk -F= '/^SERVER_IP=/{print $2}' "${ENV_FILE}" | tail -n1)"
+else
+  EXISTING_SERVER_IP=""
+fi
+SERVER_IP_VALUE="${EXISTING_SERVER_IP:-${DEFAULT_SERVER_IP:-51.68.151.159}}"
 
 cat > "${ENV_FILE}" <<EOT
 TZ=Europe/Warsaw
+
+SERVER_IP=${SERVER_IP_VALUE}
 
 MARIADB_ROOT_PASSWORD=${ROOT_PASS}
 MARIADB_DATABASE=forestcatering_app
 MARIADB_USER=forestcatering
 MARIADB_PASSWORD=${APP_PASS}
+
+PRESTASHOP_ADMIN_EMAIL=admin@forestcatering.local
+PRESTASHOP_ADMIN_PASSWORD=${PS_ADMIN_PASS}
+PRESTASHOP_INSTALL_AUTO=1
 
 BACKUP_RETENTION_DAYS=14
 EOT

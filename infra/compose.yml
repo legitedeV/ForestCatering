@@ -54,6 +54,33 @@ services:
     networks:
       - internal
 
+  prestashop:
+    image: prestashop/prestashop:9.0-apache
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DB_SERVER: mariadb
+      DB_NAME: ${MARIADB_DATABASE}
+      DB_USER: ${MARIADB_USER}
+      DB_PASSWD: ${MARIADB_PASSWORD}
+      PS_DEV_MODE: 0
+      PS_INSTALL_AUTO: ${PRESTASHOP_INSTALL_AUTO:-1}
+      PS_DOMAIN: ${SERVER_IP}
+      PS_ENABLE_SSL: 0
+      ADMIN_MAIL: ${PRESTASHOP_ADMIN_EMAIL}
+      ADMIN_PASS: ${PRESTASHOP_ADMIN_PASSWORD}
+      ADMIN_PASSWD: ${PRESTASHOP_ADMIN_PASSWORD}
+    ports:
+      - "127.0.0.1:8080:80"
+    volumes:
+      - prestashop_data:/var/www/html
+    networks:
+      - internal
+
 networks:
   internal:
     driver: bridge
@@ -62,3 +89,4 @@ networks:
 volumes:
   mariadb_data:
   redis_data:
+  prestashop_data:
