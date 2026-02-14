@@ -29,8 +29,6 @@ MARIADB_USER=forestcatering
 MARIADB_PASSWORD=${APP_PASS}
 
 BACKUP_RETENTION_DAYS=14
-MIRROR_BASE_DIR=/var/www/mirror/forestcatering-infra
-MIRROR_BASE_URL=http://51.68.151.159/mirror/forestcatering-infra
 EOT
 
 chmod 600 "${ENV_FILE}"

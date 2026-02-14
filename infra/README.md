@@ -28,7 +28,6 @@ infra/
     backup-db.sh
     restore-db.sh
     rotate-backups.sh
-    publish-mirror.sh
   nginx/
     ip-only.conf
   systemd/
