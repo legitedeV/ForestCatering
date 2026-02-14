@@ -100,12 +100,5 @@ docker compose -f "${BASE_DIR}/compose.yml" --env-file "${ENV_FILE}" ps | tee "$
 docker compose -f "${BASE_DIR}/compose.yml" --env-file "${ENV_FILE}" logs --tail=200 > "${RUN_DIR}/compose-logs-tail200.txt"
 cp "${RUN_DIR}/compose-ps.txt" "${RUN_DIR}/infra-screenshot-compose-ps.txt"
 
-echo "[10/10] publish mirror"
-"${BASE_DIR}/scripts/publish-mirror.sh" "${RUN_DIR}" | tee "${RUN_DIR}/mirror-publish.txt"
-
-MIRROR_BASE_URL="${MIRROR_BASE_URL:-http://51.68.151.159/mirror/forestcatering-infra}"
-RUN_NAME="$(basename "${RUN_DIR}")"
 
 echo "Smoke test completed."
-echo "Mirror run URL: ${MIRROR_BASE_URL}/${RUN_NAME}/"
-echo "Mirror screenshot artifact: ${MIRROR_BASE_URL}/${RUN_NAME}/infra-screenshot-compose-ps.txt"
