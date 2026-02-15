@@ -41,7 +41,7 @@ services:
       - backend
 
   prestashop:
-    image: ${PRESTASHOP_IMAGE}
+    image: prestashop/prestashop:9.0.2-apache
     restart: unless-stopped
     depends_on:
       mariadb:
@@ -56,24 +56,31 @@ services:
       DB_USER: ${MARIADB_USER}
       DB_PASSWD: ${MARIADB_PASSWORD}
       DB_PREFIX: ps_
-      PS_INSTALL_AUTO: 1
-      PS_ERASE_DB: ${PS_ERASE_DB:-0}
+
+      PS_INSTALL_AUTO: "1"
+      PS_ERASE_DB: "${PS_ERASE_DB:-0}"
+
       PS_DOMAIN: ${SERVER_IP}
-      PS_HANDLE_DYNAMIC_DOMAIN: 1
-      PS_LANGUAGE: pl
-      PS_COUNTRY: pl
-      PS_ALL_LANGUAGES: 0
-      PS_DEV_MODE: 0
-      PS_ENABLE_SSL: 0
+      PS_HANDLE_DYNAMIC_DOMAIN: "0"
+
+      PS_LANGUAGE: "pl"
+      PS_COUNTRY: "pl"
+      PS_ALL_LANGUAGES: "0"
+
+      PS_DEV_MODE: "0"
+      PS_ENABLE_SSL: "0"
+
       ADMIN_MAIL: ${PRESTASHOP_ADMIN_EMAIL}
       ADMIN_PASSWD: ${PRESTASHOP_ADMIN_PASSWORD}
-      PS_FOLDER_ADMIN: ${PS_FOLDER_ADMIN}
-      PS_FOLDER_INSTALL: ${PS_FOLDER_INSTALL}
+
+      PS_FOLDER_ADMIN: ${PS_FOLDER_ADMIN:-admin-dev}
+      PS_FOLDER_INSTALL: ${PS_FOLDER_INSTALL:-install-dev}
     volumes:
       - prestashop_data:/var/www/html
     networks:
       - backend
       - edge
+
 
   adminer:
     image: adminer:4
