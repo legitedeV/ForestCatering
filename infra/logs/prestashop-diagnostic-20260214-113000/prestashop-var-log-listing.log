@@ -1,0 +1,2 @@
+$ docker compose -f infra/compose.yml exec -T prestashop sh -lc "ls -lah /var/www/html/var/log /var/www/html/var/logs"
+bash: command not found: docker
