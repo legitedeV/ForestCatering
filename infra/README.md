@@ -24,6 +24,7 @@ infra/
     up.sh
     down.sh
     status.sh
+    deploy.sh
     smoke.sh
     backup-db.sh
     restore-db.sh
@@ -61,6 +62,17 @@ cd /workspace/ForestCatering/infra
 ./scripts/status.sh
 ./scripts/down.sh
 ```
+
+## 3b) Deploy update (git pull + refreshed base images)
+```bash
+cd /workspace/ForestCatering/infra
+./scripts/deploy.sh
+```
+
+`deploy.sh` performs:
+1. `git pull --ff-only` at repository root
+2. `docker compose pull` to refresh service base images
+3. `docker compose up -d --force-recreate --remove-orphans` to restart with updated images
 
 ## 4) Access endpoints (IP-only)
 - Via host Nginx (after enabling `infra/nginx/ip-only.conf`):
