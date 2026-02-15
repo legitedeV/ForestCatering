@@ -1,5 +1,0 @@
-$ test -f infra/.env && sed -n "1,220p" infra/.env || echo "infra/.env missing"
-infra/.env missing
-
-$ docker compose -f infra/compose.yml exec -T prestashop sh -lc "test -f /var/www/html/app/config/parameters.php && sed -n \"1,220p\" /var/www/html/app/config/parameters.php || echo missing"
-bash: command not found: docker

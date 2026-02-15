@@ -1,2 +1,0 @@
-$ docker compose -f infra/compose.yml logs prestashop --tail=300
-bash: command not found: docker

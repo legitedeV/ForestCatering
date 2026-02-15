@@ -1,2 +1,0 @@
-$ docker compose -f infra/compose.yml exec -T prestashop sh -lc "find /var/log -maxdepth 3 -type f | rg -i php"
-bash: command not found: docker
