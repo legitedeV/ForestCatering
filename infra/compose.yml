@@ -1,0 +1,98 @@
+name: forestcatering
+
+services:
+  mariadb:
+    image: mariadb:10.11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb-flush-log-at-trx-commit=1
+      - --max-allowed-packet=256M
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -p$$MARIADB_ROOT_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    networks:
+      - backend
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - backend
+
+  prestashop:
+    image: ${PRESTASHOP_IMAGE}
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:80"
+    environment:
+      DB_SERVER: mariadb
+      DB_NAME: ${MARIADB_DATABASE}
+      DB_USER: ${MARIADB_USER}
+      DB_PASSWD: ${MARIADB_PASSWORD}
+      DB_PREFIX: ps_
+      PS_INSTALL_AUTO: 1
+      PS_ERASE_DB: ${PS_ERASE_DB:-0}
+      PS_DOMAIN: ${SERVER_IP}
+      PS_HANDLE_DYNAMIC_DOMAIN: 1
+      PS_LANGUAGE: pl
+      PS_COUNTRY: pl
+      PS_ALL_LANGUAGES: 0
+      PS_DEV_MODE: 0
+      PS_ENABLE_SSL: 0
+      ADMIN_MAIL: ${PRESTASHOP_ADMIN_EMAIL}
+      ADMIN_PASSWD: ${PRESTASHOP_ADMIN_PASSWORD}
+      PS_FOLDER_ADMIN: ${PS_FOLDER_ADMIN}
+      PS_FOLDER_INSTALL: ${PS_FOLDER_INSTALL}
+    volumes:
+      - prestashop_data:/var/www/html
+    networks:
+      - backend
+      - edge
+
+  adminer:
+    image: adminer:4
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8081:8080"
+    networks:
+      - backend
+
+networks:
+  backend:
+    internal: true
+  edge:
+    internal: false
+
+volumes:
+  mariadb_data:
+  redis_data:
+  prestashop_data:

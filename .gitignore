@@ -1,6 +1,6 @@
 infra/.env
 infra/logs/*
-!infra/logs/.gitkeep
-infra/backups/*
-!infra/backups/.gitkeep
-agent/*.log
+!/infra/logs/.gitkeep
+/home/forest/artifacts/*
+*.tar.gz
+*.sql.gz
