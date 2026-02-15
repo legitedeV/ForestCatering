@@ -1,0 +1,28 @@
+name: forestcatering-premium
+display_name: ForestCatering Premium
+version: 1.0.0
+author:
+  name: ForestCatering
+  email: kontakt@forestcatering.pl
+  url: https://forestcatering.pl
+meta:
+  compatibility:
+    from: 9.0.0
+    to: ~
+parent: classic
+use_parent_assets: true
+assets:
+  use_parent_assets: true
+  css:
+    all:
+      - id: forestcatering-theme
+        path: assets/css/theme.css
+        priority: 250
+  js:
+    all:
+      - id: forestcatering-theme
+        path: assets/js/theme.js
+        priority: 250
+global_settings:
+  configuration:
+    PS_IMAGE_QUALITY: png
