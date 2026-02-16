@@ -45,6 +45,9 @@ export default async function HomePage() {
               <article key={category.id} className="rounded-2xl border border-fc-accent/25 bg-fc-surface p-5">
                 <h3 className="text-lg font-semibold">{getCategoryName(category.name)}</h3>
                 <p className="mt-1 text-fc-muted">Sprawdź produkty dostępne w tej sekcji.</p>
+                <Link href={`/kategoria/${category.id}`} className="mt-3 inline-block text-sm text-fc-accent">
+                  Przejdź do kategorii
+                </Link>
               </article>
             ))}
           </div>

@@ -1,0 +1,15 @@
+$ bash infra/gen-secrets.sh
+Secrets ensured in /workspace/ForestCatering/infra/.env
+
+$ docker compose -f infra/compose.yml up -d --build
+bash: command not found: docker
+
+$ bash infra/scripts/smoke.sh
+[smoke] docker compose up -d --build
+/workspace/ForestCatering/infra/scripts/common.sh: line 16: docker: command not found
+
+$ docker compose -f infra/compose.yml ps
+bash: command not found: docker
+
+$ docker compose -f infra/compose.yml logs --no-color --tail=200 prestashop frontend
+bash: command not found: docker
