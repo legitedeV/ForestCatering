@@ -40,6 +40,8 @@ PS_FOLDER_INSTALL=install-$(rand_hex 4)
 PRESTASHOP_IMAGE=prestashop/prestashop:9-apache
 PRESTASHOP_IMAGE_DIGEST=
 PS_ERASE_DB=0
+FRONTEND_DOMAIN=https://frontend-domain.pl
+PS_WEBSERVICE_KEY=$(rand_hex 16)
 EOT
 chmod 600 "${ENV_FILE}"
 echo "Generated ${ENV_FILE}"
