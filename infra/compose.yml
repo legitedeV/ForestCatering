@@ -86,6 +86,22 @@ services:
       - backend
       - edge
 
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      prestashop:
+        condition: service_started
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NEXT_PUBLIC_PS_API_URL: http://prestashop:80
+      PS_WEBSERVICE_KEY: ${PS_WEBSERVICE_KEY:-}
+    networks:
+      - edge
+
 
   adminer:
     image: adminer:4
