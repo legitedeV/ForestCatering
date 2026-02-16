@@ -13,24 +13,36 @@ const BrandContext = createContext<BrandContextValue | undefined>(undefined);
 
 const STORAGE_KEY = 'fc_brand_mode';
 const COOKIE_MAX_AGE_SECONDS = 31_536_000;
+const isBrandMode = (value: string | null | undefined): value is BrandMode =>
+  value === 'catering' || value === 'bar';
 
 export const BrandProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState<BrandMode>('catering');
 
   useEffect(() => {
-    const fromStorage = localStorage.getItem(STORAGE_KEY) as BrandMode | null;
+    const fromStorage = localStorage.getItem(STORAGE_KEY);
     const fromCookie = document.cookie
       .split('; ')
       .find((entry) => entry.startsWith('fc_brand_mode='))
-      ?.split('=')[1] as BrandMode | undefined;
+      ?.split('=')[1];
 
-    const nextMode = fromStorage ?? fromCookie ?? 'catering';
-    setMode(nextMode === 'bar' ? 'bar' : 'catering');
+    if (isBrandMode(fromStorage)) {
+      setMode(fromStorage);
+      return;
+    }
+
+    if (isBrandMode(fromCookie)) {
+      setMode(fromCookie);
+      return;
+    }
+
+    setMode('catering');
   }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, mode);
-    document.cookie = `fc_brand_mode=${mode}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`;
+    const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+    document.cookie = `fc_brand_mode=${mode}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}; SameSite=Lax${secureFlag}`;
     document.documentElement.dataset.brand = mode;
   }, [mode]);
 

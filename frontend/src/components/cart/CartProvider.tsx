@@ -22,9 +22,26 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      setItems(JSON.parse(saved) as CartItem[]);
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved) as unknown;
+        if (Array.isArray(parsed)) {
+          setItems(
+            parsed.filter(
+              (item): item is CartItem =>
+                typeof item === 'object' &&
+                item !== null &&
+                'id' in item &&
+                'name' in item &&
+                'quantity' in item &&
+                'price' in item
+            )
+          );
+        }
+      }
+    } catch {
+      localStorage.removeItem(STORAGE_KEY);
     }
   }, []);
 
