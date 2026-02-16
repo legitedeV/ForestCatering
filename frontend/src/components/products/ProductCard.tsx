@@ -11,8 +11,6 @@ const getName = (value: PSProduct['name']) => (typeof value === 'string' ? value
 
 export const ProductCard = ({ product, businessType }: ProductCardProps) => {
   const name = getName(product.name);
-  const route = businessType === 'event' ? '/eventy' : '/menu';
-
   return (
     <article className="rounded-2xl border border-fc-accent/25 bg-fc-surface p-4">
       <div className="h-44 rounded-xl bg-gradient-to-br from-fc-accent/20 via-fc-surface to-fc-accent2/20" />
@@ -23,7 +21,7 @@ export const ProductCard = ({ product, businessType }: ProductCardProps) => {
         </span>
       </div>
       <p className="mt-2 text-fc-accent">{Number(product.price).toFixed(2)} PLN</p>
-      <Link href={`${route}/${product.id}-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="mt-4 inline-block rounded-full bg-fc-accent px-4 py-2 text-sm font-semibold text-black">
+      <Link href={`/produkt/${product.id}-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`} className="mt-4 inline-block rounded-full bg-fc-accent px-4 py-2 text-sm font-semibold text-black">
         Zobacz
       </Link>
     </article>
