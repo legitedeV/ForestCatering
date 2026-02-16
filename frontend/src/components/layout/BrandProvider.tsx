@@ -12,6 +12,7 @@ interface BrandContextValue {
 const BrandContext = createContext<BrandContextValue | undefined>(undefined);
 
 const STORAGE_KEY = 'fc_brand_mode';
+const COOKIE_MAX_AGE_SECONDS = 31_536_000;
 
 export const BrandProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState<BrandMode>('catering');
@@ -29,7 +30,7 @@ export const BrandProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, mode);
-    document.cookie = `fc_brand_mode=${mode}; path=/; max-age=31536000; SameSite=Lax`;
+    document.cookie = `fc_brand_mode=${mode}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}; SameSite=Lax`;
     document.documentElement.dataset.brand = mode;
   }, [mode]);
 

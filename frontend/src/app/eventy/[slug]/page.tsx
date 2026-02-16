@@ -3,7 +3,13 @@ import { notFound } from 'next/navigation';
 import { EventConfigurator } from '@/components/products/EventConfigurator';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
-import { getFeatureValues, getFeatures, resolveBusinessType } from '@/lib/prestashop/features';
+import {
+  BUSINESS_TYPE_FEATURE_NAME,
+  getFeatureValues,
+  getFeatures,
+  normalizeLanguageValue,
+  resolveBusinessType
+} from '@/lib/prestashop/features';
 import { getProduct } from '@/lib/prestashop/products';
 
 const parseIdFromSlug = (slug: string): number => Number(slug.split('-')[0]);
@@ -27,7 +33,7 @@ export default async function EventProductPage({ params }: { params: { slug: str
 
   const featuresResult = await getFeatures();
   const businessFeature = (featuresResult.data ?? []).find(
-    (feature) => (typeof feature.name === 'string' ? feature.name : feature.name[0]?.value ?? '').toLowerCase() === 'typ biznesowy'
+    (feature) => normalizeLanguageValue(feature.name).toLowerCase() === BUSINESS_TYPE_FEATURE_NAME
   );
   const featureValuesResult = businessFeature ? await getFeatureValues(businessFeature.id) : { data: [], error: null };
 

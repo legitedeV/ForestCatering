@@ -7,7 +7,9 @@ import type {
 } from '@/lib/prestashop/types';
 import { prestashopFetch } from '@/lib/prestashop/client';
 
-const normalizeLanguageValue = (value: string | { value: string }[] | undefined): string => {
+export const BUSINESS_TYPE_FEATURE_NAME = 'typ biznesowy';
+
+export const normalizeLanguageValue = (value: string | { value: string }[] | undefined): string => {
   if (!value) {
     return '';
   }
@@ -43,7 +45,7 @@ export const resolveBusinessType = (
   featureValues: PSFeatureValue[]
 ): 'retail' | 'event' | null => {
   const businessFeature = features.find(
-    (feature) => normalizeLanguageValue(feature.name).toLowerCase() === 'typ biznesowy'
+    (feature) => normalizeLanguageValue(feature.name).toLowerCase() === BUSINESS_TYPE_FEATURE_NAME
   );
 
   if (!businessFeature) {
@@ -76,7 +78,7 @@ export const getBusinessType = async (product: PSProduct): Promise<'retail' | 'e
   const features = featuresResult.data ?? [];
 
   const businessFeature = features.find(
-    (feature) => normalizeLanguageValue(feature.name).toLowerCase() === 'typ biznesowy'
+    (feature) => normalizeLanguageValue(feature.name).toLowerCase() === BUSINESS_TYPE_FEATURE_NAME
   );
 
   if (!businessFeature) {

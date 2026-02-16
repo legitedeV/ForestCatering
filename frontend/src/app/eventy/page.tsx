@@ -15,7 +15,7 @@ export default async function EventyPage() {
 
   const category = (categoriesResult.data ?? []).find((entry) => getName(entry.name).toLowerCase() === 'eventy');
   if (!category) {
-    return <EmptyState title="Brak kategorii Eventy" description="Najpierw uruchom seed danych w PrestaShop." />;
+    return <EmptyState title="Eventy są chwilowo niedostępne" description="Spróbuj ponownie za chwilę." />;
   }
 
   const categories = categoriesResult.data ?? [];

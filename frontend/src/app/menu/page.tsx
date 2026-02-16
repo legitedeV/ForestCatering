@@ -15,7 +15,7 @@ export default async function MenuPage() {
 
   const menuCategory = (categoriesResult.data ?? []).find((category) => getName(category.name).toLowerCase() === 'menu');
   if (!menuCategory) {
-    return <EmptyState title="Brak kategorii Menu" description="Najpierw uruchom seed danych w PrestaShop." />;
+    return <EmptyState title="Menu jest chwilowo niedostępne" description="Spróbuj ponownie za chwilę." />;
   }
 
   const categories = categoriesResult.data ?? [];
