@@ -4,16 +4,16 @@ services:
   mariadb:
     image: mariadb:10.11
     restart: unless-stopped
-    environment:
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --innodb-flush-log-at-trx-commit=1
       - --max-allowed-packet=256M
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
     volumes:
       - mariadb_data:/var/lib/mysql
     healthcheck:
@@ -56,32 +56,30 @@ services:
       DB_USER: ${MARIADB_USER}
       DB_PASSWD: ${MARIADB_PASSWORD}
       DB_PREFIX: ps_
-
       PS_INSTALL_AUTO: "1"
-      PS_ERASE_DB: "${PS_ERASE_DB:-0}"
-
-      PS_DOMAIN: ${SERVER_IP}
-      PS_HANDLE_DYNAMIC_DOMAIN: "0"
-
+      PS_ERASE_DB: ${PS_ERASE_DB:-0}
+      PS_DOMAIN: ${PS_DOMAIN:-localhost}
+      PS_HANDLE_DYNAMIC_DOMAIN: "1"
       PS_LANGUAGE: "pl"
       PS_COUNTRY: "pl"
       PS_ALL_LANGUAGES: "0"
-
       PS_DEV_MODE: "0"
       PS_ENABLE_SSL: "0"
-
       ADMIN_MAIL: ${PRESTASHOP_ADMIN_EMAIL}
       ADMIN_PASSWD: ${PRESTASHOP_ADMIN_PASSWORD}
-
       PS_FOLDER_ADMIN: ${PS_FOLDER_ADMIN:-admin-dev}
       PS_FOLDER_INSTALL: ${PS_FOLDER_INSTALL:-install-dev}
-
-      # Headless mode – passed to headless-setup.sh inside the container
-      FRONTEND_DOMAIN: ${FRONTEND_DOMAIN:-https://frontend-domain.pl}
-      PS_WEBSERVICE_KEY: ${PS_WEBSERVICE_KEY:-}
+      FRONTEND_DOMAIN: ${FRONTEND_DOMAIN:-http://127.0.0.1:3000}
+      PS_WEBSERVICE_KEY: ${PS_WEBSERVICE_KEY}
     volumes:
       - prestashop_data:/var/www/html
-      - ./scripts/headless-setup.sh:/tmp/headless-setup.sh:ro
+      - ./scripts:/opt/forestcatering/scripts:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1/ >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
     networks:
       - backend
       - edge
@@ -93,15 +91,20 @@ services:
     restart: unless-stopped
     depends_on:
       prestashop:
-        condition: service_started
+        condition: service_healthy
     ports:
       - "127.0.0.1:3000:3000"
     environment:
       NEXT_PUBLIC_PS_API_URL: http://prestashop:80
-      PS_WEBSERVICE_KEY: ${PS_WEBSERVICE_KEY:-}
+      PS_WEBSERVICE_KEY: ${PS_WEBSERVICE_KEY}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3000/ || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
     networks:
       - edge
-
 
   adminer:
     image: adminer:4
