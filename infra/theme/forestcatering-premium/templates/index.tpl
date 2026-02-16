@@ -1,4 +1,4 @@
-{extends file='page.tpl'}
+{extends file='parent:page.tpl'}
 
 {block name='page_content_container'}
 <section class="fc-hero" id="top">
@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="fc-hero-art" aria-hidden="true">
-      {include file='file:assets/svg/hero-suit.svg'}
+      {include file='_partials/hero-suit.tpl'}
     </div>
   </div>
 </section>
