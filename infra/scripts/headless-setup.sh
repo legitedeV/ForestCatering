@@ -74,6 +74,23 @@ if [[ -z "${ws_id}" ]]; then
   exit 1
 fi
 
+escaped_key="$(sql_escape "${ws_key}")"
+ws_key_column="$(run_sql "SELECT COLUMN_NAME
+  FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA='${db_name}'
+    AND TABLE_NAME='ps_webservice_account'
+    AND COLUMN_NAME IN ('key_value', 'key')
+  ORDER BY FIELD(COLUMN_NAME, 'key_value', 'key')
+  LIMIT 1;")"
+if [[ -z "${ws_key_column}" ]]; then
+  echo "Nie znaleziono kolumny key_value/key w ps_webservice_account." >&2
+  exit 1
+fi
+
+run_sql "INSERT INTO ps_webservice_account (\`${ws_key_column}\`, active, description, class_name, is_module, module_name)
+  VALUES ('${escaped_key}', 1, 'Headless API (Next.js frontend)', '', 0, '')
+  ON DUPLICATE KEY UPDATE active=1, description=VALUES(description);"
+ws_id="$(run_sql "SELECT id_webservice_account FROM ps_webservice_account WHERE \`${ws_key_column}\`='${escaped_key}' LIMIT 1;")"
 run_sql "INSERT IGNORE INTO ps_webservice_account_shop (id_webservice_account, id_shop)
 SELECT ${ws_id}, id_shop FROM ps_shop;"
 
