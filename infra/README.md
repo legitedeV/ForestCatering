@@ -31,19 +31,27 @@ cd infra && ./scripts/smoke-theme.sh
    ```bash
    ./infra/scripts/headless-setup.sh
    ```
-4. Reinstall from scratch (DESTROYS volumes):
+4. Start Next.js frontend:
+   ```bash
+   cd frontend && npm install && npm run dev
+   ```
+   Or via Docker Compose:
+   ```bash
+   docker compose --env-file infra/.env -f infra/compose.yml up frontend
+   ```
+5. Reinstall from scratch (DESTROYS volumes):
    ```bash
    ./infra/scripts/wipe.sh --yes-wipe-data
    ```
-5. Run base smoke test:
+6. Run base smoke test:
    ```bash
    ./infra/scripts/smoke.sh
    ```
-6. Run headless smoke test:
+7. Run headless smoke test:
    ```bash
    ./infra/scripts/smoke-headless.sh
    ```
-7. Run theme smoke test (boot + apply + verify HTTP/logs):
+8. Run theme smoke test (boot + apply + verify HTTP/logs):
    ```bash
    ./infra/scripts/smoke-theme.sh
    ```
