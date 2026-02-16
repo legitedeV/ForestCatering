@@ -48,6 +48,25 @@ cd infra && ./scripts/smoke-theme.sh
    ./infra/scripts/smoke-theme.sh
    ```
 
+## Headless Mode Setup
+
+Po pierwszym `./scripts/up.sh` i ukończeniu instalacji PrestaShop:
+
+1. Uruchom konfigurację headless:
+   ```bash
+   ./scripts/headless-setup.sh
+   ```
+
+2. Załaduj model danych (features, kategorie, przykładowe produkty):
+   ```bash
+   ./scripts/seed-data-model.sh
+   ```
+
+3. Zweryfikuj konfigurację:
+   ```bash
+   ./scripts/smoke-headless.sh
+   ```
+
 ## Headless mode
 
 ### What is enabled
@@ -121,7 +140,8 @@ nginx -t && systemctl reload nginx
 - `infra/scripts/wipe.sh --yes-wipe-data`: remove containers + volumes and reinstall cleanly.
 - `infra/scripts/smoke.sh`: validates compose, service health, egress, DB integrity, HTTP response and exports logs.
 - `infra/scripts/smoke-theme.sh`: full test of theme deployment and storefront health (HTTP 200 + no PHP fatal logs).
-- `infra/scripts/headless-setup.sh`: configure PrestaShop as headless backend (API key, features, categories, CORS).
+- `infra/scripts/headless-setup.sh`: configure PrestaShop as headless backend (API key, redirect frontu, CORS).
+- `infra/scripts/seed-data-model.sh`: seed modelu danych (feature business_type, kategorie, przykładowe produkty).
 - `infra/scripts/headless-add-event-product.sh <id>`: add event customization fields to a product.
 - `infra/scripts/smoke-headless.sh`: validates headless configuration (API, features, categories, admin access).
 - `infra/scripts/theme-apply.sh`: syncs theme, installs assets, sets default theme and default PL language.
