@@ -81,6 +81,7 @@ services:
       PS_WEBSERVICE_KEY: ${PS_WEBSERVICE_KEY:-}
     volumes:
       - prestashop_data:/var/www/html
+      - ./scripts/headless-setup.sh:/tmp/headless-setup.sh:ro
     networks:
       - backend
       - edge

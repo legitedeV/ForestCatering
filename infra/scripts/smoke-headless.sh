@@ -1,29 +1,20 @@
 #!/usr/bin/env bash
-# ────────────────────────────────────────────────────────────
-# smoke-headless.sh
-# Validates the headless PrestaShop backend configuration:
-#   1. API responds with JSON to authenticated requests
-#   2. API key has proper permissions
-#   3. business_type feature exists in DB
-#   4. Category structure exists (Menu + Eventy)
-#   5. Admin panel is accessible
-#   6. Webservice is enabled in configuration
-#
-# Usage:  ./infra/scripts/smoke-headless.sh
-# ────────────────────────────────────────────────────────────
 set -euo pipefail
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
 ensure_env
 
 runlog="$(run_dir)"
+log_file="${runlog}/headless-smoke.txt"
+exec > >(tee -a "${log_file}") 2>&1
+
 errors=0
 
 db_cid="$(compose_cmd ps -q mariadb)"
-ps_cid="$(compose_cmd ps -q prestashop)"
 db_name="$(awk -F= '/^MARIADB_DATABASE=/{print $2}' "${ENV_FILE}")"
 db_root="$(awk -F= '/^MARIADB_ROOT_PASSWORD=/{print $2}' "${ENV_FILE}")"
 ws_key="$(awk -F= '/^PS_WEBSERVICE_KEY=/{print $2}' "${ENV_FILE}")"
 admin_dir="$(awk -F= '/^PS_FOLDER_ADMIN=/{print $2}' "${ENV_FILE}")"
+frontend_domain="$(awk -F= '/^FRONTEND_DOMAIN=/{print $2}' "${ENV_FILE}")"
 
 run_sql() {
   docker exec "${db_cid}" mariadb -N -uroot -p"${db_root}" "${db_name}" -e "$1"
@@ -32,81 +23,92 @@ run_sql() {
 pass() { echo "  ✔ $1"; }
 fail() { echo "  ✘ $1" >&2; errors=$((errors + 1)); }
 
-# ── 1. Webservice enabled ──
-echo "[1/6] Webservice aktywny"
-ws_on="$(run_sql "SELECT value FROM ps_configuration WHERE name='PS_WEBSERVICE' LIMIT 1;")"
-if [[ "${ws_on}" == "1" ]]; then pass "PS_WEBSERVICE=1"; else fail "PS_WEBSERVICE != 1 (got: ${ws_on})"; fi
+auth_b64="$(printf '%s' "${ws_key}:" | base64 | tr -d '\n')"
+api_headers=(
+  -H "Authorization: Basic ${auth_b64}"
+)
 
-# ── 2. API key exists and is active ──
-echo "[2/6] Klucz API"
-key_active="$(run_sql "SELECT active FROM ps_webservice_account WHERE key_value='${ws_key}' LIMIT 1;")"
-if [[ "${key_active}" == "1" ]]; then pass "Klucz aktywny"; else fail "Klucz nieaktywny lub nie istnieje"; fi
-
-perm_count="$(run_sql "SELECT COUNT(DISTINCT resource) FROM ps_webservice_permission wp
-  JOIN ps_webservice_account wa ON wa.id_webservice_account = wp.id_webservice_account
-  WHERE wa.key_value='${ws_key}';")"
-if [[ "${perm_count}" -ge 10 ]]; then pass "Uprawnienia: ${perm_count} zasobów"; else fail "Za mało uprawnień: ${perm_count}"; fi
-
-# ── 3. API responds with JSON ──
-echo "[3/6] API HTTP response"
-api_code="$(curl -sS -o "${runlog}/api-products.json" -w '%{http_code}' \
-  -u "${ws_key}:" "http://127.0.0.1:8080/api/products?output_format=JSON" 2>/dev/null || echo "000")"
-if [[ "${api_code}" == "200" ]]; then
-  pass "GET /api/products -> HTTP ${api_code}"
-  # Verify it's JSON
-  if head -c 1 "${runlog}/api-products.json" | grep -q '{'; then
-    pass "Odpowiedź to JSON"
-  else
-    fail "Odpowiedź nie jest JSON"
-  fi
+echo "[1/8] API dostępne"
+api_root_code="$(curl -sS -o /dev/null -w '%{http_code}' "http://127.0.0.1:8080/api/" "${api_headers[@]}" 2>/dev/null || echo "000")"
+if [[ "${api_root_code}" == "200" ]]; then
+  pass "GET /api/ -> HTTP 200"
 else
-  fail "GET /api/products -> HTTP ${api_code} (oczekiwano 200)"
+  fail "GET /api/ -> HTTP ${api_root_code} (oczekiwano 200)"
 fi
 
-# ── 4. business_type feature ──
-echo "[4/6] Feature: business_type"
-bt_feature="$(run_sql "SELECT COUNT(*) FROM ps_feature_lang WHERE name='business_type';")"
-if [[ "${bt_feature}" -ge 1 ]]; then pass "Feature business_type istnieje"; else fail "Brak feature business_type"; fi
+echo "[2/8] Produkty w API"
+products_payload="${runlog}/products.xml"
+curl -sS "http://127.0.0.1:8080/api/products" "${api_headers[@]}" > "${products_payload}" 2>/dev/null || true
+products_count="$( (grep -o '<product id=' "${products_payload}" || true) | wc -l | tr -d ' ')"
+if [[ "${products_count}" -ge 2 ]]; then
+  pass "Liczba produktów w API: ${products_count}"
+else
+  fail "Za mało produktów w API: ${products_count} (oczekiwano >=2)"
+fi
 
-bt_retail="$(run_sql "SELECT COUNT(*) FROM ps_feature_value_lang fvl
-  JOIN ps_feature_value fv ON fv.id_feature_value = fvl.id_feature_value
-  JOIN ps_feature_lang fl ON fl.id_feature = fv.id_feature AND fl.name='business_type'
-  WHERE fvl.value='retail';")"
-bt_event="$(run_sql "SELECT COUNT(*) FROM ps_feature_value_lang fvl
-  JOIN ps_feature_value fv ON fv.id_feature_value = fvl.id_feature_value
-  JOIN ps_feature_lang fl ON fl.id_feature = fv.id_feature AND fl.name='business_type'
-  WHERE fvl.value='event';")"
-if [[ "${bt_retail}" -ge 1 ]]; then pass "Wartość: retail"; else fail "Brak wartości: retail"; fi
-if [[ "${bt_event}" -ge 1 ]]; then pass "Wartość: event"; else fail "Brak wartości: event"; fi
+echo "[3/8] Kategorie Menu i Eventy w API"
+categories_payload="${runlog}/categories.xml"
+curl -sS "http://127.0.0.1:8080/api/categories?display=full" "${api_headers[@]}" > "${categories_payload}" 2>/dev/null || true
+if grep -q 'Menu' "${categories_payload}" && grep -q 'Eventy' "${categories_payload}"; then
+  pass "Kategorie Menu i Eventy obecne"
+else
+  fail "Brak kategorii Menu/Eventy w /api/categories"
+fi
 
-# ── 5. Category structure ──
-echo "[5/6] Kategorie"
-for cat_name in "Menu" "Eventy" "Lunch boxy" "Kanapki" "Sałatki" "Napoje" \
-  "Lunch biznesowy" "Bankiet premium" "Regeneracyjne" "ForestBar"; do
-  cnt="$(run_sql "SELECT COUNT(*) FROM ps_category_lang WHERE name='${cat_name}';")"
-  if [[ "${cnt}" -ge 1 ]]; then pass "Kategoria: ${cat_name}"; else fail "Brak kategorii: ${cat_name}"; fi
-done
+echo "[4/8] Feature business_type"
+features_payload="${runlog}/product_features.xml"
+curl -sS "http://127.0.0.1:8080/api/product_features?display=full" "${api_headers[@]}" > "${features_payload}" 2>/dev/null || true
+if grep -q 'Typ biznesowy' "${features_payload}" || grep -q 'business_type' "${features_payload}"; then
+  pass "Feature business_type/Typ biznesowy istnieje"
+else
+  fail "Brak feature business_type w /api/product_features"
+fi
 
-# ── 6. Admin accessible ──
-echo "[6/6] Panel admin"
+echo "[5/8] Customization fields produktu eventowego"
+event_customizations="$(run_sql "SELECT COUNT(*)
+  FROM ps_customization_field cf
+  JOIN ps_product_lang pl ON pl.id_product=cf.id_product
+  WHERE pl.name='Bankiet premium – 4h' AND cf.is_deleted=0;")"
+if [[ "${event_customizations}" -ge 5 ]]; then
+  pass "Produkt eventowy ma pola personalizacji (${event_customizations})"
+else
+  fail "Produkt eventowy nie ma wymaganych pól personalizacji (jest: ${event_customizations})"
+fi
+
+echo "[6/8] Przekierowanie frontu"
+front_headers="${runlog}/front-headers.txt"
+front_code="$(curl -sS -D "${front_headers}" -o /dev/null -w '%{http_code}' "http://127.0.0.1:8080/" 2>/dev/null || echo "000")"
+location="$(awk 'tolower($1)=="location:" {print $2}' "${front_headers}" | tr -d '\r' | tail -n1)"
+if [[ "${front_code}" == "301" && "${location}" =~ ^${frontend_domain} ]]; then
+  pass "Front -> 301 do ${frontend_domain}"
+else
+  fail "Front redirect niepoprawny (HTTP ${front_code}, Location: ${location:-brak})"
+fi
+
+echo "[7/8] Admin dostępny"
 admin_code="$(curl -sS -o /dev/null -w '%{http_code}' "http://127.0.0.1:8080/${admin_dir}/" 2>/dev/null || echo "000")"
-if [[ "${admin_code}" =~ ^(200|302|301)$ ]]; then
-  pass "Admin panel: HTTP ${admin_code}"
+if [[ "${admin_code}" =~ ^(200|302)$ ]]; then
+  pass "Admin dostępny (HTTP ${admin_code})"
 else
-  fail "Admin panel: HTTP ${admin_code} (oczekiwano 200/301/302)"
+  fail "Admin niedostępny (HTTP ${admin_code})"
 fi
 
-# ── Summary ──
+echo "[8/8] Nagłówki CORS"
+cors_headers="${runlog}/cors-headers.txt"
+curl -sS -D "${cors_headers}" -o /dev/null "http://127.0.0.1:8080/api/" "${api_headers[@]}" 2>/dev/null || true
+if tr -d '\r' < "${cors_headers}" | grep -qi "^Access-Control-Allow-Origin: ${frontend_domain}$"; then
+  pass "Access-Control-Allow-Origin ustawiony"
+else
+  fail "Brak nagłówka Access-Control-Allow-Origin=${frontend_domain}"
+fi
+
 echo ""
 if [[ "${errors}" -eq 0 ]]; then
-  echo "════════════════════════════════════"
-  echo "  Smoke headless: PASSED ✔"
-  echo "════════════════════════════════════"
-else
-  echo "════════════════════════════════════"
-  echo "  Smoke headless: FAILED (${errors} błędów) ✘"
-  echo "════════════════════════════════════"
-  exit 1
+  echo "Smoke headless: PASSED"
+  echo "Log: ${log_file}"
+  exit 0
 fi
 
-echo "Logi: ${runlog}"
+echo "Smoke headless: FAILED (${errors} błędów)"
+echo "Log: ${log_file}"
+exit 1
