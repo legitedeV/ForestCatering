@@ -26,6 +26,10 @@ if [[ -z "${frontend_domain}" ]]; then
   echo "FRONTEND_DOMAIN jest pusty w .env." >&2
   exit 1
 fi
+if [[ ! "${frontend_domain}" =~ ^https?://([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*(:[0-9]{1,5})?(/.*)?$ ]]; then
+  echo "FRONTEND_DOMAIN ma niepoprawny format URL: ${frontend_domain}" >&2
+  exit 1
+fi
 
 sql_escape() {
   printf "%s" "$1" | sed "s/'/''/g"
@@ -75,7 +79,7 @@ JSON"
 docker exec "${ps_cid}" sh -lc "ht=/var/www/html/.htaccess; \
   touch \"\$ht\"; \
   sed '/# BEGIN FORESTCATERING_HEADLESS/,/# END FORESTCATERING_HEADLESS/d' \"\$ht\" > \"\${ht}.tmp\"; \
-  cat >> \"\${ht}.tmp\" <<'BLOCK'
+  cat >> \"\${ht}.tmp\" <<BLOCK
 # BEGIN FORESTCATERING_HEADLESS
 <IfModule mod_headers.c>
   SetEnvIf Request_URI \"^/(api|webservice)(/|$)\" IS_API=1

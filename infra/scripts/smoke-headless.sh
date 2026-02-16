@@ -21,13 +21,11 @@ run_sql() {
 }
 
 pass() { echo "  ✔ $1"; }
-fail() { echo "  ✘ $1"; errors=$((errors + 1)); }
+fail() { echo "  ✘ $1" >&2; errors=$((errors + 1)); }
 
 auth_b64="$(printf '%s' "${ws_key}:" | base64 | tr -d '\n')"
 api_headers=(
   -H "Authorization: Basic ${auth_b64}"
-  -H "Io-Format: JSON"
-  -H "Output-Format: JSON"
 )
 
 echo "[1/8] API dostępne"
@@ -81,7 +79,7 @@ echo "[6/8] Przekierowanie frontu"
 front_headers="${runlog}/front-headers.txt"
 front_code="$(curl -sS -D "${front_headers}" -o /dev/null -w '%{http_code}' "http://127.0.0.1:8080/" 2>/dev/null || echo "000")"
 location="$(awk 'tolower($1)=="location:" {print $2}' "${front_headers}" | tr -d '\r' | tail -n1)"
-if [[ "${front_code}" == "301" && "${location}" == ${frontend_domain}* ]]; then
+if [[ "${front_code}" == "301" && "${location}" =~ ^${frontend_domain} ]]; then
   pass "Front -> 301 do ${frontend_domain}"
 else
   fail "Front redirect niepoprawny (HTTP ${front_code}, Location: ${location:-brak})"
@@ -98,7 +96,7 @@ fi
 echo "[8/8] Nagłówki CORS"
 cors_headers="${runlog}/cors-headers.txt"
 curl -sS -D "${cors_headers}" -o /dev/null "http://127.0.0.1:8080/api/" "${api_headers[@]}" 2>/dev/null || true
-if grep -qi "^Access-Control-Allow-Origin: ${frontend_domain}$" "${cors_headers}"; then
+if tr -d '\r' < "${cors_headers}" | grep -qi "^Access-Control-Allow-Origin: ${frontend_domain}$"; then
   pass "Access-Control-Allow-Origin ustawiony"
 else
   fail "Brak nagłówka Access-Control-Allow-Origin=${frontend_domain}"

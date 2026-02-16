@@ -42,7 +42,9 @@ find_or_create_feature() {
   feature_id="$(run_sql "SELECT fl.id_feature FROM ps_feature_lang fl WHERE fl.name='${escaped_name}' AND fl.id_lang=${pl_lang_id} LIMIT 1;" 2>/dev/null || true)"
 
   if [[ -z "${feature_id}" ]]; then
-    run_sql "INSERT INTO ps_feature (position) VALUES ((SELECT COALESCE(MAX(position), 0) + 1 FROM ps_feature f));"
+    local max_position
+    max_position="$(run_sql "SELECT COALESCE(MAX(position), 0) + 1 FROM ps_feature;")"
+    run_sql "INSERT INTO ps_feature (position) VALUES (${max_position});"
     feature_id="$(run_sql "SELECT LAST_INSERT_ID();")"
     run_sql "INSERT IGNORE INTO ps_feature_lang (id_feature, id_lang, name)
       SELECT ${feature_id}, id_lang, '${escaped_name}' FROM ps_lang;"
