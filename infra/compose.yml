@@ -75,6 +75,10 @@ services:
 
       PS_FOLDER_ADMIN: ${PS_FOLDER_ADMIN:-admin-dev}
       PS_FOLDER_INSTALL: ${PS_FOLDER_INSTALL:-install-dev}
+
+      # Headless mode – passed to headless-setup.sh inside the container
+      FRONTEND_DOMAIN: ${FRONTEND_DOMAIN:-https://frontend-domain.pl}
+      PS_WEBSERVICE_KEY: ${PS_WEBSERVICE_KEY:-}
     volumes:
       - prestashop_data:/var/www/html
     networks:
