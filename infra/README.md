@@ -62,17 +62,17 @@ Po pierwszym `./scripts/up.sh` i ukończeniu instalacji PrestaShop:
 
 1. Uruchom konfigurację headless:
    ```bash
-   ./scripts/headless-setup.sh
+   ./infra/scripts/headless-setup.sh
    ```
 
 2. Załaduj model danych (features, kategorie, przykładowe produkty):
    ```bash
-   ./scripts/seed-data-model.sh
+   ./infra/scripts/seed-data-model.sh
    ```
 
 3. Zweryfikuj konfigurację:
    ```bash
-   ./scripts/smoke-headless.sh
+   ./infra/scripts/smoke-headless.sh
    ```
 
 ## Headless mode
@@ -100,6 +100,14 @@ Created automatically by `headless-setup.sh`. Resources with full CRUD access:
 `customizations`, `images`, `manufacturers`, `suppliers`, `taxes`.
 
 Test: `curl -s -u '<PS_WEBSERVICE_KEY>:' http://127.0.0.1:8080/api/products?output_format=JSON`
+
+
+
+### Deterministic headless setup logs
+- `infra/scripts/headless-setup.sh` is idempotent and schema-aware for `webservice_account` (`key` escaped, `deleted` optional).
+- Each run writes `infra/logs/headless-setup-YYYYMMDD-HHMMSS.log`.
+- A redacted copy is mirrored to `/var/www/mirror/forestcatering/headless-setup-last.log` (passwords + API key masked).
+- Minimal smoke checks are built-in (`DB active=1` + `curl http://127.0.0.1:8080/` returns `200/302`).
 
 ### Event products
 To configure an existing product as an event package:
