@@ -178,3 +178,21 @@ nginx -t && systemctl reload nginx
 - Backend network is internal-only; PrestaShop joins backend + edge to keep DB private while allowing Internet egress for language packs.
 - Logs for every run are stored under `infra/logs/run-<timestamp>/`.
 - Backup artifacts are stored under `/home/forest/artifacts` and excluded from git.
+
+## Premium finalize smoke + deploy runbook
+- Run pre-deploy premium smoke:
+  ```bash
+  TARGET_HOST=51.68.151.159 ./infra/scripts/smoke-premium-final.sh
+  ```
+- Run deploy and capture logs:
+  ```bash
+  ./deploy.sh
+  ```
+- Run post-deploy premium smoke:
+  ```bash
+  TARGET_HOST=51.68.151.159 ./infra/scripts/smoke-premium-final.sh
+  ```
+- Mirror latest logs to `/home/forest/mirror/forestcatering/`:
+  - `premium-final-predeploy-last.log`
+  - `deploy-last.log`
+  - `premium-final-postdeploy-last.log`

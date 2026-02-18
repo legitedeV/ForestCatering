@@ -70,3 +70,5 @@
   </div>
 </section>
 {/if}
+
+<div id="kontakt"></div>
