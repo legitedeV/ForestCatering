@@ -93,3 +93,24 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+.fc-hero {
+  padding: 120px 0;
+  text-align: center;
+}
+
+.fc-steps {
+  padding: 80px 0;
+  text-align: center;
+}
+
+.fc-cta-dark {
+  padding: 120px 0;
+  text-align: center;
+  background-color: var(--fc-bg-dark);
+  color: var(--fc-text-light);
+}
+
+.fc-cta-dark h2 {
+  color: var(--fc-text-light);
+}
