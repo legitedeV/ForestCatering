@@ -12,22 +12,12 @@
 - `infra/scripts/up.sh`
 - `infra/scripts/down.sh`
 
-### frontend/
-- `frontend/package.json`
-- `frontend/Dockerfile`
-- `frontend/.env.example`
-- `frontend/src/app/page.tsx`
-- `frontend/src/lib/prestashop/client.ts`
-- `frontend/src/lib/prestashop/categories.ts`
-- `frontend/src/lib/prestashop/products.ts`
-
 ## Obecne entrypointy i routing
 
 - PrestaShop jest publikowany na `127.0.0.1:8080` (compose port mapping).
-- Frontend Next.js jest publikowany na `127.0.0.1:3000`.
 - Adminer jest publikowany na `127.0.0.1:8081`.
 - Aktualna konfiguracja PrestaShop używa `PS_DOMAIN=${SERVER_IP}` i `PS_HANDLE_DYNAMIC_DOMAIN=0`, co może wymuszać redirect na IP.
-- `headless-setup.sh` dokłada reguły `.htaccess` i przekierowuje front-office na `FRONTEND_DOMAIN`, z wyjątkami dla `/admin`, `/api`, `/webservice` i callbacków payment.
+- `headless-setup.sh` dokłada reguły `.htaccess` dla API/webservice i smoke setup.
 
 ## Ryzyka
 

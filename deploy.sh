@@ -58,6 +58,12 @@ compose up -d --build
 echo "[deploy] container status"
 compose ps
 
+echo "[deploy] verify frontend service is absent"
+if compose ps | grep -qi frontend; then
+  echo "[deploy] frontend container detected but stack must be presta-only" >&2
+  exit 1
+fi
+
 echo "[deploy] waiting for healthy containers (timeout 120s per container with healthcheck)"
 mapfile -t CONTAINER_IDS < <(compose ps -q)
 for cid in "${CONTAINER_IDS[@]:-}"; do
@@ -104,6 +110,10 @@ TARGET_HOST="${TARGET_HOST:-51.68.151.159}" ./infra/scripts/smoke.sh
 echo "[deploy] summary"
 echo "commit: $(git rev-parse HEAD)"
 compose ps
+if compose ps | grep -qi frontend; then
+  echo "[deploy] summary check failed: frontend container should not exist" >&2
+  exit 1
+fi
 
 tmp_mirror="${MIRROR_DIR}/deploy-last.log.tmp"
 cp "${LOG_FILE}" "${tmp_mirror}"

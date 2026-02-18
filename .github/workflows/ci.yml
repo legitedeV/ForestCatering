@@ -6,53 +6,15 @@ on:
     branches: [main]
 
 jobs:
-  frontend:
+  infra:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Typecheck
-        run: npm run typecheck
-
-      - name: Unit tests
-        run: npm run test
-
-      - name: Build
-        run: npm run build
-
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
-
-      - name: Start Next.js app
-        run: npm run start &
-
-      - name: Wait for Next.js
-        run: npx wait-on http://127.0.0.1:3000
-
-      - name: Playwright screenshots
-        run: npx playwright test
-
-      - name: Upload screenshot artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-artifacts
-          path: |
-            frontend/artifacts/
-            frontend/playwright-report/
+      - name: Validate deploy and smoke scripts syntax
+        run: |
+          bash -n deploy.sh
+          bash -n infra/scripts/smoke.sh
+          bash -n infra/scripts/headless-setup.sh
+          bash -n infra/gen-secrets.sh

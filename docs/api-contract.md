@@ -1,6 +1,6 @@
 # API Contract (PrestaShop headless backend)
 
-## Endpointy dla Next.js
+## Endpointy API
 
 | Zasób | Endpoint | Opis |
 |-------|----------|------|
@@ -10,18 +10,6 @@
 | Koszyk | `POST /api/carts` | Tworzenie koszyka |
 | Zamówienie | `POST /api/orders` | Składanie zamówienia |
 | Customizations | `POST /api/customizations` | Dane personalizacji (event) |
-
-## Logika frontendowa
-
-```text
-product.associations.product_features → szukaj feature "Typ biznesowy"
-  → wartość "retail" → StandardProductComponent
-  → wartość "event" → EventConfiguratorComponent
-    → sprawdź product.customizable > 0
-    → pobierz customization fields
-    → wymuś min_quantity
-    → cena × liczba_osób
-```
 
 ## Format
 
