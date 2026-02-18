@@ -69,7 +69,6 @@ services:
       ADMIN_PASSWD: ${PRESTASHOP_ADMIN_PASSWORD}
       PS_FOLDER_ADMIN: ${PS_FOLDER_ADMIN:-admin-dev}
       PS_FOLDER_INSTALL: ${PS_FOLDER_INSTALL:-install-dev}
-      FRONTEND_DOMAIN: ${FRONTEND_DOMAIN:-http://127.0.0.1:3000}
       PS_WEBSERVICE_KEY: ${PS_WEBSERVICE_KEY}
     volumes:
       - prestashop_data:/var/www/html
@@ -82,29 +81,6 @@ services:
       start_period: 60s
     networks:
       - backend
-      - edge
-
-  frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    depends_on:
-      prestashop:
-        condition: service_healthy
-    ports:
-      - "127.0.0.1:3000:3000"
-    environment:
-      NEXT_PUBLIC_PS_API_URL: http://prestashop:80
-      PS_WEBSERVICE_KEY: ${PS_WEBSERVICE_KEY}
-    healthcheck:
-      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3000/ || exit 1"]
-      interval: 15s
-      timeout: 5s
-      retries: 20
-      start_period: 30s
-    networks:
-      - edge
 
   adminer:
     image: adminer:4
@@ -120,8 +96,6 @@ services:
 networks:
   backend:
     internal: true
-  edge:
-    internal: false
 
 volumes:
   mariadb_data:
