@@ -15,8 +15,9 @@ import { getProduct } from '@/lib/prestashop/products';
 const parseIdFromSlug = (slug: string): number => Number(slug.split('-')[0]);
 const getName = (name: string | { value: string }[]) => (typeof name === 'string' ? name : name[0]?.value ?? 'Pakiet eventowy');
 
-export default async function EventProductPage({ params }: { params: { slug: string } }) {
-  const productId = parseIdFromSlug(params.slug);
+export default async function EventProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const productId = parseIdFromSlug(slug);
   if (!productId) {
     notFound();
   }
