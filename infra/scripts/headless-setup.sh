@@ -10,7 +10,7 @@ mkdir -p "${INFRA_DIR}/logs"
 
 stamp="$(date +%Y%m%d-%H%M%S)"
 log_file="${INFRA_DIR}/logs/headless-setup-${stamp}.log"
-mirror_dir="/var/www/mirror/forestcatering"
+mirror_dir="/home/forest/mirror/forestcatering"
 mirror_log="${mirror_dir}/headless-setup-last.log"
 
 exec > >(tee -a "${log_file}") 2>&1
@@ -114,6 +114,9 @@ fi
 
 echo "[headless] detected DB prefix: ${pfx}"
 
+echo "[headless] apply idempotent shop domain fix"
+"${SCRIPT_DIR}/fix-shop-domain.sh"
+
 has_deleted="$(run_sql "SHOW COLUMNS FROM ${pfx}webservice_account LIKE 'deleted';")"
 has_key="$(run_sql "SHOW COLUMNS FROM ${pfx}webservice_account LIKE 'key';")"
 if [[ -n "${has_key}" ]]; then
@@ -153,9 +156,6 @@ for resource in "${resources[@]}"; do
 done
 
 run_sql "UPDATE ${pfx}configuration SET value='1' WHERE name='PS_WEBSERVICE';"
-run_sql "UPDATE ${pfx}shop_url SET domain='localhost', domain_ssl='localhost', physical_uri='/' WHERE main=1;"
-run_sql "UPDATE ${pfx}configuration SET value='localhost' WHERE name IN ('PS_SHOP_DOMAIN', 'PS_SHOP_DOMAIN_SSL');"
-run_sql "UPDATE ${pfx}configuration SET value='/' WHERE name='PS_BASE_URI';"
 
 echo "[headless] install headless rewrite/CORS block"
 docker exec "${ps_cid}" sh -lc "cat > /var/www/html/headless-api-only.json <<'JSON'
@@ -221,7 +221,7 @@ if [[ "${active_value}" != "1" ]]; then
   exit 1
 fi
 
-echo "[headless] webservice_key=${ws_key}"
+echo "[headless] webservice key configured and active"
 echo "[headless] verification: id_webservice_account=${ws_id} active=${active_value}"
 echo "[headless] smoke: GET / -> HTTP ${http_code}"
 echo "[headless] log: ${log_file}"
