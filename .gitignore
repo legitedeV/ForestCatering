@@ -4,3 +4,8 @@ infra/logs/*
 /home/forest/artifacts/*
 *.tar.gz
 *.sql.gz
+
+# local trash / backups
+infra/_trash/
+infra/scripts/*.bak.*
+frontend/
