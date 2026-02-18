@@ -58,7 +58,7 @@ services:
       DB_PREFIX: ps_
       PS_INSTALL_AUTO: "1"
       PS_ERASE_DB: ${PS_ERASE_DB:-0}
-      PS_DOMAIN: ${PS_DOMAIN:-localhost}
+      PS_DOMAIN: ${PS_DOMAIN:-51.68.151.159}
       PS_HANDLE_DYNAMIC_DOMAIN: "1"
       PS_LANGUAGE: "pl"
       PS_COUNTRY: "pl"
@@ -81,6 +81,7 @@ services:
       start_period: 60s
     networks:
       - backend
+      - edge
 
   adminer:
     image: adminer:4
@@ -92,10 +93,12 @@ services:
       - "127.0.0.1:8081:8080"
     networks:
       - backend
+      - edge
 
 networks:
   backend:
     internal: true
+  edge:
 
 volumes:
   mariadb_data:
