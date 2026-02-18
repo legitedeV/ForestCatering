@@ -1,17 +1,29 @@
 name: forestcatering-premium
 display_name: ForestCatering Premium
-version: 1.0.0
+version: 1.0.1
 author:
   name: ForestCatering
   email: kontakt@forestcatering.pl
+
 meta:
   compatibility:
     from: 9.0.0
-    to: ~
+    to: 9.99.99
+  available_layouts:
+    layout-full-width:
+      name: Full width
+      description: Full width layout (no side columns)
+    layout-left-column:
+      name: Left column
+      description: Left column layout
+  default_layout: layout-full-width
+
 parent: classic
+
 assets:
   use_parent_assets: true
   css:
     all:
       - id: fc-theme
         path: assets/css/theme.css
+        priority: 200

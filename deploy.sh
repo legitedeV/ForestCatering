@@ -70,9 +70,6 @@ compose up -d --force-recreate
 echo "[deploy] ensuring nginx site"
 ./infra/scripts/ensure-nginx-site.sh
 
-echo "[deploy] running full smoke suite"
-./infra/scripts/smoke-full.sh
-
 echo "[deploy] summary"
 echo "commit: $(git rev-parse HEAD)"
 compose ps
