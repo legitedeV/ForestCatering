@@ -7,6 +7,15 @@ check() {
 }
 check "http://127.0.0.1:3000"
 check "http://127.0.0.1:3000/admin"
+check "http://127.0.0.1:3000/sklep"
+check "http://127.0.0.1:3000/oferta"
+check "http://127.0.0.1:3000/eventy"
+check "http://127.0.0.1:3000/galeria"
+check "http://127.0.0.1:3000/blog"
+check "http://127.0.0.1:3000/kontakt"
+check "http://127.0.0.1:3000/koszyk"
+check "http://127.0.0.1:3000/regulamin"
+check "http://127.0.0.1:3000/polityka-prywatnosci"
 if systemctl is-active --quiet nginx 2>/dev/null; then check "http://127.0.0.1/"; fi
 [[ $FAIL -eq 0 ]] || { echo "🔥 SMOKE FAILED"; exit 1; }
 echo "🎉 All smoke tests passed."
