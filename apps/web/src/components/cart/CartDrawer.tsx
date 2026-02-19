@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useCart, useCartItemCount, useCartSubtotal, useCartDeliveryFee, useCartTotal, useCanCheckout, FREE_DELIVERY_THRESHOLD } from '@/lib/cart-store'
+import { useCart, useCartItemCount, useCartSubtotal, useCartDeliveryFee, useCartTotal, useCanCheckout, FREE_DELIVERY_THRESHOLD, MIN_ORDER_AMOUNT } from '@/lib/cart-store'
 import { formatPrice } from '@/lib/format'
 
 export function CartDrawer() {
@@ -153,7 +153,7 @@ export function CartDrawer() {
                     </Link>
                     {!canCheckout && itemCount > 0 && (
                       <p className="text-center text-xs text-amber-400">
-                        Minimalna wartość zamówienia: 50,00 zł
+                        Minimalna wartość zamówienia: {formatPrice(MIN_ORDER_AMOUNT)}
                       </p>
                     )}
                   </div>

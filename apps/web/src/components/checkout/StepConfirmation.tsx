@@ -1,24 +1,16 @@
 'use client'
 
-import { useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useCart, useCartTotal } from '@/lib/cart-store'
 import { formatPrice } from '@/lib/format'
 
 interface StepConfirmationProps {
   orderNumber: string
   paymentMethod: 'transfer' | 'cash'
+  total: number
 }
 
-export function StepConfirmation({ orderNumber, paymentMethod }: StepConfirmationProps) {
-  const { clearCart } = useCart()
-  const total = useCartTotal()
-
-  useEffect(() => {
-    clearCart()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+export function StepConfirmation({ orderNumber, paymentMethod, total }: StepConfirmationProps) {
 
   return (
     <div className="mx-auto max-w-2xl text-center">

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { useCart, useCartTotal } from '@/lib/cart-store'
 import type { CheckoutContact, CheckoutDelivery } from '@/lib/validators'
 import { StepContact } from './StepContact'
 import { StepDelivery } from './StepDelivery'
@@ -12,6 +13,8 @@ const steps = ['Dane', 'Dostawa', 'Podsumowanie', 'Potwierdzenie']
 
 export function CheckoutWizard() {
   const [currentStep, setCurrentStep] = useState(1)
+  const { clearCart } = useCart()
+  const cartTotal = useCartTotal()
   const [contact, setContact] = useState<CheckoutContact>({
     name: '', email: '', phone: '', company: '', nip: '',
   })
@@ -20,6 +23,7 @@ export function CheckoutWizard() {
   })
   const [paymentMethod, setPaymentMethod] = useState<'transfer' | 'cash'>('transfer')
   const [orderNumber, setOrderNumber] = useState('')
+  const [orderTotal, setOrderTotal] = useState(0)
 
   return (
     <div>
@@ -89,13 +93,14 @@ export function CheckoutWizard() {
           paymentMethod={paymentMethod}
           onPaymentChange={setPaymentMethod}
           onBack={() => setCurrentStep(2)}
-          onSuccess={(num) => { setOrderNumber(num); setCurrentStep(4) }}
+          onSuccess={(num) => { setOrderNumber(num); setOrderTotal(cartTotal); clearCart(); setCurrentStep(4) }}
         />
       )}
       {currentStep === 4 && (
         <StepConfirmation
           orderNumber={orderNumber}
           paymentMethod={paymentMethod}
+          total={orderTotal}
         />
       )}
     </div>
