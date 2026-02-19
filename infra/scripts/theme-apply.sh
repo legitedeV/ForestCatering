@@ -1,73 +1,81 @@
 #!/usr/bin/env bash
 set -euo pipefail
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/common.sh"
-ensure_env
 
-compose_cmd up -d mariadb redis prestashop >/dev/null
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INFRA_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
+COMPOSE_FILE="${INFRA_DIR}/compose.yml"
+ENV_FILE="${INFRA_DIR}/.env"
+LOG_DIR="${INFRA_DIR}/logs"
+MIRROR_DIR="/home/forest/mirror/forestcatering"
+THEME_NAME="forestcatering-premium"
+RUN_LOG="${LOG_DIR}/theme-apply-$(date +%Y%m%d-%H%M%S).log"
+LAST_LOG="${LOG_DIR}/theme-apply-last.log"
+MIRROR_LAST="${MIRROR_DIR}/theme-apply-last.log"
 
-ps_cid="$(compose_cmd ps -q prestashop)"
-db_cid="$(compose_cmd ps -q mariadb)"
-if [[ -z "${ps_cid}" || -z "${db_cid}" ]]; then
-  echo "Kontenery prestashop/mariadb nie są dostępne." >&2
-  exit 1
-fi
+mkdir -p "${LOG_DIR}" "${MIRROR_DIR}"
 
-theme_src="${INFRA_DIR}/theme/forestcatering-premium"
-theme_target="/var/www/html/themes/forestcatering-premium"
-
-docker exec "${ps_cid}" rm -rf "${theme_target}"
-docker exec "${ps_cid}" mkdir -p "${theme_target}"
-docker cp "${theme_src}/." "${ps_cid}:${theme_target}/"
-
-"${SCRIPT_DIR}/theme-assets-install.sh" "${ps_cid}"
-
-db_name="$(awk -F= '/^MARIADB_DATABASE=/{print $2}' "${ENV_FILE}")"
-db_root="$(awk -F= '/^MARIADB_ROOT_PASSWORD=/{print $2}' "${ENV_FILE}")"
-
-run_sql() {
-  docker exec "${db_cid}" mariadb -N -uroot -p"${db_root}" "${db_name}" -e "$1"
+log() {
+  printf '[theme-apply] %s\n' "$1" | tee -a "${RUN_LOG}"
 }
 
-if [[ -z "$(run_sql "SHOW TABLES LIKE 'ps_theme';")" ]]; then
-  echo "Brak tabeli ps_theme — instalacja PrestaShop nie jest ukończona." >&2
+finalize() {
+  cp "${RUN_LOG}" "${LAST_LOG}"
+  cp "${LAST_LOG}" "${MIRROR_LAST}"
+}
+
+COMPOSE=(docker compose -f "${COMPOSE_FILE}")
+${COMPOSE[@]} up -d prestashop mariadb >>"${RUN_LOG}" 2>&1
+PS_CID="$(${COMPOSE[@]} ps -q prestashop)"
+DB_CID="$(${COMPOSE[@]} ps -q mariadb)"
+
+if [[ -z "${PS_CID}" || -z "${DB_CID}" ]]; then
+  log "ERROR: containers prestashop/mariadb unavailable"
+  finalize
   exit 1
 fi
 
-existing_theme_id="$(run_sql "SELECT id_theme FROM ps_theme WHERE directory='forestcatering-premium' LIMIT 1;")"
-if [[ -z "${existing_theme_id}" ]]; then
-  cols="$(run_sql "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='${db_name}' AND TABLE_NAME='ps_theme' AND COLUMN_NAME <> 'id_theme' ORDER BY ORDINAL_POSITION;")"
-  select_parts=()
-  while IFS= read -r col; do
-    case "${col}" in
-      name) select_parts+=("'ForestCatering Premium' AS name") ;;
-      directory) select_parts+=("'forestcatering-premium' AS directory") ;;
-      *) select_parts+=("${col}") ;;
-    esac
-  done <<< "${cols}"
-  select_sql="$(IFS=,; echo "${select_parts[*]}")"
-  run_sql "INSERT INTO ps_theme ($(echo "${cols}" | paste -sd ',' -)) SELECT ${select_sql} FROM ps_theme WHERE directory='classic' LIMIT 1;"
-  existing_theme_id="$(run_sql "SELECT id_theme FROM ps_theme WHERE directory='forestcatering-premium' LIMIT 1;")"
+CLI_APPLIED=0
+if docker exec "${PS_CID}" test -f /var/www/html/bin/console; then
+  log "bin/console found; checking available theme commands"
+  CMD_LIST="$(docker exec "${PS_CID}" php /var/www/html/bin/console list --raw 2>/dev/null || true)"
+  if grep -q '^prestashop:theme:install$' <<<"${CMD_LIST}"; then
+    log "running prestashop:theme:install ${THEME_NAME}"
+    docker exec "${PS_CID}" php /var/www/html/bin/console prestashop:theme:install "${THEME_NAME}" >>"${RUN_LOG}" 2>&1 || true
+  fi
+  if grep -q '^prestashop:theme:enable$' <<<"${CMD_LIST}"; then
+    log "running prestashop:theme:enable ${THEME_NAME}"
+    docker exec "${PS_CID}" php /var/www/html/bin/console prestashop:theme:enable "${THEME_NAME}" >>"${RUN_LOG}" 2>&1 && CLI_APPLIED=1 || true
+  fi
 fi
 
-if [[ -z "${existing_theme_id}" ]]; then
-  echo "Nie udało się utworzyć wpisu motywu w ps_theme." >&2
-  exit 1
+if [[ "${CLI_APPLIED}" -ne 1 ]]; then
+  log "falling back to SQL theme assignment"
+  DB_NAME="$(awk -F= '/^MARIADB_DATABASE=/{print $2}' "${ENV_FILE}")"
+  DB_ROOT="$(awk -F= '/^MARIADB_ROOT_PASSWORD=/{print $2}' "${ENV_FILE}")"
+  run_sql() {
+    docker exec "${DB_CID}" mariadb -N -uroot -p"${DB_ROOT}" "${DB_NAME}" -e "$1"
+  }
+
+  THEME_ID="$(run_sql "SELECT id_theme FROM ps_theme WHERE directory='${THEME_NAME}' LIMIT 1;")"
+  if [[ -z "${THEME_ID}" ]]; then
+    run_sql "INSERT INTO ps_theme (name, directory) VALUES ('ForestCatering Premium', '${THEME_NAME}');"
+    THEME_ID="$(run_sql "SELECT id_theme FROM ps_theme WHERE directory='${THEME_NAME}' LIMIT 1;")"
+  fi
+  if [[ -z "${THEME_ID}" ]]; then
+    log "ERROR: unable to resolve theme id for ${THEME_NAME}"
+    finalize
+    exit 1
+  fi
+
+  run_sql "INSERT IGNORE INTO ps_theme_shop (id_theme,id_shop) SELECT ${THEME_ID}, id_shop FROM ps_shop;"
+  run_sql "UPDATE ps_shop SET id_theme=${THEME_ID};"
+  run_sql "UPDATE ps_configuration SET value='${THEME_NAME}' WHERE name='PS_THEME_NAME';"
+  log "SQL assignment completed for id_theme=${THEME_ID}"
 fi
 
-run_sql "INSERT IGNORE INTO ps_theme_shop (id_theme,id_shop) SELECT ${existing_theme_id}, id_shop FROM ps_shop;"
-run_sql "UPDATE ps_shop SET id_theme=${existing_theme_id};"
+log "clearing cache"
+docker exec "${PS_CID}" sh -lc 'rm -rf /var/www/html/var/cache/*' >>"${RUN_LOG}" 2>&1 || true
+docker exec "${PS_CID}" chown -R www-data:www-data "/var/www/html/themes/${THEME_NAME}" >>"${RUN_LOG}" 2>&1 || true
 
-pl_lang_id="$(run_sql "SELECT id_lang FROM ps_lang WHERE iso_code='pl' LIMIT 1;")"
-if [[ -z "${pl_lang_id}" ]]; then
-  echo "Brak języka polskiego w ps_lang. Wymagana instalacja języka PL w obrazie PrestaShop." >&2
-  exit 1
-fi
-run_sql "UPDATE ps_configuration SET value='${pl_lang_id}' WHERE name='PS_LANG_DEFAULT';"
-
-if docker exec "${ps_cid}" test -f /var/www/html/bin/console; then
-  docker exec "${ps_cid}" php /var/www/html/bin/console cache:clear --no-warmup --env=prod >/dev/null || true
-fi
-
-docker exec "${ps_cid}" chown -R www-data:www-data "${theme_target}" >/dev/null 2>&1 || true
-
-echo "Zastosowano motyw forestcatering-premium (id_theme=${existing_theme_id}), PS_LANG_DEFAULT=${pl_lang_id}."
+log "theme apply complete"
+finalize

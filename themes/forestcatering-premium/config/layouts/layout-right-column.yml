@@ -1,2 +1,3 @@
-name: "layout-right-column"
-template: "layouts/layout-right-column.tpl"
+name: layout-right-column
+display_name: Right column
+template: layouts/layout-right-column.tpl
