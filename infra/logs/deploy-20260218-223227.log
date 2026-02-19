@@ -1,0 +1,228 @@
+[deploy] started at 2026-02-18T22:32:27+00:00
+[deploy] validating compose config
+[deploy] pulling images
+ frontend Skipped No image to be pulled
+ Image mariadb:10.11 Pulling 
+ Image prestashop/prestashop:9.0.2-apache Pulling 
+ Image adminer:4 Pulling 
+ Image redis:7-alpine Pulling 
+ Image redis:7-alpine Pulled 
+ Image adminer:4 Pulled 
+ Image prestashop/prestashop:9.0.2-apache Pulled 
+ cabdf12da8a6 Pulling fs layer 
+ 78a1706830e0 Pulling fs layer 
+ f675eb9e6eec Pulling fs layer 
+ 1fae3128d9d3 Pulling fs layer 
+ 2998127b6bc2 Pulling fs layer 
+ 61e3a4157746 Pulling fs layer 
+ b1cba2e842ca Pulling fs layer 
+ f9f9f87e1db4 Pulling fs layer 
+ cabdf12da8a6 Download complete 
+ 78a1706830e0 Downloading  1.049MB/71.13MB
+ 78a1706830e0 Downloading  9.437MB/71.13MB
+ 78a1706830e0 Downloading  17.83MB/71.13MB
+ 61e3a4157746 Downloading  3.146MB/5.613MB
+ f675eb9e6eec Download complete 
+ 61e3a4157746 Download complete 
+ 2998127b6bc2 Download complete 
+ 7db6dbcc82cc Download complete 
+ 2e825f40d06b Downloading  2.097MB/4.801MB
+ b1cba2e842ca Downloading  2.097MB/29.54MB
+ 78a1706830e0 Downloading  23.07MB/71.13MB
+ 1fae3128d9d3 Download complete 
+ f9f9f87e1db4 Download complete 
+ b1cba2e842ca Downloading  6.291MB/29.54MB
+ 78a1706830e0 Downloading  27.82MB/71.13MB
+ 2e825f40d06b Download complete 
+ b1cba2e842ca Downloading  11.53MB/29.54MB
+ 78a1706830e0 Downloading   34.6MB/71.13MB
+ b1cba2e842ca Downloading  17.83MB/29.54MB
+ 78a1706830e0 Downloading  39.85MB/71.13MB
+ b1cba2e842ca Downloading  23.07MB/29.54MB
+ 78a1706830e0 Downloading  47.19MB/71.13MB
+ b1cba2e842ca Download complete 
+ 78a1706830e0 Downloading  52.43MB/71.13MB
+ b1cba2e842ca Extracting 1 s
+ 78a1706830e0 Downloading  61.87MB/71.13MB
+ b1cba2e842ca Extracting 1 s
+ 78a1706830e0 Downloading  71.13MB/71.13MB
+ b1cba2e842ca Extracting 1 s
+ 78a1706830e0 Download complete 
+ b1cba2e842ca Extracting 1 s
+ b1cba2e842ca Extracting 1 s
+ b1cba2e842ca Extracting 1 s
+ b1cba2e842ca Extracting 1 s
+ b1cba2e842ca Extracting 1 s
+ b1cba2e842ca Extracting 1 s
+ b1cba2e842ca Extracting 1 s
+ b1cba2e842ca Extracting 1 s
+ b1cba2e842ca Extracting 2 s
+ b1cba2e842ca Pull complete 
+ 61e3a4157746 Extracting 1 s
+ f9f9f87e1db4 Pull complete 
+ 61e3a4157746 Extracting 1 s
+ 61e3a4157746 Extracting 1 s
+ 61e3a4157746 Extracting 1 s
+ 61e3a4157746 Extracting 1 s
+ 61e3a4157746 Pull complete 
+ 2998127b6bc2 Pull complete 
+ 1fae3128d9d3 Pull complete 
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 1 s
+ 78a1706830e0 Extracting 2 s
+ 78a1706830e0 Extracting 2 s
+ 78a1706830e0 Extracting 2 s
+ 78a1706830e0 Extracting 2 s
+ 78a1706830e0 Extracting 2 s
+ 78a1706830e0 Extracting 2 s
+ 78a1706830e0 Extracting 2 s
+ 78a1706830e0 Extracting 2 s
+ 78a1706830e0 Extracting 2 s
+ 78a1706830e0 Extracting 2 s
+ cabdf12da8a6 Pull complete 
+ f675eb9e6eec Pull complete 
+ 78a1706830e0 Pull complete 
+ Image mariadb:10.11 Pulled 
+[deploy] starting stack
+ Image forestcatering-frontend Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 546B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 640B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:20-alpine
+#3 DONE 0.7s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [deps 1/4] FROM docker.io/library/node:20-alpine@sha256:09e2b3d9726018aecf269bd35325f46bf75046a643a66d28360ec71132750ec8
+#5 resolve docker.io/library/node:20-alpine@sha256:09e2b3d9726018aecf269bd35325f46bf75046a643a66d28360ec71132750ec8 0.0s done
+#5 DONE 0.0s
+
+#6 [deps 2/4] WORKDIR /app
+#6 CACHED
+
+#7 [runner 3/6] RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+#7 CACHED
+
+#8 [internal] load build context
+#8 transferring context: 3.21kB done
+#8 DONE 0.0s
+
+#9 [deps 3/4] COPY package.json package-lock.json* ./
+#9 CACHED
+
+#10 [deps 4/4] RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+#10 33.69 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+#10 33.83 npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+#10 34.23 npm warn deprecated whatwg-encoding@3.1.1: Use @exodus/bytes instead for a more spec-conformant and faster implementation
+#10 34.47 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+#10 35.55 npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+#10 35.73 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+#10 39.01 npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+#10 71.64 
+#10 71.64 added 484 packages, and audited 485 packages in 1m
+#10 71.64 
+#10 71.64 167 packages are looking for funding
+#10 71.64   run `npm fund` for details
+#10 71.96 
+#10 71.96 11 vulnerabilities (9 moderate, 2 high)
+#10 71.96 
+#10 71.96 To address all issues (including breaking changes), run:
+#10 71.96   npm audit fix --force
+#10 71.96 
+#10 71.96 Run `npm audit` for details.
+#10 71.96 npm notice
+#10 71.96 npm notice New major version of npm available! 10.8.2 -> 11.10.0
+#10 71.96 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.10.0
+#10 71.96 npm notice To update run: npm install -g npm@11.10.0
+#10 71.96 npm notice
+#10 DONE 72.3s
+
+#11 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#11 DONE 4.3s
+
+#12 [builder 4/5] COPY . .
+#12 DONE 0.2s
+
+#13 [builder 5/5] RUN npm run build
+#13 0.829 
+#13 0.829 > forestcatering-frontend@0.1.0 build
+#13 0.829 > next build
+#13 0.829 
+#13 2.297 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+#13 2.297 This information is used to shape Next.js' roadmap and prioritize features.
+#13 2.297 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+#13 2.297 https://nextjs.org/telemetry
+#13 2.297 
+#13 2.458    ▲ Next.js 15.5.10
+#13 2.458    - Environments: .env
+#13 2.459 
+#13 2.647    Creating an optimized production build ...
+#13 18.94  ✓ Compiled successfully in 11.7s
+#13 18.95    Linting and checking validity of types ...
+#13 23.28 
+#13 23.28 ./src/components/layout/Header.tsx
+#13 23.28 29:13  Warning: The attribute aria-selected is not supported by the role button. This role is implicit on the element button.  jsx-a11y/role-supports-aria-props
+#13 23.28 37:13  Warning: The attribute aria-selected is not supported by the role button. This role is implicit on the element button.  jsx-a11y/role-supports-aria-props
+#13 23.28 
+#13 23.28 info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+#13 24.59 Failed to compile.
+#13 24.59 
+#13 24.59 src/app/eventy/[slug]/page.tsx
+#13 24.59 Type error: Type '{ params: { slug: string; }; }' does not satisfy the constraint 'PageProps'.
+#13 24.59   Types of property 'params' are incompatible.
+#13 24.59     Type '{ slug: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+#13 24.59 
+#13 24.66 Next.js build worker exited with code: 1 and signal: null
+#13 24.70 npm notice
+#13 24.70 npm notice New major version of npm available! 10.8.2 -> 11.10.0
+#13 24.70 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.10.0
+#13 24.70 npm notice To update run: npm install -g npm@11.10.0
+#13 24.70 npm notice
+#13 ERROR: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+------
+ > [builder 5/5] RUN npm run build:
+24.59 Type error: Type '{ params: { slug: string; }; }' does not satisfy the constraint 'PageProps'.
+24.59   Types of property 'params' are incompatible.
+24.59     Type '{ slug: string; }' is missing the following properties from type 'Promise<any>': then, catch, finally, [Symbol.toStringTag]
+24.59 
+24.66 Next.js build worker exited with code: 1 and signal: null
+24.70 npm notice
+24.70 npm notice New major version of npm available! 10.8.2 -> 11.10.0
+24.70 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.10.0
+24.70 npm notice To update run: npm install -g npm@11.10.0
+24.70 npm notice
+------
+Dockerfile:10
+
+--------------------
+
+   8 |     COPY --from=deps /app/node_modules ./node_modules
+
+   9 |     COPY . .
+
+  10 | >>> RUN npm run build
+
+  11 |     
+
+  12 |     FROM node:20-alpine AS runner
+
+--------------------
+
+failed to solve: process "/bin/sh -c npm run build" did not complete successfully: exit code: 1
+

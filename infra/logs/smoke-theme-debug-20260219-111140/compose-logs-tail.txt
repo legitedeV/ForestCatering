@@ -1,0 +1,256 @@
+prestashop-1  | 
+prestashop-1  | * Checking if mariadb is available...
+prestashop-1  | 
+prestashop-1  | * DB server mariadb is available, let's continue !
+prestashop-1  | 
+prestashop-1  | * PrestaShop Core already installed...
+prestashop-1  | 
+prestashop-1  | * Almost ! Starting web server now
+prestashop-1  | 
+prestashop-1  | 
+prestashop-1  | * No init script found, let's continue...
+prestashop-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.20.0.4. Set the 'ServerName' directive globally to suppress this message
+prestashop-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.20.0.4. Set the 'ServerName' directive globally to suppress this message
+prestashop-1  | [Thu Feb 19 10:33:19.875757 2026] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) configured -- resuming normal operations
+prestashop-1  | [Thu Feb 19 10:33:19.875827 2026] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:33:24 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:33:40 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:33:55 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:34:10 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:34:25 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:34:40 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:34:55 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:35:10 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:35:25 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:35:41 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:35:56 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:36:11 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:36:26 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:36:41 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:36:56 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:37:11 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:37:26 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:37:41 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:37:57 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:38:12 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:38:27 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:38:42 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:38:57 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:39:12 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:39:27 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+mariadb-1     | 2026-02-19 10:33:13+00:00 [Note] [Entrypoint]: Entrypoint script for MariaDB Server 1:10.11.16+maria~ubu2204 started.
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:39:42 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+mariadb-1     | 2026-02-19 10:33:14+00:00 [Warn] [Entrypoint]: /sys/fs/cgroup///memory.pressure not writable, functionality unavailable to MariaDB
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:39:57 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+mariadb-1     | 2026-02-19 10:33:14+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+mariadb-1     | 2026-02-19 10:33:14+00:00 [Note] [Entrypoint]: Entrypoint script for MariaDB Server 1:10.11.16+maria~ubu2204 started.
+mariadb-1     | 2026-02-19 10:33:14+00:00 [Note] [Entrypoint]: MariaDB upgrade information missing, assuming required
+mariadb-1     | 2026-02-19 10:33:14+00:00 [Note] [Entrypoint]: MariaDB upgrade (mariadb-upgrade or creating healthcheck users) required, but skipped due to $MARIADB_AUTO_UPGRADE setting
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] Starting MariaDB 10.11.16-MariaDB-ubu2204 source revision 3218602d3100db9ce7a875511a591cddc173cc16 server_uid BmfXKnxeEdUf9Embf3GqR8Dk2gk= as process 1
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: Compressed tables use zlib 1.2.11
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: Number of transaction pools: 1
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:40:12 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:40:28 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:40:43 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:40:58 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: Using crc32 + pclmulqdq instructions
+mariadb-1     | 2026-02-19 10:33:14 0 [Warning] mariadbd: io_uring_queue_init() failed with EPERM: sysctl kernel.io_uring_disabled has the value 2, or 1 and the user of the process is not a member of sysctl kernel.io_uring_group. (see man 2 io_uring_setup).
+mariadb-1     | create_uring failed: falling back to libaio
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: Using Linux native AIO
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: innodb_buffer_pool_size_max=128m, innodb_buffer_pool_size=128m
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: Completed initialization of buffer pool
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: File system buffers for log disabled (block size=512 bytes)
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: End of log at LSN=9008674
+mariadb-1     | 2026-02-19 10:33:14 0 [ERROR] InnoDB: The change buffer is corrupted or has been removed on upgrade to MariaDB 11.0 or later
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: 128 rollback segments are active.
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: Setting file './ibtmp1' size to 12.000MiB. Physically writing the file full; Please wait ...
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: log sequence number 9008674; transaction id 18843
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] Plugin 'FEEDBACK' is disabled.
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: Loading buffer pool(s) from /var/lib/mysql/ib_buffer_pool
+mariadb-1     | 2026-02-19 10:33:14 0 [Warning] You need to use --log-bin to make --expire-logs-days or --binlog-expire-logs-seconds work.
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] Server socket created on IP: '0.0.0.0', port: '3306'.
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] Server socket created on IP: '::', port: '3306'.
+mariadb-1     | 2026-02-19 10:33:14 0 [Warning] 'user' entry 'root@%' has a wrong 'access' value 0xffffffffff (allowed mask is 0x7fffffffff, version_id=110410)
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] mariadbd: ready for connections.
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:41:13 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:41:28 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:41:43 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:41:58 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:01 +0000] "POST /hello.world?%ADd+allow_url_include%3d1+%ADd+auto_prepend_file%3dphp://input HTTP/1.1" 404 48161 "-" "libredtail-http"
+mariadb-1     | Version: '10.11.16-MariaDB-ubu2204'  socket: '/run/mysqld/mysqld.sock'  port: 3306  mariadb.org binary distribution
+mariadb-1     | 2026-02-19 10:33:14 0 [Note] InnoDB: Buffer pool(s) load completed at 260219 10:33:14
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:05 +0000] "POST /?%ADd+allow_url_include%3d1+%ADd+auto_prepend_file%3dphp://input HTTP/1.1" 200 106216 "-" "libredtail-http"
+prestashop-1  | [Thu Feb 19 10:42:05.578217 2026] [authz_core:error] [pid 19:tid 19] [client 172.19.0.1:40464] AH01630: client denied by server configuration: /var/www/html/vendor/phpunit
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:05 +0000] "GET /vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 403 458 "-" "libredtail-http"
+prestashop-1  | [Thu Feb 19 10:42:05.612035 2026] [authz_core:error] [pid 20:tid 20] [client 172.19.0.1:40470] AH01630: client denied by server configuration: /var/www/html/vendor/phpunit
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:05 +0000] "GET /vendor/phpunit/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 403 458 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:05 +0000] "GET /vendor/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 403 458 "-" "libredtail-http"
+prestashop-1  | [Thu Feb 19 10:42:05.641058 2026] [authz_core:error] [pid 21:tid 21] [client 172.19.0.1:40472] AH01630: client denied by server configuration: /var/www/html/vendor/phpunit
+prestashop-1  | [Thu Feb 19 10:42:05.670919 2026] [authz_core:error] [pid 22:tid 22] [client 172.19.0.1:40484] AH01630: client denied by server configuration: /var/www/html/vendor/phpunit
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:05 +0000] "GET /vendor/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 403 458 "-" "libredtail-http"
+prestashop-1  | [Thu Feb 19 10:42:05.700469 2026] [authz_core:error] [pid 30:tid 30] [client 172.19.0.1:40490] AH01630: client denied by server configuration: /var/www/html/vendor/phpunit
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:05 +0000] "GET /vendor/phpunit/phpunit/LICENSE/eval-stdin.php HTTP/1.1" 403 458 "-" "libredtail-http"
+prestashop-1  | [Thu Feb 19 10:42:05.731385 2026] [authz_core:error] [pid 18:tid 18] [client 172.19.0.1:40492] AH01630: client denied by server configuration: /var/www/html/vendor/vendor
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:05 +0000] "GET /vendor/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 403 458 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:05 +0000] "GET /phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 47990 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:05 +0000] "GET /phpunit/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 47969 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:06 +0000] "GET /phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 47949 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:06 +0000] "GET /phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 47926 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:06 +0000] "GET /lib/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48015 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:06 +0000] "GET /lib/phpunit/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 47992 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:06 +0000] "GET /lib/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 47970 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:06 +0000] "GET /lib/phpunit/Util/PHP/eval-stdin.php HTTP/1.1" 404 47949 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:06 +0000] "GET /lib/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48053 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:06 +0000] "GET /laravel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48073 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:07 +0000] "GET /www/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48049 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:07 +0000] "GET /ws/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48048 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:07 +0000] "GET /yii/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48053 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:07 +0000] "GET /zend/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48056 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:07 +0000] "GET /ws/ec/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48066 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:07 +0000] "GET /V2/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48048 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:07 +0000] "GET /tests/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48063 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:07 +0000] "GET /test/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48058 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:07 +0000] "GET /testing/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48073 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:08 +0000] "GET /api/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 401 912 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:08 +0000] "GET /demo/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48050 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:08 +0000] "GET /cms/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48051 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:08 +0000] "GET /crm/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48049 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:08 +0000] "GET /admin/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48059 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:08 +0000] "GET /backup/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48068 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:08 +0000] "GET /blog/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48058 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:08 +0000] "GET /workspace/drupal/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48119 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:08 +0000] "GET /panel/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48063 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:09 +0000] "GET /public/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48068 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:09 +0000] "GET /apps/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 404 48058 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:09 +0000] "GET /app/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php HTTP/1.1" 403 458 "-" "libredtail-http"
+prestashop-1  | [Thu Feb 19 10:42:09.231525 2026] [authz_core:error] [pid 19:tid 19] [client 172.19.0.1:40816] AH01630: client denied by server configuration: /var/www/html/app/vendor
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:09 +0000] "GET /index.php?s=/index/\\think\\app/invokefunction&function=call_user_func_array&vars[0]=md5&vars[1][]=Hello HTTP/1.1" 200 319 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:09 +0000] "GET /public/index.php?s=/index/\\think\\app/invokefunction&function=call_user_func_array&vars[0]=md5&vars[1][]=Hello HTTP/1.1" 404 48389 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:09 +0000] "GET /index.php?lang=../../../../../../../../usr/local/lib/php/pearcmd&+config-create+/&/<?echo(md5(\"hi\"));?>+/tmp/index1.php HTTP/1.1" 200 319 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:09 +0000] "GET /index.php?lang=../../../../../../../../tmp/index1 HTTP/1.1" 200 319 "-" "libredtail-http"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:09 +0000] "GET /containers/json HTTP/1.1" 404 47840 "-" "libredtail-http"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:42:13 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:42:28 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:42:43 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | [Thu Feb 19 10:42:52.971077 2026] [authz_core:error] [pid 22:tid 22] [client 172.19.0.1:34096] AH01630: client denied by server configuration: /var/www/html/.env
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:52 +0000] "GET /.env HTTP/1.1" 403 458 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.140 Safari/537.36"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:42:53 +0000] "POST / HTTP/1.1" 200 15814 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.140 Safari/537.36"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:42:59 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:43:14 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:43:29 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:43:44 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:43:59 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:44:14 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:44:29 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:44:44 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:44:59 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:45:14 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:45:30 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:45:45 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:46:00 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:46:15 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:46:30 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:46:45 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:47:00 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:47:15 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:47:30 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:47:46 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:48:01 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:48:16 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:48:31 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:48:46 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:49:01 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:49:16 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:49:31 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:49:46 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:50:01 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:50:17 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:50:32 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:50:47 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:51:02 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:51:17 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:51:32 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:51:47 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:52:02 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:52:17 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:52:32 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:52:48 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:53:03 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:53:18 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:53:33 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:53:48 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:54:03 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:54:18 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:54:33 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:54:48 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:55:03 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:55:19 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:55:34 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:55:49 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:56:04 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:56:19 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:56:34 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:56:49 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:57:04 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:57:19 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | [Thu Feb 19 10:57:31.716736 2026] [php:error] [pid 22:tid 22] [client 172.19.0.1:34280] PHP Fatal error:  Uncaught Symfony\\Component\\Filesystem\\Exception\\IOException: Cannot rename "/tmp/FrontContainer.phpqnhts73gcefdfTDTGCU" to "/var/www/html/var/cache/dev//FrontContainer.php": rename(/tmp/FrontContainer.phpqnhts73gcefdfTDTGCU,/var/www/html/var/cache/dev//FrontContainer.php): Permission denied in /var/www/html/vendor/symfony/filesystem/Filesystem.php:320\nStack trace:\n#0 /var/www/html/vendor/symfony/filesystem/Filesystem.php(699): Symfony\\Component\\Filesystem\\Filesystem->rename('/tmp/FrontConta...', '/var/www/html/v...', true)\n#1 /var/www/html/vendor/symfony/config/ResourceCheckerConfigCache.php(117): Symfony\\Component\\Filesystem\\Filesystem->dumpFile('/var/www/html/v...', '<?php\\n\\nuse Symf...')\n#2 /var/www/html/src/Adapter/ContainerBuilder.php(211): Symfony\\Component\\Config\\ResourceCheckerConfigCache->write('<?php\\n\\nuse Symf...', Array)\n#3 /var/www/html/src/Adapter/ContainerBuilder.php(152): PrestaShop\\PrestaShop\\Adapter\\ContainerBuilder->compileContainer()\n#4 /var/www/html/src/Adapter/ContainerBuilder.php(107): PrestaShop\\PrestaShop\\Adapter\\ContainerBuilder->buildContainer('front')\n#5 /var/www/html/classes/Hook.php(1289): PrestaShop\\PrestaShop\\Adapter\\ContainerBuilder::getContainer('front', true)\n#6 /var/www/html/classes/Hook.php(853): HookCore::getHookModuleFilter()\n#7 /var/www/html/classes/Hook.php(952): HookCore::getHookModuleExecList('moduleRoutes')\n#8 /var/www/html/classes/Dispatcher.php(588): HookCore::exec('moduleRoutes', Array, NULL, true, false)\n#9 /var/www/html/classes/Dispatcher.php(253): DispatcherCore->loadRoutes()\n#10 /var/www/html/classes/Dispatcher.php(215): DispatcherCore->__construct()\n#11 /var/www/html/index.php(86): DispatcherCore::getInstance()\n#12 {main}\n  thrown in /var/www/html/vendor/symfony/filesystem/Filesystem.php on line 320
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:10:57:31 +0000] "POST / HTTP/1.1" 200 1413 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:57:34 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:57:50 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:58:05 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:58:20 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:58:35 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:58:50 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:59:05 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:59:20 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:59:35 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:10:59:50 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:00:06 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:00:21 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:00:36 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:00:51 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:01:06 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:01:21 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:01:36 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:01:51 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:02:06 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:02:21 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:02:37 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:02:52 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:03:07 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:03:22 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:03:37 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:03:52 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:04:07 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:04:22 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:04:37 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:04:53 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:05:08 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:05:23 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:05:38 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:05:53 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:06:08 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:06:23 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:06:38 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:06:53 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:07:08 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:07:24 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:07:39 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:07:54 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:08:09 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 172.19.0.1 - - [19/Feb/2026:11:08:21 +0000] "GET / HTTP/1.1" 302 202 "-" "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.119 Safari/537.36"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:08:24 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:08:39 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:08:54 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:09:09 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:09:24 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:09:39 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:09:55 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:10:10 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:10:25 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:10:40 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:10:55 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:11:10 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:11:25 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"
+prestashop-1  | 127.0.0.1 - - [19/Feb/2026:11:11:40 +0000] "GET / HTTP/1.1" 302 202 "-" "curl/7.88.1"

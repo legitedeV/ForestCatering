@@ -1,0 +1,16 @@
+[headless] start 20260218-153605
+[headless] compose up -d mariadb redis prestashop
+ Container forestcatering-redis-1 Running 
+ Container forestcatering-mariadb-1 Running 
+ Container forestcatering-prestashop-1 Running 
+ Container forestcatering-redis-1 Waiting 
+ Container forestcatering-mariadb-1 Waiting 
+ Container forestcatering-redis-1 Healthy 
+ Container forestcatering-mariadb-1 Healthy 
+[headless] detected DB prefix: ps_
+[headless] install headless rewrite/CORS block
+[headless] webservice_key=d2434bdbbf38d45bba04d588fe5a94a7
+[headless] verification: id_webservice_account=1 active=1
+[headless] smoke: GET / -> HTTP 302
+[headless] log: /home/forest/ForestCatering/infra/logs/headless-setup-20260218-153605.log
+mkdir: cannot create directory ‘/var/www/mirror’: Permission denied

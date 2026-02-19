@@ -1,0 +1,29 @@
+[fix-shop-domain] start 20260218-212044
+[fix-shop-domain] DB=forestcatering_app prefix=ps_ target_host=51.68.151.159
+[fix-shop-domain] curl http://127.0.0.1/
+HTTP/1.1 302 Found
+Server: nginx
+Date: Wed, 18 Feb 2026 21:20:46 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 0
+Connection: keep-alive
+Location: http://51.68.151.159/
+
+[fix-shop-domain] curl Host=51.68.151.159 http://127.0.0.1/
+HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 18 Feb 2026 21:20:50 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Set-Cookie: PHPSESSID=bc81ce10f50199d49c09955657678257; expires=Tue, 28 Apr 2082 18:41:35 GMT; Max-Age=1773177646; path=/; HttpOnly; SameSite=Lax
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Set-Cookie: PrestaShop-b9c0540508f4b56219116f2f7c322a1e=def50200408e2fc2e5065cbf5f0d906b10fbd88ff7fec4c0caf8af90c6fdb87309c86a3f104f1317167266b4c47563c862013f384809f22597c40368a09489e6623b41fce84a8876d58a3ca33446f6b41f63004b8ed4467916610b48e93e39f081fa8d7c771ef6392ea494a3e3493ac0eed84e418ac704a2c317a09960ff61410394c57720e9179c3349fa61a063521f064f13eb496555cf554a820d81cfe295da3d1bdbe1c4812a26a6f8fdced674ba92bebc425d83356beeaa63a6453779fd0c1483bdb6fabb10d8a562fe406cf966eb67adc032; expires=Tue, 10 Mar 2026 21:20:46 GMT; Max-Age=1727997; path=/; HttpOnly; SameSite=Lax
+Set-Cookie: PrestaShop-b9c0540508f4b56219116f2f7c322a1e=def502006c1fbab815f695caec05cca804ba7e9e946b9bc29e54454fea4dcf5ae3add2e11eeb29c4440aa8924646fd1f4efbeef96a71bd6a41075d6291398a0b9d371da646648e3b3ef13e745f63c314613f8b31e32c1744c9ac1c33f9f559cfcb594666793da062e294c655015d23a342c3dbfbbf16ba34c4c4cd2cd269f68042ed21d512b7eca8a6a6660910f5c009659ded0bec8fa8c7a7d5a3c0de52e9c9b43ad18727b9fcf1fd6f67c00f9806e33320786b8d1c03d093ba9a1e9257213e49e708fba5e9fdcc1709f2848baa51b3aa6f410190d61bb74a8efc32f698a5caa5933ba216841139cb71ce99651ad4eb7b98f3a98197b0; expires=Tue, 10 Mar 2026 21:20:46 GMT; Max-Age=1727996; path=/; HttpOnly; SameSite=Lax
+Vary: Accept-Encoding
+
+[fix-shop-domain] mirror log: /home/forest/mirror/forestcatering/fix-shop-domain-last.log
+[fix-shop-domain] log: /home/forest/ForestCatering/infra/logs/fix-shop-domain-20260218-212044.log
+[fix-shop-domain] done

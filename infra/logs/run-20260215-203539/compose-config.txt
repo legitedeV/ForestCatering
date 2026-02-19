@@ -1,0 +1,124 @@
+name: forestcatering
+services:
+  adminer:
+    depends_on:
+      mariadb:
+        condition: service_healthy
+        required: true
+    image: adminer:4
+    networks:
+      backend: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8080
+        published: "8081"
+        protocol: tcp
+    restart: unless-stopped
+  mariadb:
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb-flush-log-at-trx-commit=1
+      - --max-allowed-packet=256M
+    environment:
+      MARIADB_DATABASE: forestcatering_app
+      MARIADB_PASSWORD: 8341b403da95f41ff3efc39584a440402b276d8c
+      MARIADB_ROOT_PASSWORD: 30f824386cdb06db94e4fa0abad0b3b651c7fed49859bdb5
+      MARIADB_USER: forestcatering
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mysqladmin ping -uroot -p$$MARIADB_ROOT_PASSWORD --silent
+      timeout: 5s
+      interval: 10s
+      retries: 20
+      start_period: 30s
+    image: mariadb:10.11
+    networks:
+      backend: null
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: mariadb_data
+        target: /var/lib/mysql
+        volume: {}
+  prestashop:
+    depends_on:
+      mariadb:
+        condition: service_healthy
+        required: true
+      redis:
+        condition: service_healthy
+        required: true
+    environment:
+      ADMIN_MAIL: admin@forestcatering.pl
+      ADMIN_PASSWD: gVPiFUfbqKYBG1FDMgP33hHYA9!
+      DB_NAME: forestcatering_app
+      DB_PASSWD: 8341b403da95f41ff3efc39584a440402b276d8c
+      DB_PREFIX: ps_
+      DB_SERVER: mariadb
+      DB_USER: forestcatering
+      PS_ALL_LANGUAGES: "0"
+      PS_COUNTRY: pl
+      PS_DEV_MODE: "0"
+      PS_DOMAIN: 51.68.151.159
+      PS_ENABLE_SSL: "0"
+      PS_ERASE_DB: "0"
+      PS_FOLDER_ADMIN: admin-dev
+      PS_FOLDER_INSTALL: install-dev
+      PS_HANDLE_DYNAMIC_DOMAIN: "0"
+      PS_INSTALL_AUTO: "1"
+      PS_LANGUAGE: pl
+    image: prestashop/prestashop:9.0.2-apache
+    networks:
+      backend: null
+      edge: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 80
+        published: "8080"
+        protocol: tcp
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: prestashop_data
+        target: /var/www/html
+        volume: {}
+  redis:
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+      timeout: 5s
+      interval: 10s
+      retries: 10
+      start_period: 10s
+    image: redis:7-alpine
+    networks:
+      backend: null
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: redis_data
+        target: /data
+        volume: {}
+networks:
+  backend:
+    name: forestcatering_backend
+    internal: true
+  edge:
+    name: forestcatering_edge
+volumes:
+  mariadb_data:
+    name: forestcatering_mariadb_data
+  prestashop_data:
+    name: forestcatering_prestashop_data
+  redis_data:
+    name: forestcatering_redis_data

@@ -1,0 +1,35 @@
+[fix-shop-domain] start 20260219-103304
+[fix-shop-domain] DB=forestcatering_app prefix=ps_ target_host=51.68.151.159
+[fix-shop-domain] curl http://127.0.0.1/
+HTTP/1.1 302 Found
+Server: nginx
+Date: Thu, 19 Feb 2026 10:33:06 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 0
+Connection: keep-alive
+Location: http://51.68.151.159/
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+
+[fix-shop-domain] curl Host=51.68.151.159 http://127.0.0.1/
+HTTP/1.1 200 OK
+Server: nginx
+Date: Thu, 19 Feb 2026 10:33:09 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Set-Cookie: PHPSESSID=da0ffe2cb885556dc5928ba313f4c764; expires=Wed, 29 Apr 2082 21:06:15 GMT; Max-Age=1773225186; path=/; HttpOnly; SameSite=Lax
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Set-Cookie: PrestaShop-b9c0540508f4b56219116f2f7c322a1e=def50200f987779a1cbcce4ff2ed544b41e4dc6a779060339d0d5dff5e0c79e521fbafb307e126c36d2a3f9bffa7342a479f53d1460b504cc9ab1f5eba201328da121c0b12411816dc7892eb1734bb8b54cc84b9dda6f8bf898115ea552ff5955a203fb90228b1213704b1acadaaf7c32b1f14ef700bdfb2306d0cac87f83f8ffe85bae8d4cac843d67b0147e6d47bd34d0dd305c2cfa066ecfe3e6ef3db156e6bba767e249a8cf6dbbf14e448c5e3037c1be25f02bbd0876cc97bf447ba1724f59ca95f6c4295ce76bdf2b31a9350af8b4a50ac12; expires=Wed, 11 Mar 2026 10:33:06 GMT; Max-Age=1727997; path=/; HttpOnly; SameSite=Lax
+Set-Cookie: PrestaShop-b9c0540508f4b56219116f2f7c322a1e=def50200e65aee8b7ffa9611a5344dc4d4d6edbfc74cc0237cbb56d9a728bf59b4a958fabaacf53b2dfb846484a1cd10d5c6d74676864f99e64675d71f186fde4c3656cf79db93812028a01fbff6edf06c659cd8ebf10377dbbd863b1befc483dfdc75e7cab3822f9bb4feff457ba1d2d5290d6910831adf99505e37e97282f3794673ebec9437eda74c8d8d9a9bc89991285e1b993d50809048beee3b4883bd778ea470711006b8dc878fc8dc32d91b22df55478f92cf827b3380554163c284f9185ec25890e274c19235a8fd09eab416b823124c86800d71b76cbc903f2cf5e61d8210f88a5078b5ea71eb0b8d286d8356995dea65f2; expires=Wed, 11 Mar 2026 10:33:06 GMT; Max-Age=1727997; path=/; HttpOnly; SameSite=Lax
+Vary: Accept-Encoding
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+
+[fix-shop-domain] mirror log: /home/forest/mirror/forestcatering/fix-shop-domain-last.log
+[fix-shop-domain] log: /home/forest/ForestCatering/infra/logs/fix-shop-domain-20260219-103304.log
+[fix-shop-domain] done

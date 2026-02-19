@@ -1,0 +1,115 @@
+[smoke-full] started at 2026-02-18T23:34:17+00:00
+NAME                          IMAGE                                COMMAND                  SERVICE      CREATED          STATUS                            PORTS
+forestcatering-adminer-1      adminer:4                            "entrypoint.sh docke…"   adminer      10 seconds ago   Up 2 seconds                      127.0.0.1:8081->8080/tcp
+forestcatering-mariadb-1      mariadb:10.11                        "docker-entrypoint.s…"   mariadb      11 seconds ago   Up 8 seconds (healthy)            3306/tcp
+forestcatering-prestashop-1   prestashop/prestashop:9.0.2-apache   "docker-php-entrypoi…"   prestashop   10 seconds ago   Up 2 seconds (health: starting)   127.0.0.1:8080->80/tcp
+forestcatering-redis-1        redis:7-alpine                       "docker-entrypoint.s…"   redis        11 seconds ago   Up 8 seconds (healthy)            6379/tcp
+[smoke-full] prestashop not running
+===== DEBUG BUNDLE 2026-02-18T23:34:18+00:00 =====
+prestashop-1  | 
+prestashop-1  | * Checking if mariadb is available...
+prestashop-1  | 
+prestashop-1  | * DB server mariadb is available, let's continue !
+prestashop-1  | 
+prestashop-1  | * PrestaShop Core already installed...
+prestashop-1  | 
+prestashop-1  | * Almost ! Starting web server now
+prestashop-1  | 
+prestashop-1  | 
+prestashop-1  | * No init script found, let's continue...
+prestashop-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.20.0.4. Set the 'ServerName' directive globally to suppress this message
+prestashop-1  | AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 172.20.0.4. Set the 'ServerName' directive globally to suppress this message
+prestashop-1  | [Wed Feb 18 23:34:15.833622 2026] [mpm_prefork:notice] [pid 1:tid 1] AH00163: Apache/2.4.65 (Debian) configured -- resuming normal operations
+prestashop-1  | [Wed Feb 18 23:34:15.833695 2026] [core:notice] [pid 1:tid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+mariadb-1  | 2026-02-18 23:34:09+00:00 [Note] [Entrypoint]: Entrypoint script for MariaDB Server 1:10.11.16+maria~ubu2204 started.
+mariadb-1  | 2026-02-18 23:34:10+00:00 [Warn] [Entrypoint]: /sys/fs/cgroup///memory.pressure not writable, functionality unavailable to MariaDB
+mariadb-1  | 2026-02-18 23:34:10+00:00 [Note] [Entrypoint]: Switching to dedicated user 'mysql'
+mariadb-1  | 2026-02-18 23:34:10+00:00 [Note] [Entrypoint]: Entrypoint script for MariaDB Server 1:10.11.16+maria~ubu2204 started.
+mariadb-1  | 2026-02-18 23:34:10+00:00 [Note] [Entrypoint]: MariaDB upgrade information missing, assuming required
+mariadb-1  | 2026-02-18 23:34:10+00:00 [Note] [Entrypoint]: MariaDB upgrade (mariadb-upgrade or creating healthcheck users) required, but skipped due to $MARIADB_AUTO_UPGRADE setting
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] Starting MariaDB 10.11.16-MariaDB-ubu2204 source revision 3218602d3100db9ce7a875511a591cddc173cc16 server_uid g+4pgQJDK9PVUlcsGrgLHcqd8XU= as process 1
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: Compressed tables use zlib 1.2.11
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: Number of transaction pools: 1
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: Using crc32 + pclmulqdq instructions
+mariadb-1  | 2026-02-18 23:34:10 0 [Warning] mariadbd: io_uring_queue_init() failed with EPERM: sysctl kernel.io_uring_disabled has the value 2, or 1 and the user of the process is not a member of sysctl kernel.io_uring_group. (see man 2 io_uring_setup).
+mariadb-1  | create_uring failed: falling back to libaio
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: Using Linux native AIO
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: innodb_buffer_pool_size_max=128m, innodb_buffer_pool_size=128m
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: Completed initialization of buffer pool
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: File system buffers for log disabled (block size=512 bytes)
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: End of log at LSN=8742171
+mariadb-1  | 2026-02-18 23:34:10 0 [ERROR] InnoDB: The change buffer is corrupted or has been removed on upgrade to MariaDB 11.0 or later
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: 128 rollback segments are active.
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: Setting file './ibtmp1' size to 12.000MiB. Physically writing the file full; Please wait ...
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: File './ibtmp1' size is now 12.000MiB.
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: log sequence number 8742171; transaction id 17366
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: Loading buffer pool(s) from /var/lib/mysql/ib_buffer_pool
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] Plugin 'FEEDBACK' is disabled.
+mariadb-1  | 2026-02-18 23:34:10 0 [Warning] You need to use --log-bin to make --expire-logs-days or --binlog-expire-logs-seconds work.
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] Server socket created on IP: '0.0.0.0', port: '3306'.
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] Server socket created on IP: '::', port: '3306'.
+mariadb-1  | 2026-02-18 23:34:10 0 [Warning] 'user' entry 'root@%' has a wrong 'access' value 0xffffffffff (allowed mask is 0x7fffffffff, version_id=110410)
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] mariadbd: ready for connections.
+mariadb-1  | Version: '10.11.16-MariaDB-ubu2204'  socket: '/run/mysqld/mysqld.sock'  port: 3306  mariadb.org binary distribution
+mariadb-1  | 2026-02-18 23:34:10 0 [Note] InnoDB: Buffer pool(s) load completed at 260218 23:34:10
+2026/02/14 01:17:12 [notice] 17532#17532: using inherited sockets from "5;6;"
+2026/02/14 01:17:46 [error] 17736#17736: *4 open() "/usr/share/nginx/html/favicon.ico" failed (2: No such file or directory), client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", host: "51.68.151.159", referrer: "http://51.68.151.159/"
+2026/02/14 01:17:50 [error] 17736#17736: *4 open() "/usr/share/nginx/html/mirror" failed (2: No such file or directory), client: 188.47.63.45, server: _, request: "GET /mirror HTTP/1.1", host: "51.68.151.159"
+2026/02/14 01:43:32 [error] 21580#21580: *7 open() "/usr/share/nginx/html/favicon.ico" failed (2: No such file or directory), client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", host: "51.68.151.159", referrer: "http://51.68.151.159/"
+2026/02/14 01:47:02 [error] 27053#27053: *8 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.151.159, server: _, request: "HEAD / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/14 01:47:08 [error] 27055#27055: *11 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/14 01:47:08 [error] 27055#27055: *11 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:8080/favicon.ico", host: "51.68.151.159", referrer: "http://51.68.151.159/"
+2026/02/14 01:47:43 [error] 27057#27057: *14 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.151.159, server: _, request: "HEAD / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/14 01:49:56 [error] 27056#27056: *16 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.151.159, server: _, request: "HEAD / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/14 01:53:34 [error] 27058#27058: *18 connect() failed (111: Connection refused) while connecting to upstream, client: 204.76.203.206, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/14 01:55:33 [error] 27053#27053: *20 connect() failed (111: Connection refused) while connecting to upstream, client: 172.202.118.38, server: _, request: "GET /portal/redlion HTTP/1.1", upstream: "http://127.0.0.1:8080/portal/redlion", host: "51.68.151.159"
+2026/02/14 01:55:40 [error] 27053#27053: *22 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.151.159, server: _, request: "HEAD / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/14 01:57:22 [error] 27053#27053: *24 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.151.159, server: _, request: "HEAD / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/14 01:57:33 [error] 27053#27053: *26 connect() failed (111: Connection refused) while connecting to upstream, client: 195.178.110.233, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/15 18:21:00 [error] 27056#27056: *1419 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 161.35.47.112, server: _, request: "GET /.git/config HTTP/1.1", upstream: "http://127.0.0.1:8080/.git/config", host: "51.68.151.159"
+2026/02/15 19:27:00 [error] 623052#623052: *1632 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/15 19:27:00 [error] 623052#623052: *1632 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:8080/favicon.ico", host: "51.68.151.159", referrer: "http://51.68.151.159/"
+2026/02/15 19:38:01 [error] 623055#623055: *1681 connect() failed (111: Connection refused) while connecting to upstream, client: 176.65.132.94, server: _, request: "POST / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159:80"
+2026/02/15 19:38:09 [error] 623056#623056: *1683 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 204.76.203.69, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/15 19:38:14 [error] 623052#623052: *1685 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 188.47.63.45, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/15 19:38:14 [error] 623052#623052: *1685 recv() failed (104: Connection reset by peer) while reading response header from upstream, client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:8080/favicon.ico", host: "51.68.151.159", referrer: "http://51.68.151.159/"
+2026/02/16 18:49:28 [error] 623057#623057: *4887 connect() failed (111: Connection refused) while connecting to upstream, client: 176.100.243.133, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/16 18:51:16 [error] 623057#623057: *4889 connect() failed (111: Connection refused) while connecting to upstream, client: 216.81.248.168, server: _, request: "GET /.git/config HTTP/1.1", upstream: "http://127.0.0.1:8080/.git/config", host: "ip159.ip-51-68-151.eu"
+2026/02/16 20:06:15 [error] 623055#623055: *5389 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /admin-dev/improve/design/themes/import?_token=cd2893c72c6a1be638.0THspaR4KU4yzDxdr8ydeqwmdluMwUshIKvJe6JS5fs.q3qL1OYRTHwGgWwOmK_sGe9HBDnGgAF0eMK4PvMLg6SVfZr_yUwaKQGZUw HTTP/1.1", upstream: "http://127.0.0.1:8080/admin-dev/improve/design/themes/import?_token=cd2893c72c6a1be638.0THspaR4KU4yzDxdr8ydeqwmdluMwUshIKvJe6JS5fs.q3qL1OYRTHwGgWwOmK_sGe9HBDnGgAF0eMK4PvMLg6SVfZr_yUwaKQGZUw", host: "51.68.151.159", referrer: "http://51.68.151.159/admin-dev/improve/design/themes/?_token=6.YOR09dJcSkxb2lVEyup3esddicwadjw5d3iUJftuL4g.Gq8ThJA1L35vlwUX_YkGGYQ8-65QN3ZsLxHlYKo3SdckqAKvv2h5K2iPOg"
+2026/02/16 20:06:15 [error] 623055#623055: *5389 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:8080/favicon.ico", host: "51.68.151.159", referrer: "http://51.68.151.159/admin-dev/improve/design/themes/import?_token=cd2893c72c6a1be638.0THspaR4KU4yzDxdr8ydeqwmdluMwUshIKvJe6JS5fs.q3qL1OYRTHwGgWwOmK_sGe9HBDnGgAF0eMK4PvMLg6SVfZr_yUwaKQGZUw"
+2026/02/18 22:51:48 [error] 623054#623054: *8093 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "127.0.0.1"
+2026/02/18 22:51:58 [error] 623054#623054: *8095 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /admin-dev/improve/design/themes/?_token=dc85d53.xvtP8y7aHai1pSiaQhBuYX1AO3K9SI-h7ZgEv_fuGuY.8Y94qkmCUJiD0V_DKCQ0Kg80agbyHbbgualK28-BUrOSwxuCaahOmczAEA HTTP/1.1", upstream: "http://127.0.0.1:8080/admin-dev/improve/design/themes/?_token=dc85d53.xvtP8y7aHai1pSiaQhBuYX1AO3K9SI-h7ZgEv_fuGuY.8Y94qkmCUJiD0V_DKCQ0Kg80agbyHbbgualK28-BUrOSwxuCaahOmczAEA", host: "51.68.151.159", referrer: "http://51.68.151.159/admin-dev/?controller=AdminDashboard&token=09189c513.6PIErC3A9_CxJvwS7gxuWRFTS238nkqgdxbum80AxVU.34Yz9UqYusCHUotLhDg0EmMnGhmzy3PhIyeg__VvjQC8ylDdarKkwchDxA"
+2026/02/18 22:51:58 [error] 623054#623054: *8095 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:8080/favicon.ico", host: "51.68.151.159", referrer: "http://51.68.151.159/admin-dev/improve/design/themes/?_token=dc85d53.xvtP8y7aHai1pSiaQhBuYX1AO3K9SI-h7ZgEv_fuGuY.8Y94qkmCUJiD0V_DKCQ0Kg80agbyHbbgualK28-BUrOSwxuCaahOmczAEA"
+2026/02/18 22:52:55 [error] 623054#623054: *8095 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /admin-dev/ HTTP/1.1", upstream: "http://127.0.0.1:8080/admin-dev/", host: "51.68.151.159"
+2026/02/18 22:52:55 [error] 623054#623054: *8095 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:8080/favicon.ico", host: "51.68.151.159", referrer: "http://51.68.151.159/admin-dev/"
+2026/02/18 22:52:58 [error] 623054#623054: *8095 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/18 22:52:58 [error] 623054#623054: *8095 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/18 22:52:58 [error] 623054#623054: *8095 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:8080/favicon.ico", host: "51.68.151.159", referrer: "http://51.68.151.159/"
+2026/02/18 22:53:42 [error] 623055#623055: *8105 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "127.0.0.1"
+2026/02/18 22:53:42 [error] 623055#623055: *8107 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "127.0.0.1"
+2026/02/18 22:54:57 [error] 623055#623055: *8109 connect() failed (111: Connection refused) while connecting to upstream, client: 204.76.203.206, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/18 22:57:38 [error] 623055#623055: *8111 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "127.0.0.1"
+2026/02/18 23:07:50 [error] 3005836#3005836: *8114 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:8080/favicon.ico", host: "51.68.151.159", referrer: "http://51.68.151.159/"
+2026/02/18 23:07:52 [error] 3005836#3005836: *8114 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/18 23:07:52 [error] 3005836#3005836: *8114 connect() failed (111: Connection refused) while connecting to upstream, client: 188.47.63.45, server: _, request: "GET /favicon.ico HTTP/1.1", upstream: "http://127.0.0.1:8080/favicon.ico", host: "51.68.151.159", referrer: "http://51.68.151.159/"
+2026/02/18 23:08:22 [error] 3005842#3005842: *8119 connect() failed (111: Connection refused) while connecting to upstream, client: 127.0.0.1, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "127.0.0.1"
+2026/02/18 23:11:31 [error] 3012559#3012559: *8122 connect() failed (111: Connection refused) while connecting to upstream, client: 87.120.191.67, server: _, request: "POST / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159:80"
+2026/02/18 23:23:36 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /api/tags HTTP/1.1", upstream: "http://127.0.0.1:8080/api/tags", host: "51.68.151.159"
+2026/02/18 23:23:36 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /api/version HTTP/1.1", upstream: "http://127.0.0.1:8080/api/version", host: "51.68.151.159"
+2026/02/18 23:23:36 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /health HTTP/1.1", upstream: "http://127.0.0.1:8080/health", host: "51.68.151.159"
+2026/02/18 23:23:36 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /models HTTP/1.1", upstream: "http://127.0.0.1:8080/models", host: "51.68.151.159"
+2026/02/18 23:23:36 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /v1/models HTTP/1.1", upstream: "http://127.0.0.1:8080/v1/models", host: "51.68.151.159"
+2026/02/18 23:23:36 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /api/v1/models HTTP/1.1", upstream: "http://127.0.0.1:8080/api/v1/models", host: "51.68.151.159"
+2026/02/18 23:23:37 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /v1/models HTTP/1.1", upstream: "http://127.0.0.1:8080/v1/models", host: "51.68.151.159"
+2026/02/18 23:23:37 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /health HTTP/1.1", upstream: "http://127.0.0.1:8080/health", host: "51.68.151.159"
+2026/02/18 23:23:37 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /v1/models HTTP/1.1", upstream: "http://127.0.0.1:8080/v1/models", host: "51.68.151.159"
+2026/02/18 23:23:37 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /readyz HTTP/1.1", upstream: "http://127.0.0.1:8080/readyz", host: "51.68.151.159"
+2026/02/18 23:23:37 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /v1/models HTTP/1.1", upstream: "http://127.0.0.1:8080/v1/models", host: "51.68.151.159"
+2026/02/18 23:23:37 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /v1/models HTTP/1.1", upstream: "http://127.0.0.1:8080/v1/models", host: "51.68.151.159"
+2026/02/18 23:23:37 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /api/v1/model HTTP/1.1", upstream: "http://127.0.0.1:8080/api/v1/model", host: "51.68.151.159"
+2026/02/18 23:23:37 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /v1/models HTTP/1.1", upstream: "http://127.0.0.1:8080/v1/models", host: "51.68.151.159"
+2026/02/18 23:23:37 [error] 3012561#3012561: *8125 connect() failed (111: Connection refused) while connecting to upstream, client: 51.68.39.122, server: _, request: "GET /openai/v1/models HTTP/1.1", upstream: "http://127.0.0.1:8080/openai/v1/models", host: "51.68.151.159"
+2026/02/18 23:26:51 [error] 3012558#3012558: *8141 connect() failed (111: Connection refused) while connecting to upstream, client: 204.76.203.206, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/18 23:33:53 [error] 3012562#3012562: *8143 connect() failed (111: Connection refused) while connecting to upstream, client: 204.76.203.69, server: _, request: "GET / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"
+2026/02/18 23:33:58 [error] 3012556#3012556: *8145 connect() failed (111: Connection refused) while connecting to upstream, client: 78.153.140.39, server: _, request: "GET /.env HTTP/1.1", upstream: "http://127.0.0.1:8080/.env", host: "51.68.151.159"
+2026/02/18 23:33:59 [error] 3012556#3012556: *8147 connect() failed (111: Connection refused) while connecting to upstream, client: 78.153.140.39, server: _, request: "POST / HTTP/1.1", upstream: "http://127.0.0.1:8080/", host: "51.68.151.159"

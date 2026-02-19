@@ -1,0 +1,55 @@
+[deploy] started at 2026-02-19T11:17:21+00:00
+[ensure-host-tools] all required tools already installed
+[ensure-host-tools] validated tool: lsof
+[ensure-host-tools] validated tool: ss
+[ensure-host-tools] validated tool: jq
+[ensure-host-tools] completed
+[deploy] validating compose config
+[deploy] pulling images
+ Image redis:7-alpine Pulling 
+ Image prestashop/prestashop:9.0.2-apache Pulling 
+ Image mariadb:10.11 Pulling 
+ Image adminer:4 Pulling 
+ Image redis:7-alpine Pulled 
+ Image mariadb:10.11 Pulled 
+ Image adminer:4 Pulled 
+ Image prestashop/prestashop:9.0.2-apache Pulled 
+[deploy] starting stack
+ Container forestcatering-mariadb-1 Recreate 
+ Container forestcatering-redis-1 Recreate 
+ Container forestcatering-redis-1 Recreated 
+ Container forestcatering-mariadb-1 Recreated 
+ Container forestcatering-adminer-1 Recreate 
+ Container forestcatering-prestashop-1 Recreate 
+ Container forestcatering-adminer-1 Recreated 
+ Container forestcatering-prestashop-1 Recreated 
+ Container forestcatering-redis-1 Starting 
+ Container forestcatering-mariadb-1 Starting 
+ Container forestcatering-redis-1 Started 
+ Container forestcatering-mariadb-1 Started 
+ Container forestcatering-mariadb-1 Waiting 
+ Container forestcatering-redis-1 Waiting 
+ Container forestcatering-mariadb-1 Waiting 
+ Container forestcatering-mariadb-1 Healthy 
+ Container forestcatering-mariadb-1 Healthy 
+ Container forestcatering-adminer-1 Starting 
+ Container forestcatering-redis-1 Healthy 
+ Container forestcatering-prestashop-1 Starting 
+ Container forestcatering-adminer-1 Started 
+ Container forestcatering-prestashop-1 Started 
+[deploy] ensuring nginx site
+[ensure-nginx-site] nginx missing; installing
+[ensure-nginx-site] installing nginx site from repo template
+[ensure-nginx-site] testing nginx configuration
+[ensure-nginx-site] reloading nginx
+[ensure-nginx-site] capturing key nginx directives
+[ensure-nginx-site] completed
+[deploy] summary
+commit: e252f1dad438f1780d4aec3325481aa557323475
+NAME                          IMAGE                                COMMAND                  SERVICE      CREATED          STATUS                            PORTS
+forestcatering-adminer-1      adminer:4                            "entrypoint.sh docke…"   adminer      10 seconds ago   Up 2 seconds                      127.0.0.1:8081->8080/tcp
+forestcatering-mariadb-1      mariadb:10.11                        "docker-entrypoint.s…"   mariadb      11 seconds ago   Up 8 seconds (healthy)            3306/tcp
+forestcatering-prestashop-1   prestashop/prestashop:9.0.2-apache   "docker-php-entrypoi…"   prestashop   10 seconds ago   Up 2 seconds (health: starting)   127.0.0.1:8080->80/tcp
+forestcatering-redis-1        redis:7-alpine                       "docker-entrypoint.s…"   redis        11 seconds ago   Up 8 seconds (healthy)            6379/tcp
+[deploy] log: /home/forest/ForestCatering/infra/logs/deploy-20260219-111721.log
+[deploy] mirror: /home/forest/mirror/forestcatering/deploy-last.log

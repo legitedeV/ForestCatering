@@ -1,0 +1,18 @@
+[headless] start 20260218-092741
+[headless] compose up -d mariadb redis prestashop
+ Container forestcatering-redis-1 Running 
+ Container forestcatering-mariadb-1 Recreate 
+ Container forestcatering-mariadb-1 Recreated 
+ Container forestcatering-prestashop-1 Running 
+ Container forestcatering-mariadb-1 Starting 
+ Container forestcatering-mariadb-1 Started 
+ Container forestcatering-mariadb-1 Waiting 
+ Container forestcatering-redis-1 Waiting 
+ Container forestcatering-redis-1 Healthy 
+ Container forestcatering-mariadb-1 Healthy 
+[headless] detected DB prefix: ps_
+./infra/scripts/headless-setup.sh: line 128: description: command not found
+./infra/scripts/headless-setup.sh: line 128: class_name: command not found
+./infra/scripts/headless-setup.sh: line 128: is_module: command not found
+./infra/scripts/headless-setup.sh: line 128: module_name: command not found
+./infra/scripts/headless-setup.sh: line 128: active: command not found

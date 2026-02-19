@@ -1,0 +1,45 @@
+[headless] start 20260218-212129
+[headless] compose up -d mariadb redis prestashop
+ Container forestcatering-mariadb-1 Running 
+ Container forestcatering-redis-1 Running 
+ Container forestcatering-prestashop-1 Running 
+ Container forestcatering-mariadb-1 Waiting 
+ Container forestcatering-redis-1 Waiting 
+ Container forestcatering-mariadb-1 Healthy 
+ Container forestcatering-redis-1 Healthy 
+[headless] detected DB prefix: ps_
+[headless] apply idempotent shop domain fix
+[fix-shop-domain] start 20260218-212131
+[fix-shop-domain] DB=forestcatering_app prefix=ps_ target_host=51.68.151.159
+[fix-shop-domain] curl http://127.0.0.1/
+HTTP/1.1 302 Found
+Server: nginx
+Date: Wed, 18 Feb 2026 21:21:34 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 0
+Connection: keep-alive
+Location: http://51.68.151.159/
+
+[fix-shop-domain] curl Host=51.68.151.159 http://127.0.0.1/
+HTTP/1.1 200 OK
+Server: nginx
+Date: Wed, 18 Feb 2026 21:21:36 GMT
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Set-Cookie: PHPSESSID=3e462612f7b7da9609a6646c59fd8a45; expires=Tue, 28 Apr 2082 18:43:10 GMT; Max-Age=1773177694; path=/; HttpOnly; SameSite=Lax
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Set-Cookie: PrestaShop-b9c0540508f4b56219116f2f7c322a1e=def5020026f12743a0a03d523462e7842ae4d7fac47478f602a27337100838a7417b28585fb0628dbabd35f76eff4a29f7adbee54b6def9eaec1b39e66994da04a2749594a3b694b4b43e14752053916181fdef4af9f8ac68d19753d269223b2beff7c63b51c055da7d26f7120a31ffb6f2efcc99ac24a0eeaea62db908465225a1c4685d4b0511f99c76d04882e4ee625e5744ea7166cfb0fe08203b9272c7db4ba2e05e62117e1bf94ac64f48672ac8c31bf0251966c669e0a439c99e674e87977a423a24686343f30d0abd56773e29380a7af5d; expires=Tue, 10 Mar 2026 21:21:34 GMT; Max-Age=1727998; path=/; HttpOnly; SameSite=Lax
+Set-Cookie: PrestaShop-b9c0540508f4b56219116f2f7c322a1e=def50200de176b495a9a553e2d3e987df1acefee09998159a723c0706ba58bb11b304dbfcafb7e01e58248902d7da0516d4cc6ce880376cb24311a29b7074db7a95d9c7f51dcde18fe7763b81b9ebadb92a93250b72b9b63c79dc772d472188c63790c7f2c730a53e2989e8f885d4a893dcbf1e4173899599e29b240ec8e571cae923ef766c5046b8301ec29b68057e5161045e660b71a19d819865195fffdd4428645d96741df1309a862970383b00a2e4f22a68504a30b38921913142dc0662d2e0721efe6a78a2df8edad5a756ffbcb97d78b7bc20594a1d49c6f6efcb94b7be1ba29d8a69ef0b1fbcabf5ebd62d796e7bf6f4ffa6a; expires=Tue, 10 Mar 2026 21:21:34 GMT; Max-Age=1727998; path=/; HttpOnly; SameSite=Lax
+Vary: Accept-Encoding
+
+[fix-shop-domain] mirror log: /home/forest/mirror/forestcatering/fix-shop-domain-last.log
+[fix-shop-domain] log: /home/forest/ForestCatering/infra/logs/fix-shop-domain-20260218-212131.log
+[fix-shop-domain] done
+./infra/scripts/headless-setup.sh: line 131: description: command not found
+./infra/scripts/headless-setup.sh: line 131: class_name: command not found
+./infra/scripts/headless-setup.sh: line 131: is_module: command not found
+./infra/scripts/headless-setup.sh: line 131: module_name: command not found
+./infra/scripts/headless-setup.sh: line 131: active: command not found

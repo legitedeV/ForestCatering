@@ -1,0 +1,55 @@
+[deploy] started at 2026-02-18T22:51:29+00:00
+[deploy] validating compose config
+[deploy] pulling images
+ Image mariadb:10.11 Pulling 
+ Image prestashop/prestashop:9.0.2-apache Pulling 
+ Image redis:7-alpine Pulling 
+ Image adminer:4 Pulling 
+ Image adminer:4 Pulled 
+ Image prestashop/prestashop:9.0.2-apache Pulled 
+ Image mariadb:10.11 Pulled 
+ Image redis:7-alpine Pulled 
+[deploy] starting stack
+ Container forestcatering-redis-1 Running 
+ Container forestcatering-mariadb-1 Recreate 
+ Container forestcatering-mariadb-1 Recreated 
+ Container forestcatering-adminer-1 Running 
+ Container forestcatering-prestashop-1 Recreate 
+ Container forestcatering-prestashop-1 Recreated 
+ Container forestcatering-mariadb-1 Starting 
+ Container forestcatering-mariadb-1 Started 
+ Container forestcatering-mariadb-1 Waiting 
+ Container forestcatering-redis-1 Waiting 
+ Container forestcatering-mariadb-1 Waiting 
+ Container forestcatering-redis-1 Healthy 
+ Container forestcatering-mariadb-1 Healthy 
+ Container forestcatering-mariadb-1 Healthy 
+ Container forestcatering-prestashop-1 Starting 
+ Container forestcatering-prestashop-1 Started 
+[deploy] container status
+NAME                          IMAGE                                COMMAND                  SERVICE      CREATED         STATUS                                     PORTS
+forestcatering-adminer-1      adminer:4                            "entrypoint.sh docke…"   adminer      2 days ago      Up 2 days                                  8080/tcp
+forestcatering-mariadb-1      mariadb:10.11                        "docker-entrypoint.s…"   mariadb      8 seconds ago   Up 5 seconds (healthy)                     3306/tcp
+forestcatering-prestashop-1   prestashop/prestashop:9.0.2-apache   "docker-php-entrypoi…"   prestashop   7 seconds ago   Up Less than a second (health: starting)   80/tcp
+forestcatering-redis-1        redis:7-alpine                       "docker-entrypoint.s…"   redis        2 days ago      Up 2 days (healthy)                        6379/tcp
+[deploy] verify frontend service is absent
+[deploy] waiting for healthy containers (timeout 120s per container with healthcheck)
+[deploy] forestcatering-adminer-1: no healthcheck, skipping wait
+[deploy] forestcatering-mariadb-1: healthy
+[deploy] forestcatering-prestashop-1: healthy
+[deploy] forestcatering-redis-1: healthy
+[deploy] clearing prestashop cache
+[deploy] restarting prestashop
+ Container forestcatering-prestashop-1 Restarting 
+ Container forestcatering-prestashop-1 Started 
+[deploy] running smoke checks
+[smoke] started at 2026-02-18T22:51:48+00:00
+[smoke] GET /
+HTTP/1.1 502 Bad Gateway
+Server: nginx
+Date: Wed, 18 Feb 2026 22:51:48 GMT
+Content-Type: text/html
+Content-Length: 150
+Connection: keep-alive
+
+[smoke] GET / returned 502, expected 200 or 302

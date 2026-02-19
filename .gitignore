@@ -1,11 +1,2 @@
+node_modules
 infra/.env
-infra/logs/*
-!/infra/logs/.gitkeep
-/home/forest/artifacts/*
-*.tar.gz
-*.sql.gz
-
-# local trash / backups
-infra/_trash/
-infra/scripts/*.bak.*
-frontend/

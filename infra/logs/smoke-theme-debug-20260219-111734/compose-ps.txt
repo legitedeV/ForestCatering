@@ -1,0 +1,5 @@
+NAME                          IMAGE                                COMMAND                  SERVICE      CREATED          STATUS                    PORTS
+forestcatering-adminer-1      adminer:4                            "entrypoint.sh docke…"   adminer      14 seconds ago   Up 7 seconds              127.0.0.1:8081->8080/tcp
+forestcatering-mariadb-1      mariadb:10.11                        "docker-entrypoint.s…"   mariadb      15 seconds ago   Up 12 seconds (healthy)   3306/tcp
+forestcatering-prestashop-1   prestashop/prestashop:9.0.2-apache   "docker-php-entrypoi…"   prestashop   14 seconds ago   Up 7 seconds (healthy)    127.0.0.1:8080->80/tcp
+forestcatering-redis-1        redis:7-alpine                       "docker-entrypoint.s…"   redis        15 seconds ago   Up 12 seconds (healthy)   6379/tcp

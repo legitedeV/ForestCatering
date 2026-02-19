@@ -1,0 +1,8 @@
+ Container forestcatering-redis-1 Running 
+ Container forestcatering-mariadb-1 Running 
+ Container forestcatering-prestashop-1 Running 
+ Container forestcatering-redis-1 Waiting 
+ Container forestcatering-mariadb-1 Waiting 
+ Container forestcatering-redis-1 Healthy 
+ Container forestcatering-mariadb-1 Healthy 
+[theme-apply] ERROR: required DB settings missing in /home/forest/ForestCatering/infra/.env

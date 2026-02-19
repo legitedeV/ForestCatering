@@ -1,0 +1,9 @@
+[smoke] started at 2026-02-18T22:51:48+00:00
+[smoke] GET /
+HTTP/1.1 502 Bad Gateway
+Server: nginx
+Date: Wed, 18 Feb 2026 22:51:48 GMT
+Content-Type: text/html
+Content-Length: 150
+Connection: keep-alive
+

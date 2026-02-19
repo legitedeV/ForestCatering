@@ -1,0 +1,136 @@
+[deploy] started at 2026-02-18T22:41:01+00:00
+[deploy] validating compose config
+[deploy] pulling images
+ frontend Skipped No image to be pulled
+ Image prestashop/prestashop:9.0.2-apache Pulling 
+ Image mariadb:10.11 Pulling 
+ Image redis:7-alpine Pulling 
+ Image adminer:4 Pulling 
+ Image redis:7-alpine Pulled 
+ Image adminer:4 Pulled 
+ Image prestashop/prestashop:9.0.2-apache Pulled 
+ Image mariadb:10.11 Pulled 
+[deploy] starting stack
+ Image forestcatering-frontend Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 546B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 30B
+#2 transferring dockerfile: 640B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:20-alpine
+#3 DONE 0.6s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [deps 1/4] FROM docker.io/library/node:20-alpine@sha256:09e2b3d9726018aecf269bd35325f46bf75046a643a66d28360ec71132750ec8
+#5 resolve docker.io/library/node:20-alpine@sha256:09e2b3d9726018aecf269bd35325f46bf75046a643a66d28360ec71132750ec8 0.0s done
+#5 DONE 0.0s
+
+#6 [deps 2/4] WORKDIR /app
+#6 CACHED
+
+#7 [runner 3/6] RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+#7 CACHED
+
+#8 [internal] load build context
+#8 transferring context: 7.07kB done
+#8 DONE 0.0s
+
+#9 [deps 3/4] COPY package.json package-lock.json* ./
+#9 CACHED
+
+#10 [deps 4/4] RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+#10 CACHED
+
+#11 [builder 3/5] COPY --from=deps /app/node_modules ./node_modules
+#11 CACHED
+
+#12 [builder 4/5] COPY . .
+#12 DONE 0.0s
+
+#13 [builder 5/5] RUN npm run build
+#13 0.898 
+#13 0.898 > forestcatering-frontend@0.1.0 build
+#13 0.898 > next build
+#13 0.898 
+#13 2.307 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+#13 2.307 This information is used to shape Next.js' roadmap and prioritize features.
+#13 2.307 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+#13 2.307 https://nextjs.org/telemetry
+#13 2.308 
+#13 2.479    ▲ Next.js 15.5.10
+#13 2.479    - Environments: .env
+#13 2.479 
+#13 2.685    Creating an optimized production build ...
+#13 19.05  ✓ Compiled successfully in 11.8s
+#13 19.06    Linting and checking validity of types ...
+#13 23.49 
+#13 23.49 ./src/components/layout/Header.tsx
+#13 23.49 29:13  Warning: The attribute aria-selected is not supported by the role button. This role is implicit on the element button.  jsx-a11y/role-supports-aria-props
+#13 23.49 37:13  Warning: The attribute aria-selected is not supported by the role button. This role is implicit on the element button.  jsx-a11y/role-supports-aria-props
+#13 23.49 
+#13 23.49 info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+#13 24.70    Collecting page data ...
+#13 27.08    Generating static pages (0/7) ...
+#13 28.05    Generating static pages (1/7) 
+#13 28.05    Generating static pages (3/7) 
+#13 28.05    Generating static pages (5/7) 
+#13 28.05  ✓ Generating static pages (7/7)
+#13 29.46    Finalizing page optimization ...
+#13 29.46    Collecting build traces ...
+#13 62.18 
+#13 62.19 Route (app)                                 Size  First Load JS  Revalidate  Expire
+#13 62.19 ┌ ○ /                                      165 B         106 kB          1m      1y
+#13 62.19 ├ ○ /_not-found                            132 B         102 kB
+#13 62.19 ├ ○ /eventy                                167 B         106 kB          1m      1y
+#13 62.19 ├ ƒ /eventy/[slug]                         918 B         103 kB
+#13 62.19 ├ ƒ /kategoria/[slugOrId]                  165 B         106 kB
+#13 62.19 ├ ○ /koszyk                              1.09 kB         103 kB
+#13 62.19 ├ ○ /menu                                  167 B         106 kB          1m      1y
+#13 62.19 ├ ƒ /menu/[slug]                           132 B         102 kB
+#13 62.19 └ ƒ /produkt/[slugOrId]                    132 B         102 kB
+#13 62.19 + First Load JS shared by all             102 kB
+#13 62.19   ├ chunks/255-2fe823c2b1ce4f82.js         46 kB
+#13 62.19   ├ chunks/4bd1b696-c023c6e3521b1417.js  54.2 kB
+#13 62.19   └ other shared chunks (total)          1.92 kB
+#13 62.19 
+#13 62.19 
+#13 62.19 ○  (Static)   prerendered as static content
+#13 62.19 ƒ  (Dynamic)  server-rendered on demand
+#13 62.19 
+#13 62.23 npm notice
+#13 62.23 npm notice New major version of npm available! 10.8.2 -> 11.10.0
+#13 62.23 npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.10.0
+#13 62.23 npm notice To update run: npm install -g npm@11.10.0
+#13 62.23 npm notice
+#13 DONE 62.3s
+
+#14 [runner 4/6] COPY --from=builder /app/public ./public
+#14 ERROR: failed to calculate checksum of ref uaqauub8ujiul97gtg2o5pl75::rz69jg3smd6u1hannegqye9e0: "/app/public": not found
+------
+ > [runner 4/6] COPY --from=builder /app/public ./public:
+------
+Dockerfile:16
+
+--------------------
+
+  14 |     ENV NODE_ENV=production
+
+  15 |     RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+
+  16 | >>> COPY --from=builder /app/public ./public
+
+  17 |     COPY --from=builder /app/.next/standalone ./
+
+  18 |     COPY --from=builder /app/.next/static ./.next/static
+
+--------------------
+
+failed to solve: failed to compute cache key: failed to calculate checksum of ref uaqauub8ujiul97gtg2o5pl75::rz69jg3smd6u1hannegqye9e0: "/app/public": not found
+

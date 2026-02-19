@@ -1,0 +1,9 @@
+ Container forestcatering-redis-1 Running 
+ Container forestcatering-mariadb-1 Running 
+ Container forestcatering-prestashop-1 Running 
+ Container forestcatering-mariadb-1 Waiting 
+ Container forestcatering-redis-1 Waiting 
+ Container forestcatering-mariadb-1 Healthy 
+ Container forestcatering-redis-1 Healthy 
+[theme-apply] bin/console found; checking available theme commands
+[theme-apply] falling back to SQL theme assignment
