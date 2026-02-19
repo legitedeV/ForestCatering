@@ -30,7 +30,7 @@ export default async function BlogPage() {
       sort: '-publishedAt',
       limit: 20,
     })
-    posts = result.docs
+    posts = result.docs as unknown as Post[]
   } catch {
     // Payload not available during build
   }

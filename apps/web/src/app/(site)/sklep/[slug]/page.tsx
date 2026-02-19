@@ -19,6 +19,22 @@ const dietaryLabels: Record<string, { label: string; color: string }> = {
   'low-carb': { label: 'Low-carb', color: 'bg-purple-800/50 text-purple-200' },
 }
 
+interface ProductDoc {
+  id: string
+  name: string
+  slug: string
+  price: number
+  compareAtPrice?: number | null
+  shortDescription?: string | null
+  description?: unknown
+  allergens?: string[] | null
+  dietary?: string[] | null
+  weight?: string | null
+  servings?: number | null
+  category?: { id: string; name?: string } | string
+  images?: Array<{ image: { url?: string } | string }> | null
+}
+
 interface Props {
   params: Promise<{ slug: string }>
 }
@@ -26,8 +42,8 @@ interface Props {
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params
 
-  let product: any = null
-  let relatedProducts: any[] = []
+  let product: ProductDoc | null = null
+  let relatedProducts: ProductDoc[] = []
   let categoryName = ''
 
   try {
@@ -37,7 +53,7 @@ export default async function ProductDetailPage({ params }: Props) {
       where: { slug: { equals: slug } },
       limit: 1,
     })
-    product = result.docs[0] || null
+    product = (result.docs[0] as unknown as ProductDoc) || null
 
     if (product && product.category) {
       const catId = typeof product.category === 'object' ? product.category.id : product.category
@@ -53,7 +69,7 @@ export default async function ProductDetailPage({ params }: Props) {
         limit: 4,
         sort: 'sortOrder',
       })
-      relatedProducts = related.docs
+      relatedProducts = related.docs as unknown as ProductDoc[]
     }
   } catch {
     // Payload not available during build
@@ -161,7 +177,7 @@ export default async function ProductDetailPage({ params }: Props) {
             </AnimatedSection>
             <AnimatedSection stagger>
               <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {relatedProducts.map((p: any) => (
+                {relatedProducts.map((p) => (
                   <AnimatedItem key={p.id}>
                     <ProductCard product={p} />
                   </AnimatedItem>

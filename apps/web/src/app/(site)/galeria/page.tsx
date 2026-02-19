@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
+import { AnimatedSection } from '@/components/ui/AnimatedSection'
 
 const categoryMap: Record<string, string> = {
   '': 'Wszystkie',

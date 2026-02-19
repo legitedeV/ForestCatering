@@ -37,7 +37,7 @@ export default async function BlogDetailPage({ params }: Props) {
       },
       limit: 1,
     })
-    post = result.docs[0] || null
+    post = (result.docs[0] as unknown as Post) || null
   } catch {
     // Payload not available during build
   }

@@ -1,30 +1,44 @@
 import Link from 'next/link'
 import { getPayload } from '@/lib/payload-client'
-import { formatPrice } from '@/lib/format'
+import type { Where } from 'payload'
 import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
 import { ProductCard } from '@/components/shop/ProductCard'
+
+interface ProductDoc {
+  id: string
+  name: string
+  slug: string
+  price: number
+  compareAtPrice?: number | null
+  shortDescription?: string | null
+  allergens?: string[] | null
+  dietary?: string[] | null
+  images?: Array<{ image: { url?: string } | string }> | null
+}
 
 interface Props {
   searchParams: Promise<{ category?: string; diet?: string; sort?: string; page?: string }>
 }
+
+interface CategoryDoc { id: string; slug: string; name: string }
 
 export default async function ShopPage({ searchParams }: Props) {
   const params = await searchParams
   const currentPage = Number(params.page) || 1
   const perPage = 12
 
-  let products: any[] = []
-  let categories: any[] = []
+  let products: ProductDoc[] = []
+  let categories: CategoryDoc[] = []
   let totalPages = 1
 
   try {
     const payload = await getPayload()
     const catResult = await payload.find({ collection: 'categories', sort: 'sortOrder', limit: 50 })
-    categories = catResult.docs
+    categories = catResult.docs as unknown as CategoryDoc[]
 
-    const where: any = { isAvailable: { equals: true } }
+    const where: Where = { isAvailable: { equals: true } }
     if (params.category) {
-      const cat = categories.find((c: any) => c.slug === params.category)
+      const cat = categories.find((c) => c.slug === params.category)
       if (cat) where.category = { equals: cat.id }
     }
     if (params.diet) {
@@ -43,7 +57,7 @@ export default async function ShopPage({ searchParams }: Props) {
       limit: perPage,
       page: currentPage,
     })
-    products = result.docs
+    products = result.docs as unknown as ProductDoc[]
     totalPages = result.totalPages
   } catch {
     // Payload not available during build
@@ -71,7 +85,7 @@ export default async function ShopPage({ searchParams }: Props) {
                 >
                   Wszystkie
                 </Link>
-                {categories.map((cat: any) => (
+                {categories.map((cat) => (
                   <Link
                     key={cat.slug}
                     href={`/sklep?category=${cat.slug}${params.diet ? `&diet=${params.diet}` : ''}${params.sort ? `&sort=${params.sort}` : ''}`}
@@ -132,7 +146,7 @@ export default async function ShopPage({ searchParams }: Props) {
               <>
                 <AnimatedSection stagger>
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {products.map((product: any) => (
+                    {products.map((product) => (
                       <AnimatedItem key={product.id}>
                         <ProductCard product={product} />
                       </AnimatedItem>
