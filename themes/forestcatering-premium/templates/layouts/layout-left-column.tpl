@@ -1,1 +1,1 @@
-{extends file='parent:layouts/layout-left-column.tpl'}
+{extends file="parent:layouts/layout-left-column.tpl"}

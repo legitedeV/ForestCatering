@@ -1,2 +1,2 @@
-name: layout-both-columns
-template: layouts/layout-both-columns.tpl
+name: "layout-both-columns"
+template: "layouts/layout-both-columns.tpl"

@@ -1,1 +1,1 @@
-{extends file='parent:index.tpl'}
+{extends file="parent:index.tpl"}
