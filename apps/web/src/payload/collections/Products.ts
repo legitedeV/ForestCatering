@@ -1,0 +1,112 @@
+import type { CollectionConfig } from 'payload'
+
+export const Products: CollectionConfig = {
+  slug: 'products',
+  admin: {
+    useAsTitle: 'name',
+    defaultColumns: ['name', 'category', 'price', 'isAvailable'],
+  },
+  access: {
+    read: () => true,
+    create: ({ req }) => req.user?.role === 'admin' || req.user?.role === 'editor',
+    update: ({ req }) => req.user?.role === 'admin' || req.user?.role === 'editor',
+    delete: ({ req }) => req.user?.role === 'admin',
+  },
+  fields: [
+    { name: 'name', type: 'text', required: true, maxLength: 200 },
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      admin: { position: 'sidebar' },
+    },
+    { name: 'shortDescription', type: 'textarea', maxLength: 300 },
+    { name: 'description', type: 'richText' },
+    {
+      name: 'price',
+      type: 'number',
+      required: true,
+      min: 0,
+      admin: { description: 'Cena w groszach (3599 = 35,99 PLN)' },
+    },
+    {
+      name: 'compareAtPrice',
+      type: 'number',
+      min: 0,
+      admin: { description: 'Cena przed rabatem w groszach' },
+    },
+    {
+      name: 'category',
+      type: 'relationship',
+      relationTo: 'categories',
+      required: true,
+    },
+    {
+      name: 'images',
+      type: 'array',
+      minRows: 0,
+      maxRows: 8,
+      fields: [
+        { name: 'image', type: 'upload', relationTo: 'media', required: true },
+      ],
+    },
+    {
+      name: 'allergens',
+      type: 'select',
+      hasMany: true,
+      options: [
+        { label: 'Gluten', value: 'gluten' },
+        { label: 'Nabiał', value: 'dairy' },
+        { label: 'Jaja', value: 'eggs' },
+        { label: 'Orzechy', value: 'nuts' },
+        { label: 'Soja', value: 'soy' },
+        { label: 'Ryby', value: 'fish' },
+        { label: 'Skorupiaki', value: 'shellfish' },
+        { label: 'Seler', value: 'celery' },
+        { label: 'Gorczyca', value: 'mustard' },
+        { label: 'Sezam', value: 'sesame' },
+        { label: 'Łubin', value: 'lupine' },
+        { label: 'Mięczaki', value: 'mollusks' },
+      ],
+    },
+    {
+      name: 'dietary',
+      type: 'select',
+      hasMany: true,
+      options: [
+        { label: 'Wegetariańskie', value: 'vegetarian' },
+        { label: 'Wegańskie', value: 'vegan' },
+        { label: 'Bezglutenowe', value: 'gluten-free' },
+        { label: 'Low-carb', value: 'low-carb' },
+      ],
+    },
+    { name: 'weight', type: 'text' },
+    { name: 'servings', type: 'number', min: 1 },
+    {
+      name: 'productType',
+      type: 'select',
+      required: true,
+      defaultValue: 'catering',
+      options: ['catering', 'event', 'bar'],
+    },
+    {
+      name: 'isAvailable',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: { position: 'sidebar' },
+    },
+    {
+      name: 'isFeatured',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: { position: 'sidebar' },
+    },
+    {
+      name: 'sortOrder',
+      type: 'number',
+      defaultValue: 0,
+      admin: { position: 'sidebar' },
+    },
+  ],
+}

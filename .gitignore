@@ -1,11 +1,24 @@
-infra/.env
-infra/logs/*
-!/infra/logs/.gitkeep
-/home/forest/artifacts/*
+# Dependencies
+apps/web/node_modules/
+
+# Next.js
+apps/web/.next/
+
+# Media uploads
+apps/web/public/media/
+
+# Test results
+apps/web/test-results/
+
+# Ops
+ops/.env
+ops/logs/*
+!ops/logs/.gitkeep
+
+# OS
+.DS_Store
+
+# Build artifacts
 *.tar.gz
 *.sql.gz
-
-# local trash / backups
-infra/_trash/
-infra/scripts/*.bak.*
-frontend/
+*.tsbuildinfo
