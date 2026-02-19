@@ -15,11 +15,14 @@
     "@payloadcms/db-postgres": "^3.32.0",
     "@payloadcms/next": "^3.32.0",
     "@payloadcms/richtext-lexical": "^3.32.0",
+    "@tailwindcss/typography": "^0.5.19",
+    "framer-motion": "^11.18.2",
     "next": "15.4.11",
     "nodemailer": "^7.0.13",
     "payload": "^3.32.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "zustand": "^5.0.11"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.5",
