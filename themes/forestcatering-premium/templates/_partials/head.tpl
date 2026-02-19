@@ -1,1 +1,1 @@
-{extends file='parent:_partials/head.tpl'}
+{extends file="parent:_partials/head.tpl"}

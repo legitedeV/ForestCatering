@@ -1,2 +1,2 @@
-name: layout-left-column
-template: layouts/layout-left-column.tpl
+name: "layout-left-column"
+template: "layouts/layout-left-column.tpl"

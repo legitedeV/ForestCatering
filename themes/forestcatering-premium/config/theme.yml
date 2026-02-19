@@ -12,16 +12,16 @@ meta:
   available_layouts:
     layout-full-width:
       name: Full width
-      description: Full width layout (no side columns)
+      description: Page without side columns
     layout-both-columns:
       name: Both columns
-      description: Layout with left and right columns
+      description: Page with left and right side columns
     layout-left-column:
       name: Left column
-      description: Left column layout
+      description: Page with only the left side column
     layout-right-column:
       name: Right column
-      description: Right column layout
+      description: Page with only the right side column
   default_layout: layout-full-width
 
 parent: classic
