@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import type { CollectionBeforeChangeHook } from 'payload'
 
 export const generateOrderNumber: CollectionBeforeChangeHook = async ({
@@ -7,7 +8,7 @@ export const generateOrderNumber: CollectionBeforeChangeHook = async ({
   if (operation === 'create') {
     const now = new Date()
     const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '')
-    const rand = Math.floor(1000 + Math.random() * 9000)
+    const rand = crypto.randomInt(1000, 10000)
     data.orderNumber = `FC-${dateStr}-${rand}`
   }
   return data

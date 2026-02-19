@@ -18,6 +18,10 @@ cd "$PROJECT_ROOT"
 git pull --ff-only
 
 # 2. Source env
+if [[ ! -f "$PROJECT_ROOT/ops/.env" ]]; then
+  echo "❌ ops/.env not found. Run: bash ops/scripts/gen-secrets.sh"
+  exit 1
+fi
 # shellcheck source=/dev/null
 source "$PROJECT_ROOT/ops/.env"
 

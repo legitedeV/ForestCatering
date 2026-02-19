@@ -21,3 +21,4 @@ ops/logs/*
 # Build artifacts
 *.tar.gz
 *.sql.gz
+*.tsbuildinfo

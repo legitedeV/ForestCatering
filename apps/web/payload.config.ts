@@ -40,7 +40,7 @@ export default buildConfig({
     Users,
   ],
   globals: [SiteSettings, Navigation],
-  secret: process.env.PAYLOAD_SECRET || 'default-secret-change-me-in-production',
+  secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
   },

@@ -7,6 +7,11 @@ interface EmailOptions {
 }
 
 export async function sendEmail({ to, subject, html }: EmailOptions): Promise<void> {
+  if (!to) {
+    console.warn('sendEmail: no recipient address provided, skipping')
+    return
+  }
+
   if (!process.env.SMTP_HOST) {
     console.log('--- EMAIL (console fallback) ---')
     console.log(`To: ${to}`)

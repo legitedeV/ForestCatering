@@ -7,6 +7,9 @@ export const sendOrderConfirmationEmail: CollectionAfterChangeHook = async ({
   previousDoc,
   operation,
 }) => {
+  const customerEmail = doc.customer?.email
+  if (!customerEmail) return
+
   if (operation === 'create') {
     const itemsHtml = doc.items
       ?.map(
@@ -16,7 +19,7 @@ export const sendOrderConfirmationEmail: CollectionAfterChangeHook = async ({
       .join('')
 
     await sendEmail({
-      to: doc.customer?.email,
+      to: customerEmail,
       subject: `Potwierdzenie zamówienia ${doc.orderNumber}`,
       html: `
         <h1>Dziękujemy za zamówienie!</h1>
@@ -29,7 +32,7 @@ export const sendOrderConfirmationEmail: CollectionAfterChangeHook = async ({
 
   if (operation === 'update' && previousDoc?.status !== doc.status) {
     await sendEmail({
-      to: doc.customer?.email,
+      to: customerEmail,
       subject: `Aktualizacja zamówienia ${doc.orderNumber}`,
       html: `
         <h1>Status zamówienia został zmieniony</h1>
