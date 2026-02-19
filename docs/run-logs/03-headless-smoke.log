@@ -1,20 +1,0 @@
-$ bash infra/scripts/headless-setup.sh
-/workspace/ForestCatering/infra/scripts/common.sh: line 16: docker: command not found
-
-$ curl -I http://127.0.0.1:8080/
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-curl: (7) Failed to connect to 127.0.0.1 port 8080 after 0 ms: Couldn't connect to server
-
-$ curl -I http://127.0.0.1:8080/admin-example01/
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-curl: (7) Failed to connect to 127.0.0.1 port 8080 after 0 ms: Couldn't connect to server
-
-$ curl -I http://127.0.0.1:8080/api/
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
-curl: (7) Failed to connect to 127.0.0.1 port 8080 after 0 ms: Couldn't connect to server
