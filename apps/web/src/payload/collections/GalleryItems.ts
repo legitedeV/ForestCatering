@@ -4,6 +4,7 @@ import { isAdminOrEditor } from '../access/isAdminOrEditor'
 
 export const GalleryItems: CollectionConfig = {
   slug: 'gallery-items',
+  labels: { singular: 'Zdjęcie w galerii', plural: 'Galeria' },
   admin: { useAsTitle: 'alt' },
   access: {
     read: () => true,
@@ -12,13 +13,20 @@ export const GalleryItems: CollectionConfig = {
     delete: isAdmin,
   },
   fields: [
-    { name: 'image', type: 'upload', relationTo: 'media', required: true },
-    { name: 'alt', type: 'text', required: true },
+    { name: 'image', type: 'upload', relationTo: 'media', required: true, label: 'Zdjęcie' },
+    { name: 'alt', type: 'text', required: true, label: 'Opis alternatywny (alt)' },
     {
       name: 'category',
       type: 'select',
-      options: ['wesela', 'eventy-firmowe', 'catering-prywatny', 'bar', 'dekoracje'],
+      label: 'Kategoria',
+      options: [
+        { label: 'Wesela', value: 'wesela' },
+        { label: 'Eventy firmowe', value: 'eventy-firmowe' },
+        { label: 'Catering prywatny', value: 'catering-prywatny' },
+        { label: 'Bar', value: 'bar' },
+        { label: 'Dekoracje', value: 'dekoracje' },
+      ],
     },
-    { name: 'sortOrder', type: 'number', defaultValue: 0 },
+    { name: 'sortOrder', type: 'number', defaultValue: 0, label: 'Kolejność sortowania' },
   ],
 }

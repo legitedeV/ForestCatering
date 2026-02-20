@@ -9,6 +9,7 @@ import { FAQBlock } from '../blocks/FAQ'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
+  labels: { singular: 'Strona', plural: 'Strony' },
   admin: { useAsTitle: 'title' },
   access: {
     read: () => true,
@@ -17,20 +18,22 @@ export const Pages: CollectionConfig = {
     delete: isAdmin,
   },
   fields: [
-    { name: 'title', type: 'text', required: true },
-    { name: 'slug', type: 'text', required: true, unique: true },
+    { name: 'title', type: 'text', required: true, label: 'Tytuł' },
+    { name: 'slug', type: 'text', required: true, unique: true, label: 'Slug (URL)' },
     {
       name: 'sections',
       type: 'blocks',
+      label: 'Sekcje',
       blocks: [HeroBlock, RichTextBlock, GalleryBlock, CTABlock, FAQBlock],
     },
     {
       name: 'seo',
       type: 'group',
+      label: 'SEO',
       fields: [
-        { name: 'metaTitle', type: 'text', maxLength: 60 },
-        { name: 'metaDescription', type: 'textarea', maxLength: 160 },
-        { name: 'ogImage', type: 'upload', relationTo: 'media' },
+        { name: 'metaTitle', type: 'text', maxLength: 60, label: 'Tytuł meta' },
+        { name: 'metaDescription', type: 'textarea', maxLength: 160, label: 'Opis meta' },
+        { name: 'ogImage', type: 'upload', relationTo: 'media', label: 'Obrazek OG (social media)' },
       ],
     },
   ],

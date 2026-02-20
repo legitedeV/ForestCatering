@@ -2,6 +2,7 @@ import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import { pl } from '@payloadcms/translations/languages/pl'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
@@ -29,6 +30,10 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
+  i18n: {
+    supportedLanguages: { pl },
+    fallbackLanguage: 'pl',
+  },
   collections: [
     Products,
     Categories,

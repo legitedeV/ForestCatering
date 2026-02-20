@@ -2,8 +2,8 @@ import type { Block } from 'payload'
 
 export const RichTextBlock: Block = {
   slug: 'richText',
-  labels: { singular: 'Rich Text', plural: 'Rich Text Blocks' },
+  labels: { singular: 'Blok tekstowy', plural: 'Bloki tekstowe' },
   fields: [
-    { name: 'content', type: 'richText', required: true },
+    { name: 'content', type: 'richText', required: true, label: 'Treść' },
   ],
 }

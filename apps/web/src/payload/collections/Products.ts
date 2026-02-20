@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 export const Products: CollectionConfig = {
   slug: 'products',
+  labels: { singular: 'Produkt', plural: 'Produkty' },
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'category', 'price', 'isAvailable'],
@@ -13,27 +14,30 @@ export const Products: CollectionConfig = {
     delete: ({ req }) => req.user?.role === 'admin',
   },
   fields: [
-    { name: 'name', type: 'text', required: true, maxLength: 200 },
+    { name: 'name', type: 'text', required: true, maxLength: 200, label: 'Nazwa' },
     {
       name: 'slug',
       type: 'text',
       required: true,
       unique: true,
+      label: 'Slug (URL)',
       admin: { position: 'sidebar' },
     },
-    { name: 'shortDescription', type: 'textarea', maxLength: 300 },
-    { name: 'description', type: 'richText' },
+    { name: 'shortDescription', type: 'textarea', maxLength: 300, label: 'Krótki opis' },
+    { name: 'description', type: 'richText', label: 'Pełny opis' },
     {
       name: 'price',
       type: 'number',
       required: true,
       min: 0,
+      label: 'Cena',
       admin: { description: 'Cena w groszach (3599 = 35,99 PLN)' },
     },
     {
       name: 'compareAtPrice',
       type: 'number',
       min: 0,
+      label: 'Cena przed rabatem',
       admin: { description: 'Cena przed rabatem w groszach' },
     },
     {
@@ -41,20 +45,24 @@ export const Products: CollectionConfig = {
       type: 'relationship',
       relationTo: 'categories',
       required: true,
+      label: 'Kategoria',
     },
     {
       name: 'images',
       type: 'array',
       minRows: 0,
       maxRows: 8,
+      label: 'Zdjęcia',
+      labels: { singular: 'Zdjęcie', plural: 'Zdjęcia' },
       fields: [
-        { name: 'image', type: 'upload', relationTo: 'media', required: true },
+        { name: 'image', type: 'upload', relationTo: 'media', required: true, label: 'Zdjęcie' },
       ],
     },
     {
       name: 'allergens',
       type: 'select',
       hasMany: true,
+      label: 'Alergeny',
       options: [
         { label: 'Gluten', value: 'gluten' },
         { label: 'Nabiał', value: 'dairy' },
@@ -74,6 +82,7 @@ export const Products: CollectionConfig = {
       name: 'dietary',
       type: 'select',
       hasMany: true,
+      label: 'Diety',
       options: [
         { label: 'Wegetariańskie', value: 'vegetarian' },
         { label: 'Wegańskie', value: 'vegan' },
@@ -81,31 +90,39 @@ export const Products: CollectionConfig = {
         { label: 'Low-carb', value: 'low-carb' },
       ],
     },
-    { name: 'weight', type: 'text' },
-    { name: 'servings', type: 'number', min: 1 },
+    { name: 'weight', type: 'text', label: 'Waga' },
+    { name: 'servings', type: 'number', min: 1, label: 'Liczba porcji' },
     {
       name: 'productType',
       type: 'select',
       required: true,
       defaultValue: 'catering',
-      options: ['catering', 'event', 'bar'],
+      label: 'Typ produktu',
+      options: [
+        { label: 'Catering', value: 'catering' },
+        { label: 'Event', value: 'event' },
+        { label: 'Bar', value: 'bar' },
+      ],
     },
     {
       name: 'isAvailable',
       type: 'checkbox',
       defaultValue: true,
+      label: 'Dostępny',
       admin: { position: 'sidebar' },
     },
     {
       name: 'isFeatured',
       type: 'checkbox',
       defaultValue: false,
+      label: 'Wyróżniony',
       admin: { position: 'sidebar' },
     },
     {
       name: 'sortOrder',
       type: 'number',
       defaultValue: 0,
+      label: 'Kolejność sortowania',
       admin: { position: 'sidebar' },
     },
   ],
