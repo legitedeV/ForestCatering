@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { formatPrice } from '@/lib/format'
 import { useCart } from '@/lib/cart-store'
+import { useToast } from '@/components/ui/Toast'
 
 const allergenEmoji: Record<string, string> = {
   gluten: '🌾', dairy: '🥛', eggs: '🥚', nuts: '🥜', soy: '🫘',
@@ -34,6 +35,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart()
+  const { show } = useToast()
 
   return (
     <motion.div
@@ -87,14 +89,15 @@ export function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
           <button
-            onClick={() =>
+            onClick={() => {
               addItem({
                 productId: product.id,
                 name: product.name,
                 slug: product.slug,
                 price: product.price,
               })
-            }
+              show('Dodano do koszyka ✓', 'success')
+            }}
             className="mt-3 w-full rounded-lg bg-accent py-2.5 text-sm font-semibold text-forest-950 transition hover:bg-accent-light"
           >
             Dodaj do koszyka

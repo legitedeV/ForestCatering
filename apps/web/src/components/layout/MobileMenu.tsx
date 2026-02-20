@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useCart } from '@/lib/cart-store'
+import { useCartItemCount } from '@/lib/cart-store'
 
 interface MobileMenuProps {
   open: boolean
@@ -11,7 +11,7 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
-  const { itemCount } = useCart()
+  const itemCount = useCartItemCount()
 
   return (
     <AnimatePresence>
