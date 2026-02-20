@@ -1,6 +1,7 @@
 import { buildConfig } from 'payload'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
@@ -42,6 +43,20 @@ export default buildConfig({
   ],
   globals: [SiteSettings, Navigation],
   secret: process.env.PAYLOAD_SECRET || '',
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.SMTP_FROM || 'kontakt@forestbar.pl',
+    defaultFromName: 'ForestCatering',
+    transportOptions: process.env.SMTP_HOST
+      ? {
+          host: process.env.SMTP_HOST,
+          port: parseInt(process.env.SMTP_PORT || '587', 10),
+          auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+          },
+        }
+      : undefined,
+  }),
   sharp,
   typescript: {
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
