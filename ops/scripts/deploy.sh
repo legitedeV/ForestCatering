@@ -23,7 +23,9 @@ if [[ ! -f "$PROJECT_ROOT/ops/.env" ]]; then
   exit 1
 fi
 # shellcheck source=/dev/null
+set -a
 source "$PROJECT_ROOT/ops/.env"
+set +a
 
 # 3. Run setup (idempotent)
 bash "$SCRIPT_DIR/setup.sh"
@@ -35,6 +37,10 @@ npm ci
 # 5. Build
 cd "$PROJECT_ROOT/apps/web"
 npm run build
+
+# Copy static assets for standalone mode
+cp -r "$PROJECT_ROOT/apps/web/public" "$PROJECT_ROOT/apps/web/.next/standalone/apps/web/public" || true
+cp -r "$PROJECT_ROOT/apps/web/.next/static" "$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static" || true
 
 # 6. PM2
 pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --env production

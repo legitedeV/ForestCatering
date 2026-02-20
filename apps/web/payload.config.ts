@@ -3,6 +3,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import sharp from 'sharp'
 
 import { Products } from './src/payload/collections/Products'
 import { Categories } from './src/payload/collections/Categories'
@@ -41,6 +42,7 @@ export default buildConfig({
   ],
   globals: [SiteSettings, Navigation],
   secret: process.env.PAYLOAD_SECRET || '',
+  sharp,
   typescript: {
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
   },
