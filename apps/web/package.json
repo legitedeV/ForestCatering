@@ -13,6 +13,7 @@
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
     "@payloadcms/db-postgres": "^3.32.0",
+    "@payloadcms/email-nodemailer": "^3.32.0",
     "@payloadcms/next": "^3.32.0",
     "@payloadcms/richtext-lexical": "^3.32.0",
     "@tailwindcss/typography": "^0.5.19",
