@@ -10,7 +10,7 @@ const galleryPreviewImages = [
   { cat: 'Catering prywatny', src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80' },
   { cat: 'Obsługa baru', src: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800&q=80' },
   { cat: 'Dekoracje', src: 'https://images.unsplash.com/photo-1478146059778-26028b07395a?w=800&q=80' },
-  { cat: 'Menu degustacyjne', src: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80' },
+  { cat: 'Menu degustacyjne', src: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?w=800&q=80' },
 ]
 
 const services = [
