@@ -21,3 +21,4 @@
 - [ ] Admin dashboard analytics
 - [ ] SEO improvements
 - [ ] Performance optimization
+- [ ] Standardize build/deploy documentation (CI matrix, env var reference)
