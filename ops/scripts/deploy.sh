@@ -15,7 +15,7 @@ echo "Started at $(date)"
 
 # 1. Pull latest
 cd "$PROJECT_ROOT"
-git pull --ff-only
+git pull origin main --ff-only
 
 # 2. Source env
 if [[ ! -f "$PROJECT_ROOT/ops/.env" ]]; then
