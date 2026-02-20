@@ -71,6 +71,12 @@ sudo certbot certonly \
   --email "$EMAIL" \
   --no-eff-email
 
+# 4b. Generate SSL support files that certbot --webroot doesn't create
+if [[ ! -f /etc/letsencrypt/ssl-dhparams.pem ]]; then
+  echo "Generating DH parameters (this may take a moment)..."
+  sudo openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048
+fi
+
 # 5. Install full HTTPS nginx config
 echo "Installing production HTTPS nginx config..."
 sudo rm -f /etc/nginx/sites-enabled/forestbar-temp.conf
@@ -79,10 +85,11 @@ sudo cp "$NGINX_CONF_SRC" /etc/nginx/sites-available/forestbar.conf
 sudo ln -sf /etc/nginx/sites-available/forestbar.conf /etc/nginx/sites-enabled/forestbar.conf
 sudo nginx -t && sudo systemctl reload nginx
 
-# 6. Setup auto-renewal cron (certbot usually does this, but ensure it)
-if ! sudo crontab -l 2>/dev/null | grep -q '# forestcatering-certbot-renew'; then
-  echo "Setting up auto-renewal cron..."
-  (sudo crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --post-hook 'systemctl reload nginx' # forestcatering-certbot-renew") | sudo crontab -
+# 6. Ensure auto-renewal via systemd timer (certbot installs this by default on Debian)
+if systemctl list-timers --all 2>/dev/null | grep -q certbot; then
+  echo "✅ certbot systemd timer is active."
+else
+  echo "⚠️  certbot systemd timer not found. Enable manually: sudo systemctl enable --now certbot.timer"
 fi
 
 # 7. Verify
