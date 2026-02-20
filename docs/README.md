@@ -56,6 +56,41 @@ bash ops/scripts/deploy.sh
 
 Build + lint + typecheck + bash syntax validation runs on every PR and push to main.
 
+## Domain & SSL
+
+The production domain is **forestbar.pl**.
+
+### DNS Requirements
+
+| Type | Name | Value |
+|------|------|-------|
+| A    | forestbar.pl | `<VPS_IP>` |
+| A    | www.forestbar.pl | `<VPS_IP>` |
+| AAAA | forestbar.pl | `<VPS_IPv6>` (optional) |
+| AAAA | www.forestbar.pl | `<VPS_IPv6>` (optional) |
+
+### First-time SSL setup
+
+```bash
+# 1. Ensure DNS is propagated
+dig forestbar.pl +short   # should return your VPS IP
+
+# 2. Run one-time SSL setup
+bash ops/scripts/setup-ssl.sh
+
+# 3. Update ops/.env
+sed -i 's|NEXT_PUBLIC_SITE_URL=.*|NEXT_PUBLIC_SITE_URL=https://forestbar.pl|' ops/.env
+
+# 4. Rebuild and restart
+cd apps/web && npm run build
+pm2 restart forestcatering
+
+# 5. Verify
+curl -I https://forestbar.pl
+```
+
+Certificate auto-renews via cron (`certbot renew`). nginx reloads automatically after renewal.
+
 ## How to test (local)
 
 ```bash
