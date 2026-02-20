@@ -1,8 +1,10 @@
+const path = require('path');
+
 module.exports = {
   apps: [{
     name: 'forestcatering',
     cwd: __dirname,
-    script: './node_modules/.bin/next',
+    script: path.resolve(__dirname, '../../node_modules/.bin/next'),
     args: 'start',
     instances: 1,
     autorestart: true,

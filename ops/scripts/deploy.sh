@@ -28,18 +28,21 @@ source "$PROJECT_ROOT/ops/.env"
 # 3. Run setup (idempotent)
 bash "$SCRIPT_DIR/setup.sh"
 
-# 4. Build
-cd "$PROJECT_ROOT/apps/web"
+# 4. Install deps from workspace root
+cd "$PROJECT_ROOT"
 npm ci
+
+# 5. Build
+cd "$PROJECT_ROOT/apps/web"
 npm run build
 
-# 5. PM2
+# 6. PM2
 pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --env production
 
-# 6. nginx
+# 7. nginx
 bash "$SCRIPT_DIR/ensure-nginx.sh"
 
-# 7. Smoke tests
+# 8. Smoke tests
 bash "$SCRIPT_DIR/smoke.sh"
 
 echo "✅ Deploy complete at $(date)"
