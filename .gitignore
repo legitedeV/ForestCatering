@@ -1,4 +1,5 @@
 # Dependencies
+node_modules/
 apps/web/node_modules/
 
 # Next.js
@@ -20,5 +21,6 @@ ops/logs/*
 
 # Build artifacts
 *.tar.gz
+*.tgz
 *.sql.gz
 *.tsbuildinfo

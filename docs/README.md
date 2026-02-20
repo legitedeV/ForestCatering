@@ -24,8 +24,8 @@ Profesjonalna firma cateringowa ze Szczecina — Next.js 15 + Payload CMS 3 + Po
 
 3. Install and run:
    ```bash
+   npm install        # from repo root (workspace install)
    cd apps/web
-   npm install
    npm run dev
    ```
 
@@ -55,3 +55,20 @@ bash ops/scripts/deploy.sh
 ## CI
 
 Build + lint + typecheck + bash syntax validation runs on every PR and push to main.
+
+## How to test (local)
+
+```bash
+# 1. Install all dependencies from repo root (single lockfile)
+npm install
+
+# 2. Production build of apps/web
+cd apps/web && npm run build
+
+# 3. Lint check
+npm run lint
+```
+
+> **Note:** The build requires `DATABASE_URI`, `PAYLOAD_SECRET`, and `NEXT_PUBLIC_SITE_URL`
+> environment variables. Pages that query PostgreSQL will log connection errors during static
+> generation if no database is running — this is expected and does not fail the build.
