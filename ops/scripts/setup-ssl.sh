@@ -80,9 +80,9 @@ sudo ln -sf /etc/nginx/sites-available/forestbar.conf /etc/nginx/sites-enabled/f
 sudo nginx -t && sudo systemctl reload nginx
 
 # 6. Setup auto-renewal cron (certbot usually does this, but ensure it)
-if ! sudo crontab -l 2>/dev/null | grep -q certbot; then
+if ! sudo crontab -l 2>/dev/null | grep -q '# forestcatering-certbot-renew'; then
   echo "Setting up auto-renewal cron..."
-  (sudo crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --post-hook 'systemctl reload nginx'") | sudo crontab -
+  (sudo crontab -l 2>/dev/null; echo "0 3 * * * certbot renew --quiet --post-hook 'systemctl reload nginx' # forestcatering-certbot-renew") | sudo crontab -
 fi
 
 # 7. Verify

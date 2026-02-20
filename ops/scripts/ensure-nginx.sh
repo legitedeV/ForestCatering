@@ -20,8 +20,10 @@ echo "Installing nginx config: ${CONF_NAME}"
 sudo cp "$CONF_SRC" "$CONF_DEST"
 sudo ln -sf "$CONF_DEST" "/etc/nginx/sites-enabled/${CONF_NAME}"
 
-# Clean up stale symlinks
-for f in /etc/nginx/sites-enabled/*; do
+# Clean up stale symlinks for this project only
+for f in /etc/nginx/sites-enabled/forestcatering.conf \
+         /etc/nginx/sites-enabled/forestbar.conf \
+         /etc/nginx/sites-enabled/forestbar-temp.conf; do
   [[ -e "$f" ]] || sudo rm -f "$f"
 done
 
