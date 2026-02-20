@@ -4,6 +4,15 @@ import { AnimatedCounter } from '@/components/ui/AnimatedCounter'
 import { getPayload } from '@/lib/payload-client'
 import { formatPrice } from '@/lib/format'
 
+const galleryPreviewImages = [
+  { cat: 'Wesela', src: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80' },
+  { cat: 'Eventy firmowe', src: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80' },
+  { cat: 'Catering prywatny', src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80' },
+  { cat: 'Obsługa baru', src: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800&q=80' },
+  { cat: 'Dekoracje', src: 'https://images.unsplash.com/photo-1478146059778-26028b07395a?w=800&q=80' },
+  { cat: 'Menu degustacyjne', src: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?w=800&q=80' },
+]
+
 const services = [
   {
     emoji: '🍽️',
@@ -86,7 +95,11 @@ export default async function HomePage() {
           </AnimatedSection>
           <AnimatedSection>
             <h1 className="text-4xl font-bold leading-tight tracking-tight text-cream sm:text-5xl md:text-7xl">
-              Wyśmienity catering<br />na każdą okazję
+              Wyśmienity{' '}
+              <span className="bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent">
+                catering
+              </span>
+              <br />na każdą okazję
             </h1>
           </AnimatedSection>
           <AnimatedSection>
@@ -142,7 +155,7 @@ export default async function HomePage() {
             <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {services.map((svc) => (
                 <AnimatedItem key={svc.title}>
-                  <div className="group rounded-xl border border-forest-700 bg-forest-800 p-8 text-center transition hover:-translate-y-1 hover:border-accent hover:shadow-lg hover:shadow-accent/10">
+                  <div className="group rounded-xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-xl transition hover:-translate-y-1 hover:border-accent hover:shadow-lg hover:shadow-accent/10">
                     <span className="text-5xl">{svc.emoji}</span>
                     <h3 className="mt-4 text-lg font-semibold text-cream">{svc.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-forest-200">{svc.description}</p>
@@ -236,8 +249,13 @@ export default async function HomePage() {
           </div>
           <div className="lg:col-span-2">
             <AnimatedSection>
-              <div className="flex h-full min-h-[320px] items-center justify-center rounded-2xl bg-forest-800 text-8xl">
-                🌲
+              <div className="flex h-full min-h-[320px] items-center justify-center overflow-hidden rounded-2xl bg-forest-800">
+                <img
+                  src="https://images.unsplash.com/photo-1530062845289-9109b2c9c868?w=800&q=80"
+                  alt="Forest Catering - przygotowanie posiłków"
+                  loading="lazy"
+                  className="h-full w-full object-cover"
+                />
               </div>
             </AnimatedSection>
           </div>
@@ -254,14 +272,17 @@ export default async function HomePage() {
           </AnimatedSection>
           <AnimatedSection stagger>
             <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-3">
-              {['Wesela', 'Eventy firmowe', 'Catering prywatny', 'Obsługa baru', 'Dekoracje', 'Menu degustacyjne'].map((cat, i) => (
-                <AnimatedItem key={cat}>
-                  <div className={`group relative overflow-hidden rounded-lg ${i < 2 ? 'row-span-2 aspect-[3/4]' : 'aspect-square'} bg-gradient-to-br from-forest-700 to-forest-800`}>
+              {galleryPreviewImages.map((item, i) => (
+                <AnimatedItem key={item.cat}>
+                  <div className={`group relative overflow-hidden rounded-lg ${i < 2 ? 'row-span-2 aspect-[3/4]' : 'aspect-square'}`}>
+                    <img
+                      src={item.src}
+                      alt={item.cat}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition group-hover:scale-105"
+                    />
                     <div className="absolute inset-0 flex items-center justify-center bg-forest-950/40 opacity-0 transition group-hover:opacity-100">
-                      <span className="rounded-full bg-forest-800/80 px-3 py-1 text-sm font-medium text-cream">{cat}</span>
-                    </div>
-                    <div className="flex h-full items-center justify-center text-3xl opacity-30">
-                      {['💒', '🏢', '🍽️', '🍸', '🎨', '📋'][i]}
+                      <span className="rounded-full bg-forest-800/80 px-3 py-1 text-sm font-medium text-cream">{item.cat}</span>
                     </div>
                   </div>
                 </AnimatedItem>
@@ -288,7 +309,7 @@ export default async function HomePage() {
             <div className="mt-12 grid gap-6 md:grid-cols-3">
               {testimonials.map((t) => (
                 <AnimatedItem key={t.author}>
-                  <div className="relative rounded-xl border border-forest-700 bg-forest-800 p-8 transition hover:border-accent/50">
+                  <div className="relative rounded-xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl transition hover:-translate-y-1 hover:border-accent/50 hover:shadow-lg hover:shadow-accent/10">
                     <span className="absolute top-4 left-4 text-6xl leading-none text-accent/20">&ldquo;</span>
                     <p className="relative z-10 mt-4 text-lg leading-relaxed italic text-cream">
                       {t.quote}

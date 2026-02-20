@@ -13,16 +13,19 @@ const categoryMap: Record<string, string> = {
   dekoracje: 'Dekoracje',
 }
 
-const placeholderItems = [
-  { id: '1', alt: 'Eleganckie wesele w plenerze', category: 'wesela', emoji: '💒' },
-  { id: '2', alt: 'Konferencja firmowa', category: 'eventy-firmowe', emoji: '🏢' },
-  { id: '3', alt: 'Menu degustacyjne', category: 'catering-prywatny', emoji: '🍽️' },
-  { id: '4', alt: 'Koktajl bar premium', category: 'bar', emoji: '🍸' },
-  { id: '5', alt: 'Dekoracje kwiatowe', category: 'dekoracje', emoji: '🌸' },
-  { id: '6', alt: 'Catering weselny', category: 'wesela', emoji: '💍' },
-  { id: '7', alt: 'Event firmowy outdoor', category: 'eventy-firmowe', emoji: '🎪' },
-  { id: '8', alt: 'Stół bankietowy', category: 'catering-prywatny', emoji: '🎂' },
-  { id: '9', alt: 'Drink bar', category: 'bar', emoji: '🥂' },
+const galleryItems = [
+  { id: '1', alt: 'Eleganckie wesele w plenerze', category: 'wesela', src: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80' },
+  { id: '2', alt: 'Bankiet firmowy', category: 'eventy-firmowe', src: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80' },
+  { id: '3', alt: 'Stół degustacyjny', category: 'catering-prywatny', src: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=800&q=80' },
+  { id: '4', alt: 'Koktajl bar premium', category: 'bar', src: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800&q=80' },
+  { id: '5', alt: 'Dekoracje kwiatowe na stole', category: 'dekoracje', src: 'https://images.unsplash.com/photo-1478146059778-26028b07395a?w=800&q=80' },
+  { id: '6', alt: 'Catering weselny - przystawki', category: 'wesela', src: 'https://images.unsplash.com/photo-1530062845289-9109b2c9c868?w=800&q=80' },
+  { id: '7', alt: 'Outdoor event setup', category: 'eventy-firmowe', src: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80' },
+  { id: '8', alt: 'Elegancki stół bankietowy', category: 'catering-prywatny', src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80' },
+  { id: '9', alt: 'Barman serwujący drinki', category: 'bar', src: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=800&q=80' },
+  { id: '10', alt: 'Wesele w ogrodzie', category: 'wesela', src: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80' },
+  { id: '11', alt: 'Konferencja z cateringiem', category: 'eventy-firmowe', src: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?w=800&q=80' },
+  { id: '12', alt: 'Dekoracje na evencie', category: 'dekoracje', src: 'https://images.unsplash.com/photo-1510076857177-7470076d4098?w=800&q=80' },
 ]
 
 export default function GaleriaPage() {
@@ -30,8 +33,8 @@ export default function GaleriaPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   const filtered = activeCategory
-    ? placeholderItems.filter((item) => item.category === activeCategory)
-    : placeholderItems
+    ? galleryItems.filter((item) => item.category === activeCategory)
+    : galleryItems
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -81,9 +84,14 @@ export default function GaleriaPage() {
               className="group relative mb-4 cursor-pointer overflow-hidden rounded-lg break-inside-avoid"
               onClick={() => setLightboxIndex(i)}
             >
-              <div className={`flex items-center justify-center bg-gradient-to-br from-forest-700 to-forest-800 text-4xl transition group-hover:scale-105 ${i % 3 === 0 ? 'aspect-[3/4]' : 'aspect-square'}`}>
-                {item.emoji}
-              </div>
+              <img
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                className={`w-full object-cover transition group-hover:scale-105 ${
+                  i % 3 === 0 ? 'aspect-[3/4]' : 'aspect-square'
+                }`}
+              />
               <div className="absolute inset-0 flex flex-col items-center justify-center bg-forest-950/60 opacity-0 transition group-hover:opacity-100">
                 <span className="text-sm font-medium text-cream">{item.alt}</span>
                 <span className="mt-2 rounded-full bg-accent/20 px-3 py-1 text-xs text-accent">
@@ -112,9 +120,11 @@ export default function GaleriaPage() {
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex aspect-[4/3] w-full max-w-2xl items-center justify-center rounded-xl bg-gradient-to-br from-forest-700 to-forest-800 text-8xl">
-                {filtered[lightboxIndex].emoji}
-              </div>
+              <img
+                src={filtered[lightboxIndex].src}
+                alt={filtered[lightboxIndex].alt}
+                className="max-h-[75vh] max-w-[85vw] rounded-xl object-contain"
+              />
               <p className="mt-4 text-center text-cream">{filtered[lightboxIndex].alt}</p>
 
               {/* Navigation */}

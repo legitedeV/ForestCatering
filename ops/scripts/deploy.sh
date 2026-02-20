@@ -30,17 +30,19 @@ set +a
 # 3. Run setup (idempotent)
 bash "$SCRIPT_DIR/setup.sh"
 
-# 4. Install deps from workspace root
+# 4. Install deps (need devDeps for build)
 cd "$PROJECT_ROOT"
-npm ci
+NODE_ENV=development npm ci
 
 # 5. Build
 cd "$PROJECT_ROOT/apps/web"
 npm run build
 
-# Copy static assets for standalone mode
-cp -r "$PROJECT_ROOT/apps/web/public" "$PROJECT_ROOT/apps/web/.next/standalone/apps/web/public" || true
-cp -r "$PROJECT_ROOT/apps/web/.next/static" "$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static" || true
+# Copy static assets for standalone mode (workspace-aware paths)
+STANDALONE_DIR="$PROJECT_ROOT/apps/web/.next/standalone/apps/web"
+cp -r "$PROJECT_ROOT/apps/web/public" "$STANDALONE_DIR/public" 2>/dev/null || true
+mkdir -p "$STANDALONE_DIR/.next"
+cp -r "$PROJECT_ROOT/apps/web/.next/static" "$STANDALONE_DIR/.next/static" 2>/dev/null || true
 
 # 6. PM2
 pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --env production
