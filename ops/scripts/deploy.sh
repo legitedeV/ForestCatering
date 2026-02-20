@@ -34,7 +34,7 @@ npm ci
 npm run build
 
 # 5. PM2
-pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.js" --env production
+pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --env production
 
 # 6. nginx
 bash "$SCRIPT_DIR/ensure-nginx.sh"
