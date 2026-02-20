@@ -1,11 +1,8 @@
-const path = require('path');
-
 module.exports = {
   apps: [{
     name: 'forestcatering',
     cwd: __dirname,
-    script: path.resolve(__dirname, '../../node_modules/.bin/next'),
-    args: 'start',
+    script: '.next/standalone/server.js',
     instances: 1,
     autorestart: true,
     max_memory_restart: '500M',
