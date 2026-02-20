@@ -45,6 +45,7 @@ jobs:
           bash -n ops/scripts/setup.sh
           bash -n ops/scripts/gen-secrets.sh
           bash -n ops/scripts/ensure-nginx.sh
+          bash -n ops/scripts/setup-ssl.sh
 
   playwright:
     needs: build
