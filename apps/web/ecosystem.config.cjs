@@ -1,8 +1,10 @@
+const path = require('path');
+
 module.exports = {
   apps: [{
     name: 'forestcatering',
     cwd: __dirname,
-    script: '.next/standalone/server.js',
+    script: path.resolve(__dirname, '.next/standalone/apps/web/server.js'),
     instances: 1,
     autorestart: true,
     max_memory_restart: '500M',
@@ -11,8 +13,8 @@ module.exports = {
       PORT: 3000,
     },
     log_date_format: 'YYYY-MM-DD HH:mm:ss',
-    error_file: '../../ops/logs/pm2-error.log',
-    out_file: '../../ops/logs/pm2-out.log',
+    error_file: path.resolve(__dirname, '../../ops/logs/pm2-error.log'),
+    out_file: path.resolve(__dirname, '../../ops/logs/pm2-out.log'),
     merge_logs: true,
   }],
 };
