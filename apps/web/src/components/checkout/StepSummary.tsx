@@ -32,7 +32,7 @@ export function StepSummary({ contact, delivery, paymentMethod, onPaymentChange,
   const handleOrder = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/orders', {
+      const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

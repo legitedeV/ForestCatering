@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate:types": "payload generate:types"
+    "generate:types": "payload generate:types",
+    "generate:importmap": "payload generate:importmap",
+    "payload:generate": "payload generate:types && payload generate:importmap"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",

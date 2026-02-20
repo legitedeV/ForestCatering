@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
+import { populateSlug } from '../hooks/populateSlug'
 import { HeroBlock } from '../blocks/Hero'
 import { RichTextBlock } from '../blocks/RichText'
 import { GalleryBlock } from '../blocks/Gallery'
@@ -11,6 +12,9 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: { singular: 'Strona', plural: 'Strony' },
   admin: { useAsTitle: 'title' },
+  hooks: {
+    beforeValidate: [populateSlug],
+  },
   access: {
     read: () => true,
     create: isAdmin,
