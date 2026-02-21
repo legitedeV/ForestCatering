@@ -11,5 +11,5 @@ export function getMediaUrl(image: unknown): string | undefined {
 
 export function getMediaAlt(image: unknown, fallback: string): string {
   if (!image || typeof image !== 'object') return fallback
-  return (image as { alt?: string })?.alt || fallback
+  return (image as { alt?: string }).alt || fallback
 }
