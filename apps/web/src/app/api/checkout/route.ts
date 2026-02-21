@@ -21,17 +21,16 @@ export async function POST(req: Request) {
     for (const item of items) {
       try {
         const product = await payload.findByID({ collection: 'products', id: item.productId })
-        if (!product || !(product as Record<string, unknown>).isAvailable) {
+        if (!product || !product.isAvailable) {
           unavailable.push(item.productId)
           continue
         }
-        const price = (product as Record<string, unknown>).price as number
         validatedItems.push({
           product: product.id,
-          productName: (product as Record<string, unknown>).name as string,
+          productName: product.name,
           quantity: item.quantity,
-          unitPrice: price,
-          lineTotal: price * item.quantity,
+          unitPrice: product.price,
+          lineTotal: product.price * item.quantity,
         })
       } catch {
         unavailable.push(item.productId)
@@ -53,9 +52,8 @@ export async function POST(req: Request) {
     let freeThreshold = 15000
     try {
       const settings = await payload.findGlobal({ slug: 'site-settings' as const })
-      const s = settings as Record<string, unknown>
-      if (s?.deliveryFee) deliveryFee = s.deliveryFee as number
-      if (s?.freeDeliveryThreshold) freeThreshold = s.freeDeliveryThreshold as number
+      if (settings?.deliveryFee) deliveryFee = settings.deliveryFee
+      if (settings?.freeDeliveryThreshold) freeThreshold = settings.freeDeliveryThreshold
     } catch { /* use defaults */ }
 
     const actualDeliveryFee = subtotal >= freeThreshold ? 0 : deliveryFee
@@ -84,9 +82,8 @@ export async function POST(req: Request) {
       },
     })
 
-    const orderData = order as Record<string, unknown>
     return NextResponse.json(
-      { orderNumber: orderData.orderNumber, status: orderData.status },
+      { orderNumber: order.orderNumber, status: order.status },
       { status: 201 }
     )
   } catch (error) {

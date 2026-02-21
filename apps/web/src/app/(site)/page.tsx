@@ -59,7 +59,7 @@ const testimonials = [
 ]
 
 type FeaturedProduct = {
-  id: string
+  id: number
   name: string
   slug: string
   price: number

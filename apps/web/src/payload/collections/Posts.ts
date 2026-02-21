@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
+import { populateSlug } from '../hooks/populateSlug'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -8,6 +9,9 @@ export const Posts: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'status', 'publishedAt'],
+  },
+  hooks: {
+    beforeValidate: [populateSlug],
   },
   access: {
     read: () => true,

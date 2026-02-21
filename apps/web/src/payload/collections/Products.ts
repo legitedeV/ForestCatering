@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { populateSlug } from '../hooks/populateSlug'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -6,6 +7,9 @@ export const Products: CollectionConfig = {
   admin: {
     useAsTitle: 'name',
     defaultColumns: ['name', 'category', 'price', 'isAvailable'],
+  },
+  hooks: {
+    beforeValidate: [populateSlug],
   },
   access: {
     read: () => true,
