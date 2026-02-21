@@ -13,7 +13,7 @@ interface ProductDoc {
   shortDescription?: string | null
   allergens?: string[] | null
   dietary?: string[] | null
-  images?: Array<{ image: { url?: string } | string }> | null
+  images?: Array<{ image: { url?: string; alt?: string } | string }> | null
 }
 
 interface Props {
