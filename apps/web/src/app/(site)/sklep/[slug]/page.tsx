@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { getPayload } from '@/lib/payload-client'
 import { formatPrice } from '@/lib/format'
+import { getMediaUrl, getMediaAlt } from '@/lib/media'
 import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { AddToCartButton } from '@/components/shop/AddToCartButton'
@@ -81,8 +82,8 @@ export default async function ProductDetailPage({ params }: Props) {
   if (!product) notFound()
 
   const firstImage = product.images?.[0]?.image
-  const imageUrl = typeof firstImage === 'object' ? firstImage?.url : undefined
-  const imageAlt = typeof firstImage === 'object' ? firstImage?.alt ?? product.name : product.name
+  const imageUrl = getMediaUrl(firstImage)
+  const imageAlt = getMediaAlt(firstImage, product.name)
 
   return (
     <div className="min-h-screen bg-forest-900 pt-24 pb-20">

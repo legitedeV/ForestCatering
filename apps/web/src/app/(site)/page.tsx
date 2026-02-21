@@ -4,6 +4,7 @@ import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter'
 import { getPayload } from '@/lib/payload-client'
 import { formatPrice } from '@/lib/format'
+import { getMediaUrl } from '@/lib/media'
 
 const galleryPreviewImages = [
   { cat: 'Wesela', src: 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80' },
@@ -190,7 +191,7 @@ export default async function HomePage() {
                 >
                   {(() => {
                     const firstImg = product.images?.[0]?.image
-                    const imgUrl = typeof firstImg === 'object' ? firstImg?.url : undefined
+                    const imgUrl = getMediaUrl(firstImg)
                     return imgUrl ? (
                       <div className="relative aspect-[4/3] overflow-hidden">
                         <Image
