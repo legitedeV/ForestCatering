@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { getPayload } from '@/lib/payload-client'
 import { formatPrice } from '@/lib/format'
 import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
@@ -32,7 +33,7 @@ interface ProductDoc {
   weight?: string | null
   servings?: number | null
   category?: { id: string; name?: string } | string
-  images?: Array<{ image: { url?: string } | string }> | null
+  images?: Array<{ image: { url?: string; alt?: string } | string }> | null
 }
 
 interface Props {
@@ -77,6 +78,10 @@ export default async function ProductDetailPage({ params }: Props) {
 
   if (!product) notFound()
 
+  const firstImage = product.images?.[0]?.image
+  const imageUrl = typeof firstImage === 'object' ? firstImage?.url : undefined
+  const imageAlt = typeof firstImage === 'object' ? firstImage?.alt ?? product.name : product.name
+
   return (
     <div className="min-h-screen bg-forest-900 pt-24 pb-20">
       <div className="mx-auto max-w-7xl px-4">
@@ -98,9 +103,22 @@ export default async function ProductDetailPage({ params }: Props) {
           {/* Left — Image */}
           <AnimatedSection>
             <div className="overflow-hidden rounded-xl bg-gradient-to-br from-forest-700 to-forest-800">
-              <div className="flex aspect-square items-center justify-center text-6xl">
-                🍽️
-              </div>
+              {imageUrl ? (
+                <div className="relative aspect-square">
+                  <Image
+                    src={imageUrl}
+                    alt={imageAlt}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    priority
+                  />
+                </div>
+              ) : (
+                <div className="flex aspect-square items-center justify-center text-6xl">
+                  🍽️
+                </div>
+              )}
             </div>
           </AnimatedSection>
 

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { formatPrice } from '@/lib/format'
 import { useCart } from '@/lib/cart-store'
@@ -29,13 +30,17 @@ interface ProductCardProps {
     shortDescription?: string | null
     allergens?: string[] | null
     dietary?: string[] | null
-    images?: Array<{ image: { url?: string } | string }> | null
+    images?: Array<{ image: { url?: string; alt?: string } | string }> | null
   }
 }
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart()
   const { show } = useToast()
+
+  const firstImage = product.images?.[0]?.image
+  const imageUrl = typeof firstImage === 'object' ? firstImage?.url : undefined
+  const imageAlt = typeof firstImage === 'object' ? firstImage?.alt ?? product.name : product.name
 
   return (
     <motion.div
@@ -44,9 +49,19 @@ export function ProductCard({ product }: ProductCardProps) {
     >
       <Link href={`/sklep/${product.slug}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-forest-700 to-forest-800">
-          <div className="flex h-full items-center justify-center text-4xl transition group-hover:scale-105">
-            🍽️
-          </div>
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={imageAlt}
+              fill
+              className="object-cover transition group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-4xl transition group-hover:scale-105">
+              🍽️
+            </div>
+          )}
         </div>
       </Link>
 
