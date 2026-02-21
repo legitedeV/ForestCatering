@@ -4,6 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { formatPrice } from '@/lib/format'
+import { getMediaUrl, getMediaAlt } from '@/lib/media'
 import { useCart } from '@/lib/cart-store'
 import { useToast } from '@/components/ui/Toast'
 
@@ -39,8 +40,8 @@ export function ProductCard({ product }: ProductCardProps) {
   const { show } = useToast()
 
   const firstImage = product.images?.[0]?.image
-  const imageUrl = typeof firstImage === 'object' ? firstImage?.url : undefined
-  const imageAlt = typeof firstImage === 'object' ? firstImage?.alt ?? product.name : product.name
+  const imageUrl = getMediaUrl(firstImage)
+  const imageAlt = getMediaAlt(firstImage, product.name)
 
   return (
     <motion.div
