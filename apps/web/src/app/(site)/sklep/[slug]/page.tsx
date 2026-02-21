@@ -53,6 +53,7 @@ export default async function ProductDetailPage({ params }: Props) {
       collection: 'products',
       where: { slug: { equals: slug } },
       limit: 1,
+      depth: 2,
     })
     product = (result.docs[0] as unknown as ProductDoc) || null
 
@@ -69,6 +70,7 @@ export default async function ProductDetailPage({ params }: Props) {
         },
         limit: 4,
         sort: 'sortOrder',
+        depth: 2,
       })
       relatedProducts = related.docs as unknown as ProductDoc[]
     }

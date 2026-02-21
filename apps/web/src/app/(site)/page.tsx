@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter'
 import { getPayload } from '@/lib/payload-client'
@@ -77,6 +78,7 @@ export default async function HomePage() {
       where: { isFeatured: { equals: true }, isAvailable: { equals: true } },
       limit: 6,
       sort: 'sortOrder',
+      depth: 2,
     })
     featuredProducts = result.docs as typeof featuredProducts
   } catch {
@@ -186,9 +188,25 @@ export default async function HomePage() {
                   href={`/sklep/${product.slug}`}
                   className="group min-w-[280px] shrink-0 snap-start rounded-xl border border-forest-700 bg-forest-800 overflow-hidden transition hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-lg"
                 >
-                  <div className="aspect-[4/3] bg-gradient-to-br from-forest-700 to-forest-800 flex items-center justify-center text-4xl">
-                    🍽️
-                  </div>
+                  {(() => {
+                    const firstImg = product.images?.[0]?.image
+                    const imgUrl = typeof firstImg === 'object' ? firstImg?.url : undefined
+                    return imgUrl ? (
+                      <div className="relative aspect-[4/3] overflow-hidden">
+                        <Image
+                          src={imgUrl}
+                          alt={product.name}
+                          fill
+                          className="object-cover transition group-hover:scale-105"
+                          sizes="280px"
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-[4/3] bg-gradient-to-br from-forest-700 to-forest-800 flex items-center justify-center text-4xl">
+                        🍽️
+                      </div>
+                    )
+                  })()}
                   <div className="p-5">
                     <h3 className="font-semibold text-cream">{product.name}</h3>
                     {product.shortDescription && (

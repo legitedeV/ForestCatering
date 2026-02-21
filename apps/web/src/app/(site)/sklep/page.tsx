@@ -56,6 +56,7 @@ export default async function ShopPage({ searchParams }: Props) {
       sort,
       limit: perPage,
       page: currentPage,
+      depth: 2,
     })
     products = result.docs as unknown as ProductDoc[]
     totalPages = result.totalPages
