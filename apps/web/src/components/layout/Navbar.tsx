@@ -33,8 +33,8 @@ export function Navbar() {
     <motion.header
       className="fixed top-0 right-0 left-0 z-50"
       style={{
-        backgroundColor: useTransform(bgOpacity, (v) => `rgba(8, 28, 21, ${v * 0.95})`),
-        borderBottomColor: useTransform(borderOpacity, (v) => `rgba(10, 42, 27, ${v})`),
+        backgroundColor: useTransform(bgOpacity, (v) => `rgba(21, 10, 4, ${v * 0.96})`),
+        borderBottomColor: useTransform(borderOpacity, (v) => `rgba(62, 32, 15, ${v})`),
         borderBottomWidth: '1px',
         backdropFilter: useTransform(bgOpacity, (v) => (v > 0.5 ? 'blur(12px)' : 'none')),
       }}
