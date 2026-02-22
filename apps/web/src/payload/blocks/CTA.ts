@@ -18,5 +18,8 @@ export const CTABlock: Block = {
         { label: 'Drugorzędny', value: 'secondary' },
       ],
     },
+    { name: 'phoneNumber', type: 'text', label: 'Numer telefonu' },
+    { name: 'secondaryButtonText', type: 'text', label: 'Tekst drugiego przycisku' },
+    { name: 'secondaryButtonLink', type: 'text', label: 'Link drugiego przycisku' },
   ],
 }

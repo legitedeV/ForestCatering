@@ -7,6 +7,11 @@ import { RichTextBlock } from '../blocks/RichText'
 import { GalleryBlock } from '../blocks/Gallery'
 import { CTABlock } from '../blocks/CTA'
 import { FAQBlock } from '../blocks/FAQ'
+import { StatsBlock } from '../blocks/StatsBlock'
+import { ServicesBlock } from '../blocks/ServicesBlock'
+import { FeaturedProductsBlock } from '../blocks/FeaturedProductsBlock'
+import { AboutBlock } from '../blocks/AboutBlock'
+import { TestimonialsBlock } from '../blocks/TestimonialsBlock'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -34,7 +39,7 @@ export const Pages: CollectionConfig = {
       label: 'Sekcje',
       required: true,
       minRows: 1,
-      blocks: [HeroBlock, RichTextBlock, GalleryBlock, CTABlock, FAQBlock],
+      blocks: [HeroBlock, StatsBlock, ServicesBlock, FeaturedProductsBlock, AboutBlock, RichTextBlock, GalleryBlock, TestimonialsBlock, CTABlock, FAQBlock],
     },
     {
       name: 'seo',

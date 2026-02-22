@@ -9,5 +9,10 @@ export const HeroBlock: Block = {
     { name: 'backgroundImage', type: 'upload', relationTo: 'media', label: 'Zdjęcie tła' },
     { name: 'ctaText', type: 'text', label: 'Tekst przycisku' },
     { name: 'ctaLink', type: 'text', label: 'Link przycisku' },
+    { name: 'badge', type: 'text', label: 'Badge (np. 🌲 Catering premium w Szczecinie)' },
+    { name: 'secondaryCtaText', type: 'text', label: 'Tekst drugiego przycisku' },
+    { name: 'secondaryCtaLink', type: 'text', label: 'Link drugiego przycisku' },
+    { name: 'showScrollIndicator', type: 'checkbox', defaultValue: true, label: 'Pokaż wskaźnik przewijania' },
+    { name: 'fullHeight', type: 'checkbox', defaultValue: false, label: 'Pełna wysokość ekranu' },
   ],
 }
