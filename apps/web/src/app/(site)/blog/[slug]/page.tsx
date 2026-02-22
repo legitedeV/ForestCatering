@@ -3,17 +3,8 @@ import Link from 'next/link'
 import { getPayload } from '@/lib/payload-client'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { ShareButton } from '@/components/ui/ShareButton'
-import type { SerializedEditorState } from 'lexical'
-import { RichText } from '@payloadcms/richtext-lexical/react'
-
-interface Post {
-  id: string
-  title: string
-  slug: string
-  excerpt?: string
-  content?: SerializedEditorState
-  publishedAt?: string
-}
+import type { Post } from '@/payload-types'
+import { RichTextRenderer } from '@/components/blog/RichTextRenderer'
 
 function formatPolishDate(dateStr: string): string {
   const months = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia']
@@ -39,7 +30,7 @@ export default async function BlogDetailPage({ params }: Props) {
       },
       limit: 1,
     })
-    post = (result.docs[0] as unknown as Post) || null
+    post = (result.docs[0] as Post) || null
   } catch {
     // Payload not available during build
   }
@@ -72,11 +63,7 @@ export default async function BlogDetailPage({ params }: Props) {
         <AnimatedSection>
           <div className="prose prose-invert prose-lg mt-10 max-w-none prose-headings:text-cream prose-p:text-forest-100 prose-a:text-accent prose-strong:text-cream">
             {post.excerpt && <p className="lead text-forest-200">{post.excerpt}</p>}
-            {post.content ? (
-              <RichText data={post.content} />
-            ) : (
-              <p className="text-forest-200">Pełna treść tego artykułu jest dostępna po dodaniu treści w panelu administracyjnym.</p>
-            )}
+            <RichTextRenderer content={post.content} />
           </div>
         </AnimatedSection>
 
