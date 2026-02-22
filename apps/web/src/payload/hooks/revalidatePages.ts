@@ -16,7 +16,7 @@ export const revalidatePages: CollectionAfterChangeHook = async ({ doc, req }) =
           .update(body)
           .digest('hex')
 
-        await fetch(`${siteUrl}/api/revalidate`, {
+        const res = await fetch(`${siteUrl}/api/revalidate`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -24,9 +24,13 @@ export const revalidatePages: CollectionAfterChangeHook = async ({ doc, req }) =
           },
           body,
         })
-        req.payload.logger.info(`Revalidated page: ${slug}`)
+        if (res.ok) {
+          req.payload.logger.info(`Revalidated page: ${slug}`)
+        } else {
+          req.payload.logger.error(`Revalidation failed for page ${slug}: ${res.status} ${res.statusText}`)
+        }
       } catch (err) {
-        req.payload.logger.error(`Revalidation failed for page ${slug}: ${err}`)
+        req.payload.logger.error(`Revalidation failed for page ${slug}: ${err instanceof Error ? err.message : String(err)}`)
       }
     }
   }
