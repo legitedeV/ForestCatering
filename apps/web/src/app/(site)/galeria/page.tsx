@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 
@@ -84,10 +85,13 @@ export default function GaleriaPage() {
               className="group relative mb-4 cursor-pointer overflow-hidden rounded-lg break-inside-avoid"
               onClick={() => setLightboxIndex(i)}
             >
-              <img
+              <Image
                 src={item.src}
                 alt={item.alt}
+                width={800}
+                height={i % 3 === 0 ? 1067 : 800}
                 loading="lazy"
+                unoptimized
                 className={`w-full object-cover transition group-hover:scale-105 ${
                   i % 3 === 0 ? 'aspect-[3/4]' : 'aspect-square'
                 }`}
@@ -120,9 +124,12 @@ export default function GaleriaPage() {
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <img
+              <Image
                 src={filtered[lightboxIndex].src}
                 alt={filtered[lightboxIndex].alt}
+                width={1200}
+                height={800}
+                unoptimized
                 className="max-h-[75vh] max-w-[85vw] rounded-xl object-contain"
               />
               <p className="mt-4 text-center text-cream">{filtered[lightboxIndex].alt}</p>
