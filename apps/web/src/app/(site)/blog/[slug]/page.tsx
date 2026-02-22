@@ -3,13 +3,15 @@ import Link from 'next/link'
 import { getPayload } from '@/lib/payload-client'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { ShareButton } from '@/components/ui/ShareButton'
+import type { SerializedEditorState } from 'lexical'
+import { RichText } from '@payloadcms/richtext-lexical/react'
 
 interface Post {
   id: string
   title: string
   slug: string
   excerpt?: string
-  content?: unknown
+  content?: SerializedEditorState
   publishedAt?: string
 }
 
@@ -70,7 +72,11 @@ export default async function BlogDetailPage({ params }: Props) {
         <AnimatedSection>
           <div className="prose prose-invert prose-lg mt-10 max-w-none prose-headings:text-cream prose-p:text-forest-100 prose-a:text-accent prose-strong:text-cream">
             {post.excerpt && <p className="lead text-forest-200">{post.excerpt}</p>}
-            <p className="text-forest-200">Pełna treść tego artykułu jest dostępna po dodaniu treści w panelu administracyjnym.</p>
+            {post.content ? (
+              <RichText data={post.content} />
+            ) : (
+              <p className="text-forest-200">Pełna treść tego artykułu jest dostępna po dodaniu treści w panelu administracyjnym.</p>
+            )}
           </div>
         </AnimatedSection>
 
