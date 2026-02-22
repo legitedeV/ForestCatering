@@ -111,6 +111,7 @@ export function ProductCard({ product }: ProductCardProps) {
                 name: product.name,
                 slug: product.slug,
                 price: product.price,
+                image: imageUrl,
               })
               show('Dodano do koszyka ✓', 'success')
             }}

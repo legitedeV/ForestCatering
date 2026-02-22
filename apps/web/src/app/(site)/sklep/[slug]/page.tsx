@@ -185,7 +185,7 @@ export default async function ProductDetailPage({ params }: Props) {
               <div className="my-6 border-t border-forest-700" />
 
               {/* Add to cart */}
-              <AddToCartButton product={{ id: product.id, name: product.name, slug: product.slug, price: product.price }} />
+              <AddToCartButton product={{ id: product.id, name: product.name, slug: product.slug, price: product.price }} imageUrl={imageUrl} />
             </div>
           </AnimatedSection>
         </div>

@@ -7,9 +7,10 @@ import { useToast } from '@/components/ui/Toast'
 
 interface Props {
   product: { id: string; name: string; slug: string; price: number }
+  imageUrl?: string
 }
 
-export function AddToCartButton({ product }: Props) {
+export function AddToCartButton({ product, imageUrl }: Props) {
   const [qty, setQty] = useState(1)
   const { addItem } = useCart()
   const { show } = useToast()
@@ -32,7 +33,7 @@ export function AddToCartButton({ product }: Props) {
         </button>
       </div>
       <motion.button
-        onClick={() => { addItem({ productId: product.id, name: product.name, slug: product.slug, price: product.price }, qty); show('Dodano do koszyka ✓', 'success') }}
+        onClick={() => { addItem({ productId: product.id, name: product.name, slug: product.slug, price: product.price, image: imageUrl }, qty); show('Dodano do koszyka ✓', 'success') }}
         className="w-full rounded-lg bg-accent py-3.5 text-base font-semibold text-forest-950 transition hover:bg-accent-light"
         whileTap={{ scale: 0.97 }}
       >

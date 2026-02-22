@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart, useCartItemCount, useCartSubtotal, useCartDeliveryFee, useCartTotal, useCanCheckout, FREE_DELIVERY_THRESHOLD, MIN_ORDER_AMOUNT } from '@/lib/cart-store'
 import { formatPrice } from '@/lib/format'
@@ -78,8 +79,11 @@ export function CartDrawer() {
                   <div className="space-y-3">
                     {items.map(item => (
                       <div key={item.productId} className="flex items-center gap-3 rounded-lg bg-forest-800 p-4">
-                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded bg-forest-700 text-xl">
-                          🍽️
+                        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded bg-forest-700 text-xl overflow-hidden">
+                          {item.image
+                            ? <Image src={item.image} alt={item.name} width={48} height={48} className="h-full w-full object-cover" />
+                            : '🍽️'
+                          }
                         </div>
                         <div className="flex-1 min-w-0">
                           <Link
