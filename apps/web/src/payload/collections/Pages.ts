@@ -12,6 +12,10 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: { singular: 'Strona', plural: 'Strony' },
   admin: { useAsTitle: 'title' },
+  versions: {
+    drafts: true,
+    maxPerDoc: 50,
+  },
   hooks: {
     beforeValidate: [populateSlug],
   },
@@ -28,6 +32,8 @@ export const Pages: CollectionConfig = {
       name: 'sections',
       type: 'blocks',
       label: 'Sekcje',
+      required: true,
+      minRows: 1,
       blocks: [HeroBlock, RichTextBlock, GalleryBlock, CTABlock, FAQBlock],
     },
     {
