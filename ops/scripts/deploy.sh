@@ -34,6 +34,23 @@ bash "$SCRIPT_DIR/setup.sh"
 cd "$PROJECT_ROOT"
 NODE_ENV=development npm ci
 
+# Media backup — preserve uploads across deploys
+MEDIA_SRC="$PROJECT_ROOT/apps/web/public/media"
+MEDIA_BACKUP="/tmp/fc-media-backup-$$"
+STANDALONE_MEDIA="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/public/media"
+
+# Ensure source media dir exists
+mkdir -p "$MEDIA_SRC"
+
+# Backup media from standalone (where Payload actually writes uploads)
+if [[ -d "$STANDALONE_MEDIA" ]] && find "$STANDALONE_MEDIA" -maxdepth 1 -type f ! -name '.gitkeep' | grep -q .; then
+  mkdir -p "$MEDIA_BACKUP"
+  cp -a "$STANDALONE_MEDIA"/. "$MEDIA_BACKUP"/
+  echo "📦 Backed up $(find "$MEDIA_BACKUP" -maxdepth 1 -type f | wc -l) media files."
+  # Also sync backed-up files into source public/media
+  cp -an "$MEDIA_BACKUP"/. "$MEDIA_SRC"/ 2>/dev/null || true
+fi
+
 # 5. Build (clean to avoid stale cache)
 cd "$PROJECT_ROOT/apps/web"
 rm -rf .next
@@ -44,6 +61,22 @@ STANDALONE_DIR="$PROJECT_ROOT/apps/web/.next/standalone/apps/web"
 cp -r "$PROJECT_ROOT/apps/web/public" "$STANDALONE_DIR/public" 2>/dev/null || true
 mkdir -p "$STANDALONE_DIR/.next"
 cp -r "$PROJECT_ROOT/apps/web/.next/static" "$STANDALONE_DIR/.next/static" 2>/dev/null || true
+
+# Restore media files after build
+mkdir -p "$MEDIA_SRC"
+mkdir -p "$STANDALONE_MEDIA"
+
+if [[ -d "$MEDIA_BACKUP" ]]; then
+  cp -an "$MEDIA_BACKUP"/. "$MEDIA_SRC"/ 2>/dev/null || true
+  cp -an "$MEDIA_BACKUP"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
+  rm -rf "$MEDIA_BACKUP"
+  echo "📦 Restored media files."
+fi
+
+# Sync: source → standalone (catches any files from git or manual placement)
+cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
+# Sync: standalone → source (catches any files Payload wrote to standalone)
+cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
 
 # Sync missing node_modules into standalone (monorepo hoisting fix)
 # Next.js standalone file tracer misses hoisted deps in npm workspaces
