@@ -9,6 +9,7 @@ export const GalleryBlock: Block = {
       type: 'array',
       label: 'Zdjęcia',
       labels: { singular: 'Zdjęcie', plural: 'Zdjęcia' },
+      maxRows: 24,
       fields: [
         { name: 'image', type: 'upload', relationTo: 'media', required: true, label: 'Zdjęcie' },
       ],

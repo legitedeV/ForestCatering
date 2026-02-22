@@ -9,6 +9,7 @@ export const FAQBlock: Block = {
       type: 'array',
       label: 'Pytania',
       labels: { singular: 'Pytanie', plural: 'Pytania' },
+      maxRows: 12,
       fields: [
         { name: 'question', type: 'text', required: true, label: 'Pytanie' },
         { name: 'answer', type: 'textarea', required: true, label: 'Odpowiedź' },

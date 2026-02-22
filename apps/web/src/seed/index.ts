@@ -131,6 +131,91 @@ async function seed() {
     }
   }
 
+  // ─── Pages (home) ────────────────────────────────────────────
+  const homeSlug = process.env.HOME_PAGE_SLUG || 'home'
+  const homeSections = [
+    {
+      blockType: 'hero',
+      heading: 'Wyśmienity catering na każdą okazję',
+      subheading: 'Eventy firmowe · Wesela · Catering prywatny · Obsługa baru',
+      ctaText: 'Zamów catering',
+      ctaLink: '/sklep',
+    },
+    {
+      blockType: 'richText',
+      content: {
+        root: {
+          type: 'root',
+          format: '',
+          indent: 0,
+          version: 1,
+          direction: 'ltr',
+          children: [
+            {
+              type: 'heading',
+              tag: 'h2',
+              format: '',
+              indent: 0,
+              version: 1,
+              direction: 'ltr',
+              children: [{
+                type: 'text',
+                text: 'O Forest Catering',
+                format: 0,
+                version: 1,
+                detail: 0,
+                mode: 'normal',
+                style: '',
+              }],
+            },
+            {
+              type: 'paragraph',
+              format: '',
+              indent: 0,
+              version: 1,
+              direction: 'ltr',
+              children: [{
+                type: 'text',
+                text: 'Forest Catering to zespół doświadczonych kucharzy i pasjonatów dobrego jedzenia ze Szczecina. Specjalizujemy się w cateringu eventowym, firmowym i weselnym.',
+                format: 0,
+                version: 1,
+                detail: 0,
+                mode: 'normal',
+                style: '',
+              }],
+            },
+          ],
+        },
+      },
+    },
+    {
+      blockType: 'cta',
+      heading: 'Zamów catering już dziś',
+      text: 'Odpowiadamy w ciągu 24h. Bezpłatna wycena.',
+      buttonText: 'Napisz do nas',
+      buttonLink: '/kontakt',
+      variant: 'primary',
+    },
+  ]
+
+  const homeData = {
+    title: 'Forest Catering — Strona główna',
+    slug: homeSlug,
+    _status: 'published' as const,
+    sections: homeSections,
+    seo: {
+      metaTitle: 'Forest Catering — Catering premium w Szczecinie',
+      metaDescription: 'Profesjonalny catering eventowy, firmowy i weselny w Szczecinie. Świeże lokalne składniki.',
+    },
+  }
+
+  const existingPage = await payload.find({ collection: 'pages', where: { slug: { equals: homeSlug } }, limit: 1 })
+  if (existingPage.docs[0]) {
+    await payload.update({ collection: 'pages', id: existingPage.docs[0].id, data: homeData as never })
+  } else {
+    await payload.create({ collection: 'pages', data: homeData as never })
+  }
+
   console.log('✅ Seed complete')
 }
 
