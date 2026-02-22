@@ -392,9 +392,82 @@ export interface Page {
             backgroundImage?: (number | null) | Media;
             ctaText?: string | null;
             ctaLink?: string | null;
+            badge?: string | null;
+            secondaryCtaText?: string | null;
+            secondaryCtaLink?: string | null;
+            showScrollIndicator?: boolean | null;
+            fullHeight?: boolean | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'hero';
+          }
+        | {
+            items?:
+              | {
+                  value: number;
+                  suffix?: string | null;
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats';
+          }
+        | {
+            heading?: string | null;
+            items?:
+              | {
+                  emoji: string;
+                  title: string;
+                  description: string;
+                  link?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'services';
+          }
+        | {
+            heading?: string | null;
+            limit?: number | null;
+            linkText?: string | null;
+            linkUrl?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'featuredProducts';
+          }
+        | {
+            badge?: string | null;
+            heading: string;
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            highlights?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            image?: (number | null) | Media;
+            ctaText?: string | null;
+            ctaLink?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'about';
           }
         | {
             content: {
@@ -428,11 +501,29 @@ export interface Page {
             blockType: 'gallery';
           }
         | {
+            heading?: string | null;
+            items?:
+              | {
+                  quote: string;
+                  author: string;
+                  event?: string | null;
+                  rating?: number | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'testimonials';
+          }
+        | {
             heading: string;
             text?: string | null;
             buttonText: string;
             buttonLink: string;
             variant?: ('primary' | 'secondary') | null;
+            phoneNumber?: string | null;
+            secondaryButtonText?: string | null;
+            secondaryButtonLink?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'cta';
@@ -787,6 +878,69 @@ export interface PagesSelect<T extends boolean = true> {
               backgroundImage?: T;
               ctaText?: T;
               ctaLink?: T;
+              badge?: T;
+              secondaryCtaText?: T;
+              secondaryCtaLink?: T;
+              showScrollIndicator?: T;
+              fullHeight?: T;
+              id?: T;
+              blockName?: T;
+            };
+        stats?:
+          | T
+          | {
+              items?:
+                | T
+                | {
+                    value?: T;
+                    suffix?: T;
+                    label?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        services?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    emoji?: T;
+                    title?: T;
+                    description?: T;
+                    link?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        featuredProducts?:
+          | T
+          | {
+              heading?: T;
+              limit?: T;
+              linkText?: T;
+              linkUrl?: T;
+              id?: T;
+              blockName?: T;
+            };
+        about?:
+          | T
+          | {
+              badge?: T;
+              heading?: T;
+              content?: T;
+              highlights?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              image?: T;
+              ctaText?: T;
+              ctaLink?: T;
               id?: T;
               blockName?: T;
             };
@@ -809,6 +963,22 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        testimonials?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    quote?: T;
+                    author?: T;
+                    event?: T;
+                    rating?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
         cta?:
           | T
           | {
@@ -817,6 +987,9 @@ export interface PagesSelect<T extends boolean = true> {
               buttonText?: T;
               buttonLink?: T;
               variant?: T;
+              phoneNumber?: T;
+              secondaryButtonText?: T;
+              secondaryButtonLink?: T;
               id?: T;
               blockName?: T;
             };
