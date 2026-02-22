@@ -57,6 +57,20 @@ fi
 # 6. PM2
 pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --env production
 
+# Wait for Next.js to be ready
+MAX_ATTEMPTS=30
+echo "Waiting for Next.js to start..."
+for i in $(seq 1 $MAX_ATTEMPTS); do
+  if curl -sf -o /dev/null http://127.0.0.1:3000/; then
+    echo "✅ Next.js is ready (attempt $i)."
+    break
+  fi
+  if [[ $i -eq $MAX_ATTEMPTS ]]; then
+    echo "⚠️  Next.js did not respond after ${MAX_ATTEMPTS}s — continuing with smoke tests."
+  fi
+  sleep 1
+done
+
 # 7. nginx
 bash "$SCRIPT_DIR/ensure-nginx.sh"
 

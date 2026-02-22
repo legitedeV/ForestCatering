@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Use HTTPS config if SSL cert exists, otherwise fall back to HTTP-only
-if [[ -f /etc/letsencrypt/live/forestbar.pl/fullchain.pem ]]; then
+if sudo test -f /etc/letsencrypt/live/forestbar.pl/fullchain.pem; then
   CONF_SRC="$SCRIPT_DIR/../nginx/forestbar.conf"
   CONF_NAME="forestbar.conf"
   echo "SSL certificate found — using HTTPS config."
