@@ -1,6 +1,6 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
-export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
+export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
    CREATE TYPE "public"."enum_products_allergens" AS ENUM('gluten', 'dairy', 'eggs', 'nuts', 'soy', 'fish', 'shellfish', 'celery', 'mustard', 'sesame', 'lupine', 'mollusks');
   CREATE TYPE "public"."enum_products_dietary" AS ENUM('vegetarian', 'vegan', 'gluten-free', 'low-carb');
@@ -556,7 +556,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "navigation_footer_columns_parent_id_idx" ON "navigation_footer_columns" USING btree ("_parent_id");`)
 }
 
-export async function down({ db, payload, req }: MigrateDownArgs): Promise<void> {
+export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
    DROP TABLE "products_images" CASCADE;
   DROP TABLE "products_allergens" CASCADE;

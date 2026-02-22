@@ -268,12 +268,14 @@ export default async function HomePage() {
           </div>
           <div className="lg:col-span-2">
             <AnimatedSection>
-              <div className="flex h-full min-h-[320px] items-center justify-center overflow-hidden rounded-2xl bg-forest-800">
-                <img
+              <div className="relative flex h-full min-h-[320px] items-center justify-center overflow-hidden rounded-2xl bg-forest-800">
+                <Image
                   src="https://images.unsplash.com/photo-1530062845289-9109b2c9c868?w=800&q=80"
                   alt="Forest Catering - przygotowanie posiłków"
+                  fill
                   loading="lazy"
                   className="h-full w-full object-cover"
+                  unoptimized
                 />
               </div>
             </AnimatedSection>
@@ -294,11 +296,13 @@ export default async function HomePage() {
               {galleryPreviewImages.map((item, i) => (
                 <AnimatedItem key={item.cat}>
                   <div className={`group relative overflow-hidden rounded-lg ${i < 2 ? 'row-span-2 aspect-[3/4]' : 'aspect-square'}`}>
-                    <img
+                    <Image
                       src={item.src}
                       alt={item.cat}
+                      fill
                       loading="lazy"
                       className="h-full w-full object-cover transition group-hover:scale-105"
+                      unoptimized
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-forest-950/40 opacity-0 transition group-hover:opacity-100">
                       <span className="rounded-full bg-forest-800/80 px-3 py-1 text-sm font-medium text-cream">{item.cat}</span>
