@@ -8,7 +8,6 @@ const pages = [
   { name: 'eventy', path: '/eventy' },
   { name: 'galeria', path: '/galeria' },
   { name: 'blog', path: '/blog' },
-  { name: 'blog-post', path: '/blog/startujemy-z-blogiem-forest-catering' },
   { name: 'kontakt', path: '/kontakt' },
   { name: 'regulamin', path: '/regulamin' },
   { name: 'polityka', path: '/polityka-prywatnosci' },
