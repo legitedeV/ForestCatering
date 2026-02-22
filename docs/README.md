@@ -107,3 +107,19 @@ npm run lint
 > **Note:** The build requires `DATABASE_URI`, `PAYLOAD_SECRET`, and `NEXT_PUBLIC_SITE_URL`
 > environment variables. Pages that query PostgreSQL will log connection errors during static
 > generation if no database is running — this is expected and does not fail the build.
+
+### Testing blog content rendering
+
+1. Start the dev server with a running PostgreSQL instance:
+   ```bash
+   cd apps/web && npm run dev
+   ```
+2. Open the admin panel at `http://localhost:3000/admin` and create/edit a blog post:
+   - Set **Status** to "Opublikowany" (Published).
+   - Add rich text content (headings, paragraphs, lists, etc.) in the **Treść** (Content) field.
+   - Save the post.
+3. Navigate to `http://localhost:3000/blog/<slug>` on the public site.
+4. Verify that:
+   - The full rich text content is rendered with correct HTML formatting.
+   - The placeholder message ("Pełna treść tego artykułu…") is **not** shown when content exists.
+   - The placeholder message **is** shown only when the content field is empty.
