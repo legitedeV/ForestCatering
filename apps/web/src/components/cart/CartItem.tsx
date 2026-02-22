@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useCart, type CartItem as CartItemType } from '@/lib/cart-store'
 import { formatPrice } from '@/lib/format'
 import { QuantityControl } from './QuantityControl'
@@ -15,8 +16,11 @@ export function CartItem({ item }: CartItemProps) {
   return (
     <div className="flex items-center gap-4 rounded-xl border border-forest-700 bg-forest-800 p-4">
       <Link href={`/sklep/${item.slug}`} className="flex-shrink-0">
-        <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-forest-700 text-2xl">
-          🍽️
+        <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-forest-700 text-2xl overflow-hidden">
+          {item.image
+            ? <Image src={item.image} alt={item.name} width={64} height={64} className="h-full w-full object-cover" />
+            : '🍽️'
+          }
         </div>
       </Link>
       <div className="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
