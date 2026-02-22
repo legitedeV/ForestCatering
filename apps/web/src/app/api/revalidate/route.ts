@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     return new Response('Invalid signature', { status: 401 })
   }
 
-  const isValid = crypto.timingSafeEqual(signatureBuf, expectedBuf)
+  const isValid = crypto.timingSafeEqual(expectedBuf, signatureBuf)
 
   if (!isValid) {
     return new Response('Invalid signature', { status: 401 })
