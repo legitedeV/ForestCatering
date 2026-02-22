@@ -33,11 +33,9 @@ if systemctl is-active --quiet nginx 2>/dev/null; then
 fi
 
 # ── HTTPS via nginx (forestbar.pl) ───────────────────────────────────
-if [[ -f /etc/letsencrypt/live/forestbar.pl/fullchain.pem ]]; then
-  for p in "${PATHS[@]}"; do
+for p in "${PATHS[@]}"; do
     check "https://forestbar.pl${p}"
   done
-fi
 
 [[ $FAIL -eq 0 ]] || { echo "🔥 SMOKE FAILED"; exit 1; }
 echo "🎉 All smoke tests passed."
