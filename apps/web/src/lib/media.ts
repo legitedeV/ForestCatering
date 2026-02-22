@@ -1,5 +1,24 @@
 export function getMediaUrl(image: unknown): string | undefined {
-  if (!image || typeof image === 'number' || typeof image === 'string') return undefined
+  if (!image) return undefined
+
+  // Unresolved relation — Payload returned a raw ID instead of a populated object.
+  if (typeof image === 'number') {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`[getMediaUrl] Received a numeric media ID (${image}) — ensure depth is set to populate the relation.`)
+    }
+    return undefined
+  }
+
+  // Direct URL string (e.g. from Payload or manual entry) — treat as a valid URL.
+  if (typeof image === 'string') {
+    try {
+      const parsed = new URL(image)
+      return parsed.pathname
+    } catch {
+      return image
+    }
+  }
+
   const media = image as { url?: string | null }
   if (!media.url) return undefined
   // Return relative path — next/image treats these as local (no remotePatterns needed).
