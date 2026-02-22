@@ -138,11 +138,44 @@ async function seed() {
       blockType: 'hero',
       heading: 'Wyśmienity catering na każdą okazję',
       subheading: 'Eventy firmowe · Wesela · Catering prywatny · Obsługa baru',
+      badge: '🌿 Premium Catering Szczecin',
       ctaText: 'Zamów catering',
       ctaLink: '/sklep',
+      secondaryCtaText: 'Zapytaj o event',
+      secondaryCtaLink: '/kontakt',
+      showScrollIndicator: true,
+      fullHeight: true,
     },
     {
-      blockType: 'richText',
+      blockType: 'stats',
+      items: [
+        { value: 500, suffix: '+', label: 'Zrealizowanych eventów' },
+        { value: 10, suffix: '+', label: 'Lat doświadczenia' },
+        { value: 50, suffix: '+', label: 'Pozycji w menu' },
+        { value: 100, suffix: '%', label: 'Zadowolonych klientów' },
+      ],
+    },
+    {
+      blockType: 'services',
+      heading: 'Czym się zajmujemy',
+      items: [
+        { emoji: '🍽️', title: 'Catering firmowy', description: 'Profesjonalna obsługa spotkań biznesowych, konferencji i codziennych dostaw do biura.', link: '/oferta' },
+        { emoji: '🎉', title: 'Eventy prywatne', description: 'Kompleksowa obsługa imprez okolicznościowych, urodzin i przyjęć w plenerze.', link: '/eventy' },
+        { emoji: '💒', title: 'Wesela', description: 'Wyjątkowe menu weselne dopasowane do Waszych potrzeb i stylu uroczystości.', link: '/eventy' },
+        { emoji: '🍸', title: 'Obsługa baru', description: 'Mobilny bar z profesjonalnymi barmanami, autorskimi koktajlami i pokazami.', link: '/eventy' },
+      ],
+    },
+    {
+      blockType: 'featuredProducts',
+      heading: 'Nasze bestsellery',
+      limit: 6,
+      linkText: 'Zobacz cały sklep →',
+      linkUrl: '/sklep',
+    },
+    {
+      blockType: 'about',
+      badge: 'O Forest Catering',
+      heading: 'Gotujemy z pasją od ponad 10 lat',
       content: {
         root: {
           type: 'root',
@@ -152,15 +185,14 @@ async function seed() {
           direction: 'ltr',
           children: [
             {
-              type: 'heading',
-              tag: 'h2',
+              type: 'paragraph',
               format: '',
               indent: 0,
               version: 1,
               direction: 'ltr',
               children: [{
                 type: 'text',
-                text: 'O Forest Catering',
+                text: 'Forest Catering to zespół doświadczonych kucharzy i pasjonatów dobrego jedzenia ze Szczecina. Specjalizujemy się w cateringu eventowym, firmowym i weselnym, zawsze stawiając na najwyższą jakość składników i indywidualne podejście do każdego klienta.',
                 format: 0,
                 version: 1,
                 detail: 0,
@@ -176,7 +208,7 @@ async function seed() {
               direction: 'ltr',
               children: [{
                 type: 'text',
-                text: 'Forest Catering to zespół doświadczonych kucharzy i pasjonatów dobrego jedzenia ze Szczecina. Specjalizujemy się w cateringu eventowym, firmowym i weselnym.',
+                text: 'Współpracujemy z lokalnymi dostawcami, korzystamy z sezonowych składników i przygotowujemy wszystko ręcznie — od pieczywa po desery. Każde zamówienie traktujemy jak wyzwanie, któremu chcemy sprostać na najwyższym poziomie.',
                 format: 0,
                 version: 1,
                 detail: 0,
@@ -187,14 +219,34 @@ async function seed() {
           ],
         },
       },
+      highlights: [
+        { text: 'Świeże lokalne składniki' },
+        { text: 'Ręczne przygotowanie' },
+        { text: 'Indywidualne menu' },
+        { text: 'Doświadczony zespół' },
+      ],
+      ctaText: 'Poznaj naszą ofertę',
+      ctaLink: '/oferta',
+    },
+    {
+      blockType: 'testimonials',
+      heading: 'Co mówią nasi klienci',
+      items: [
+        { quote: 'Forest Catering zapewnił niesamowite jedzenie na nasze wesele. Goście do dziś wspominają te dania!', author: 'Anna i Marcin', event: 'Wesele', rating: 5 },
+        { quote: 'Profesjonalne podejście, elastyczność i pyszne jedzenie. Stały partner naszej firmy.', author: 'Tomasz K.', event: 'Catering firmowy', rating: 5 },
+        { quote: 'Obsługa baru na naszym evencie firmowym była na najwyższym poziomie!', author: 'Marta W.', event: 'Event firmowy', rating: 5 },
+      ],
     },
     {
       blockType: 'cta',
-      heading: 'Zamów catering już dziś',
+      heading: 'Gotowy na niezapomniane wydarzenie?',
       text: 'Odpowiadamy w ciągu 24h. Bezpłatna wycena.',
       buttonText: 'Napisz do nas',
       buttonLink: '/kontakt',
       variant: 'primary',
+      phoneNumber: '+48123456789',
+      secondaryButtonText: 'Zadzwoń',
+      secondaryButtonLink: 'tel:+48123456789',
     },
   ]
 

@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { populateSlug } from '../hooks/populateSlug'
+import { revalidatePages } from '../hooks/revalidatePages'
 import { HeroBlock } from '../blocks/Hero'
 import { RichTextBlock } from '../blocks/RichText'
 import { GalleryBlock } from '../blocks/Gallery'
@@ -16,13 +17,31 @@ import { TestimonialsBlock } from '../blocks/TestimonialsBlock'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: { singular: 'Strona', plural: 'Strony' },
-  admin: { useAsTitle: 'title' },
+  admin: {
+    useAsTitle: 'title',
+    preview: (doc) => {
+      const slug = doc?.slug as string
+      if (!slug) return ''
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+      const secret = process.env.PAYLOAD_PREVIEW_SECRET || ''
+      return `${baseUrl}/api/preview?secret=${secret}&slug=${slug}`
+    },
+    livePreview: {
+      url: ({ data }) => {
+        const slug = data?.slug as string
+        if (!slug) return ''
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+        return slug === 'home' ? baseUrl : `${baseUrl}/${slug}`
+      },
+    },
+  },
   versions: {
     drafts: true,
     maxPerDoc: 50,
   },
   hooks: {
     beforeValidate: [populateSlug],
+    afterChange: [revalidatePages],
   },
   access: {
     read: () => true,
