@@ -42,7 +42,7 @@ Profesjonalna firma cateringowa ze Szczecina — Next.js 15 + Payload CMS 3 + Po
 - `PAYLOAD_REVALIDATE_SECRET`
 - `HOME_PAGE_SLUG` (default: `home`)
 
-Generate (or rotate) them idempotently:
+Generate missing values idempotently (existing secrets are preserved):
 
 ```bash
 bash ops/scripts/gen-secrets.sh

@@ -2,7 +2,8 @@
 set -euo pipefail
 FAIL=0
 check() {
-  CODE=$(curl -sf -o /dev/null -w "%{http_code}" "$1" 2>/dev/null || echo "000")
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" "$1" 2>/dev/null || true)
+  [[ -n "$CODE" ]] || CODE="000"
   if [[ "$CODE" =~ ^(200|301|302)$ ]]; then echo "✅ $1 → $CODE"; else echo "❌ $1 → $CODE"; FAIL=1; fi
 }
 
