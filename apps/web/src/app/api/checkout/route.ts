@@ -16,15 +16,23 @@ export async function POST(req: Request) {
 
     const payload = await getPayload()
 
+    const productResults = await Promise.all(
+      items.map(async (item) => {
+        try {
+          const product = await payload.findByID({ collection: 'products', id: item.productId })
+          return { item, product: product?.isAvailable ? product : null }
+        } catch {
+          return { item, product: null }
+        }
+      })
+    )
+
     const validatedItems = []
     const unavailable: string[] = []
-    for (const item of items) {
-      try {
-        const product = await payload.findByID({ collection: 'products', id: item.productId })
-        if (!product || !product.isAvailable) {
-          unavailable.push(item.productId)
-          continue
-        }
+    for (const { item, product } of productResults) {
+      if (!product) {
+        unavailable.push(item.productId)
+      } else {
         validatedItems.push({
           product: product.id,
           productName: product.name,
@@ -32,8 +40,6 @@ export async function POST(req: Request) {
           unitPrice: product.price,
           lineTotal: product.price * item.quantity,
         })
-      } catch {
-        unavailable.push(item.productId)
       }
     }
     if (unavailable.length > 0) {

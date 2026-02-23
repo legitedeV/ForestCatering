@@ -22,6 +22,13 @@ interface Props {
 
 interface CategoryDoc { id: string; slug: string; name: string }
 
+function buildProductWhere(diet?: string, categoryId?: string): Where {
+  const where: Where = { isAvailable: { equals: true } }
+  if (diet) where.dietary = { contains: diet }
+  if (categoryId) where.category = { equals: categoryId }
+  return where
+}
+
 export default async function ShopPage({ searchParams }: Props) {
   const params = await searchParams
   const currentPage = Number(params.page) || 1
@@ -33,33 +40,43 @@ export default async function ShopPage({ searchParams }: Props) {
 
   try {
     const payload = await getPayload()
-    const catResult = await payload.find({ collection: 'categories', sort: 'sortOrder', limit: 50 })
-    categories = catResult.docs as unknown as CategoryDoc[]
-
-    const where: Where = { isAvailable: { equals: true } }
-    if (params.category) {
-      const cat = categories.find((c) => c.slug === params.category)
-      if (cat) where.category = { equals: cat.id }
-    }
-    if (params.diet) {
-      where.dietary = { contains: params.diet }
-    }
 
     let sort: string = 'sortOrder'
     if (params.sort === 'price-asc') sort = 'price'
     else if (params.sort === 'price-desc') sort = '-price'
     else if (params.sort === 'name') sort = 'name'
 
-    const result = await payload.find({
-      collection: 'products',
-      where,
-      sort,
-      limit: perPage,
-      page: currentPage,
-      depth: 2,
-    })
-    products = result.docs as unknown as ProductDoc[]
-    totalPages = result.totalPages
+    const [catResult, unconditionalProductResult] = await Promise.all([
+      payload.find({ collection: 'categories', sort: 'sortOrder', limit: 50 }),
+      !params.category
+        ? payload.find({
+            collection: 'products',
+            where: buildProductWhere(params.diet),
+            sort,
+            limit: perPage,
+            page: currentPage,
+            depth: 2,
+          })
+        : null,
+    ])
+    categories = catResult.docs as unknown as CategoryDoc[]
+
+    if (unconditionalProductResult) {
+      products = unconditionalProductResult.docs as unknown as ProductDoc[]
+      totalPages = unconditionalProductResult.totalPages
+    } else {
+      const cat = categories.find((c) => c.slug === params.category)
+      const result = await payload.find({
+        collection: 'products',
+        where: buildProductWhere(params.diet, cat?.id),
+        sort,
+        limit: perPage,
+        page: currentPage,
+        depth: 2,
+      })
+      products = result.docs as unknown as ProductDoc[]
+      totalPages = result.totalPages
+    }
   } catch {
     // Payload not available during build
   }

@@ -77,21 +77,21 @@ export const useCart = create<CartState>()(
 )
 
 // Selector hooks (computed values)
+const calcSubtotal = (items: CartItem[]) => items.reduce((sum, i) => sum + i.price * i.quantity, 0)
+
 export const useCartItemCount = () => useCart(s => s.items.reduce((sum, i) => sum + i.quantity, 0))
-export const useCartSubtotal = () => useCart(s => s.items.reduce((sum, i) => sum + i.price * i.quantity, 0))
-export const useCartDeliveryFee = () => {
-  const subtotal = useCartSubtotal()
-  return subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE
-}
-export const useCartTotal = () => {
-  const subtotal = useCartSubtotal()
-  const fee = useCartDeliveryFee()
+export const useCartSubtotal = () => useCart(s => calcSubtotal(s.items))
+export const useCartDeliveryFee = () => useCart(s => {
+  return calcSubtotal(s.items) >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE
+})
+export const useCartTotal = () => useCart(s => {
+  const subtotal = calcSubtotal(s.items)
+  const fee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE
   return subtotal + fee
-}
-export const useCanCheckout = () => {
-  const subtotal = useCartSubtotal()
-  const count = useCartItemCount()
-  return count > 0 && subtotal >= MIN_ORDER_AMOUNT
-}
+})
+export const useCanCheckout = () => useCart(s => {
+  const count = s.items.reduce((sum, i) => sum + i.quantity, 0)
+  return count > 0 && calcSubtotal(s.items) >= MIN_ORDER_AMOUNT
+})
 
 export { DELIVERY_FEE, FREE_DELIVERY_THRESHOLD, MIN_ORDER_AMOUNT }
