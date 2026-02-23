@@ -23,6 +23,23 @@ import { Navigation } from './src/payload/globals/Navigation'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const hasSmtpConfig = Boolean(process.env.SMTP_HOST)
+
+const emailAdapter = hasSmtpConfig
+  ? nodemailerAdapter({
+      defaultFromAddress: process.env.SMTP_FROM || 'kontakt@forestbar.pl',
+      defaultFromName: 'ForestCatering',
+      transportOptions: {
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || '587', 10),
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+      },
+    })
+  : undefined
+
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   editor: lexicalEditor(),
@@ -49,20 +66,7 @@ export default buildConfig({
   ],
   globals: [SiteSettings, Navigation],
   secret: process.env.PAYLOAD_SECRET || '',
-  email: nodemailerAdapter({
-    defaultFromAddress: process.env.SMTP_FROM || 'kontakt@forestbar.pl',
-    defaultFromName: 'ForestCatering',
-    transportOptions: process.env.SMTP_HOST
-      ? {
-          host: process.env.SMTP_HOST,
-          port: parseInt(process.env.SMTP_PORT || '587', 10),
-          auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-          },
-        }
-      : undefined,
-  }),
+  email: emailAdapter,
   sharp,
   typescript: {
     outputFile: path.resolve(dirname, 'src/payload-types.ts'),
