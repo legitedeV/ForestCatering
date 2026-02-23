@@ -9,6 +9,11 @@ import { ServicesBlock } from './blocks/ServicesBlock'
 import { FeaturedProductsBlock } from './blocks/FeaturedProductsBlock'
 import { AboutBlock } from './blocks/AboutBlock'
 import { TestimonialsBlock } from './blocks/TestimonialsBlock'
+import { PricingBlock } from './blocks/PricingBlock'
+import { StepsBlock } from './blocks/StepsBlock'
+import { ContactFormBlock } from './blocks/ContactFormBlock'
+import { LegalTextBlock } from './blocks/LegalTextBlock'
+import { GalleryFullBlock } from './blocks/GalleryFullBlock'
 
 interface Props {
   sections: PageSection[]
@@ -34,12 +39,22 @@ export function BlockRenderer({ sections }: Props) {
             return <RichTextBlock key={key} {...block} />
           case 'gallery':
             return <GalleryBlock key={key} {...block} />
+          case 'galleryFull':
+            return <GalleryFullBlock key={key} {...block} />
           case 'testimonials':
             return <TestimonialsBlock key={key} {...block} />
           case 'cta':
             return <CTABlock key={key} {...block} />
           case 'faq':
             return <FAQBlock key={key} {...block} />
+          case 'pricing':
+            return <PricingBlock key={key} {...block} />
+          case 'steps':
+            return <StepsBlock key={key} {...block} />
+          case 'contactForm':
+            return <ContactFormBlock key={key} {...block} />
+          case 'legalText':
+            return <LegalTextBlock key={key} {...block} />
           default:
             return null
         }

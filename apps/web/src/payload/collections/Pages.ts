@@ -13,12 +13,18 @@ import { ServicesBlock } from '../blocks/ServicesBlock'
 import { FeaturedProductsBlock } from '../blocks/FeaturedProductsBlock'
 import { AboutBlock } from '../blocks/AboutBlock'
 import { TestimonialsBlock } from '../blocks/TestimonialsBlock'
+import { PricingBlock } from '../blocks/PricingBlock'
+import { StepsBlock } from '../blocks/StepsBlock'
+import { ContactFormBlock } from '../blocks/ContactFormBlock'
+import { LegalTextBlock } from '../blocks/LegalTextBlock'
+import { GalleryFullBlock } from '../blocks/GalleryFullBlock'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: { singular: 'Strona', plural: 'Strony' },
   admin: {
     useAsTitle: 'title',
+    defaultColumns: ['title', 'slug', 'parent', 'sortOrder', 'updatedAt'],
     preview: (doc) => {
       const slug = doc?.slug as string
       if (!slug) return ''
@@ -33,6 +39,11 @@ export const Pages: CollectionConfig = {
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
         return slug === 'home' ? baseUrl : `${baseUrl}/${slug}`
       },
+      breakpoints: [
+        { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
+        { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
+        { label: 'Desktop', name: 'desktop', width: 1440, height: 900 },
+      ],
     },
   },
   versions: {
@@ -53,12 +64,38 @@ export const Pages: CollectionConfig = {
     { name: 'title', type: 'text', required: true, label: 'Tytuł' },
     { name: 'slug', type: 'text', required: true, unique: true, label: 'Slug (URL)' },
     {
+      name: 'parent',
+      type: 'relationship',
+      relationTo: 'pages',
+      label: 'Strona nadrzędna',
+      admin: {
+        description: 'Wybierz stronę nadrzędną (opcjonalnie).',
+      },
+    },
+    { name: 'sortOrder', type: 'number', defaultValue: 0, label: 'Kolejność', admin: { position: 'sidebar' } },
+    {
       name: 'sections',
       type: 'blocks',
       label: 'Sekcje',
       required: true,
       minRows: 1,
-      blocks: [HeroBlock, StatsBlock, ServicesBlock, FeaturedProductsBlock, AboutBlock, RichTextBlock, GalleryBlock, TestimonialsBlock, CTABlock, FAQBlock],
+      blocks: [
+        HeroBlock,
+        StatsBlock,
+        ServicesBlock,
+        FeaturedProductsBlock,
+        AboutBlock,
+        RichTextBlock,
+        GalleryBlock,
+        GalleryFullBlock,
+        TestimonialsBlock,
+        CTABlock,
+        FAQBlock,
+        PricingBlock,
+        StepsBlock,
+        ContactFormBlock,
+        LegalTextBlock,
+      ],
     },
     {
       name: 'seo',
