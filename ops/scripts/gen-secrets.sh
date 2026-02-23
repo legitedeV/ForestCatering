@@ -35,23 +35,27 @@ if [[ ! -f "$ENV_FILE" ]]; then
   echo "ℹ️  Created $ENV_FILE from .env.example"
 fi
 
+POSTGRES_DB_CURRENT="$(env_value POSTGRES_DB)"
+POSTGRES_USER_CURRENT="$(env_value POSTGRES_USER)"
+POSTGRES_HOST_CURRENT="$(env_value POSTGRES_HOST)"
+POSTGRES_PORT_CURRENT="$(env_value POSTGRES_PORT)"
 POSTGRES_PASSWORD_CURRENT="$(env_value POSTGRES_PASSWORD)"
 PAYLOAD_SECRET_CURRENT="$(env_value PAYLOAD_SECRET)"
 PAYLOAD_REVALIDATE_SECRET_CURRENT="$(env_value PAYLOAD_REVALIDATE_SECRET)"
 PAYLOAD_PREVIEW_SECRET_CURRENT="$(env_value PAYLOAD_PREVIEW_SECRET)"
+
+[[ -n "$POSTGRES_DB_CURRENT" ]] || POSTGRES_DB_CURRENT="forestcatering"
+[[ -n "$POSTGRES_USER_CURRENT" ]] || POSTGRES_USER_CURRENT="forestcatering"
+[[ -n "$POSTGRES_HOST_CURRENT" ]] || POSTGRES_HOST_CURRENT="127.0.0.1"
+[[ -n "$POSTGRES_PORT_CURRENT" ]] || POSTGRES_PORT_CURRENT="5432"
 
 if needs_value "$POSTGRES_PASSWORD_CURRENT"; then
   POSTGRES_PASSWORD_CURRENT="$(random_secret)"
   upsert_env "POSTGRES_PASSWORD" "$POSTGRES_PASSWORD_CURRENT"
 fi
 
-if grep -q '^DATABASE_URI=' "$ENV_FILE"; then
-  if grep -q 'CHANGE_ME@' "$ENV_FILE"; then
-    sed -i "s|^DATABASE_URI=.*|DATABASE_URI=postgres://forestcatering:${POSTGRES_PASSWORD_CURRENT}@127.0.0.1:5432/forestcatering|" "$ENV_FILE"
-  fi
-else
-  printf '\nDATABASE_URI=postgres://forestcatering:%s@127.0.0.1:5432/forestcatering\n' "$POSTGRES_PASSWORD_CURRENT" >> "$ENV_FILE"
-fi
+# Keep DB credentials consistent across setup.sh (role password) and app runtime (DATABASE_URI)
+upsert_env "DATABASE_URI" "postgres://${POSTGRES_USER_CURRENT}:${POSTGRES_PASSWORD_CURRENT}@${POSTGRES_HOST_CURRENT}:${POSTGRES_PORT_CURRENT}/${POSTGRES_DB_CURRENT}"
 
 if needs_value "$PAYLOAD_SECRET_CURRENT"; then
   upsert_env "PAYLOAD_SECRET" "$(random_secret)"
@@ -69,4 +73,4 @@ if ! grep -q '^HOME_PAGE_SLUG=' "$ENV_FILE"; then
   printf '\nHOME_PAGE_SLUG=home\n' >> "$ENV_FILE"
 fi
 
-echo "✅ Ensured $ENV_FILE secrets exist (idempotent, non-destructive)."
+echo "✅ Ensured $ENV_FILE secrets exist and DB credentials are synchronized."

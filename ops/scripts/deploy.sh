@@ -18,6 +18,46 @@ calc_hash() {
   fi
 }
 
+extract_uri_credentials() {
+  local uri="$1"
+  local authority
+  authority="${uri#*://}"
+  authority="${authority%%/*}"
+  echo "${authority%%@*}"
+}
+
+validate_db_env_consistency() {
+  local postgres_password="$1"
+  local database_uri="$2"
+
+  if [[ -z "$postgres_password" || -z "$database_uri" ]]; then
+    echo "❌ Missing POSTGRES_PASSWORD or DATABASE_URI in ops/.env"
+    echo "   Run: bash ops/scripts/gen-secrets.sh"
+    exit 1
+  fi
+
+  local credentials uri_user uri_password
+  credentials="$(extract_uri_credentials "$database_uri")"
+
+  if [[ "$credentials" != *:* ]]; then
+    echo "❌ DATABASE_URI has no explicit user:password section."
+    echo "   DATABASE_URI=$database_uri"
+    echo "   Run: bash ops/scripts/gen-secrets.sh"
+    exit 1
+  fi
+
+  uri_user="${credentials%%:*}"
+  uri_password="${credentials#*:}"
+
+  if [[ "$uri_password" != "$postgres_password" ]]; then
+    echo "❌ DB credentials drift detected: POSTGRES_PASSWORD != DATABASE_URI password"
+    echo "   POSTGRES_USER=$uri_user"
+    echo "   Refusing deploy to avoid /admin 500 (Postgres auth failure)."
+    echo "   Fix: bash ops/scripts/gen-secrets.sh"
+    exit 1
+  fi
+}
+
 mkdir -p "$LOG_DIR"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
@@ -60,6 +100,8 @@ fi
 set -a
 source "$PROJECT_ROOT/ops/.env"
 set +a
+
+validate_db_env_consistency "${POSTGRES_PASSWORD:-}" "${DATABASE_URI:-}"
 
 # 5. Run setup (idempotent)
 bash "$SCRIPT_DIR/setup.sh"
