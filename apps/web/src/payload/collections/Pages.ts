@@ -3,6 +3,7 @@ import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { populateSlug } from '../hooks/populateSlug'
 import { revalidatePages } from '../hooks/revalidatePages'
+import { computePagePath } from '../hooks/computePagePath'
 import { HeroBlock } from '../blocks/Hero'
 import { RichTextBlock } from '../blocks/RichText'
 import { GalleryBlock } from '../blocks/Gallery'
@@ -24,20 +25,20 @@ export const Pages: CollectionConfig = {
   labels: { singular: 'Strona', plural: 'Strony' },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'slug', 'parent', 'sortOrder', 'updatedAt'],
+    defaultColumns: ['title', 'path', 'slug', 'parent', 'sortOrder', 'updatedAt'],
     preview: (doc) => {
-      const slug = doc?.slug as string
-      if (!slug) return ''
+      const pagePath = (doc?.path || doc?.slug) as string
+      if (!pagePath) return ''
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
       const secret = process.env.PAYLOAD_PREVIEW_SECRET || ''
-      return `${baseUrl}/api/preview?secret=${secret}&slug=${slug}`
+      return `${baseUrl}/api/preview?secret=${secret}&path=${pagePath}`
     },
     livePreview: {
       url: ({ data }) => {
-        const slug = data?.slug as string
-        if (!slug) return ''
+        const pagePath = (data?.path || data?.slug) as string
+        if (!pagePath) return ''
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-        return slug === 'home' ? baseUrl : `${baseUrl}/${slug}`
+        return pagePath === 'home' ? baseUrl : `${baseUrl}/${pagePath}`
       },
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
@@ -51,7 +52,7 @@ export const Pages: CollectionConfig = {
     maxPerDoc: 50,
   },
   hooks: {
-    beforeValidate: [populateSlug],
+    beforeValidate: [populateSlug, computePagePath],
     afterChange: [revalidatePages],
   },
   access: {
@@ -63,6 +64,14 @@ export const Pages: CollectionConfig = {
   fields: [
     { name: 'title', type: 'text', required: true, label: 'Tytuł' },
     { name: 'slug', type: 'text', required: true, unique: true, label: 'Slug (URL)' },
+    {
+      name: 'path',
+      type: 'text',
+      unique: true,
+      index: true,
+      label: 'Path',
+      admin: { readOnly: true, position: 'sidebar' },
+    },
     {
       name: 'parent',
       type: 'relationship',

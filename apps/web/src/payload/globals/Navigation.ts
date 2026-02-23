@@ -1,3 +1,4 @@
+import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import type { GlobalConfig } from 'payload'
 
 export const Navigation: GlobalConfig = {
@@ -5,6 +6,7 @@ export const Navigation: GlobalConfig = {
   label: 'Nawigacja',
   access: {
     read: () => true,
+    update: isAdminOrEditor,
   },
   fields: [
     {

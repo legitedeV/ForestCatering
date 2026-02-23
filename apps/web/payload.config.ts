@@ -73,6 +73,10 @@ export default buildConfig({
   },
   admin: {
     user: Users.slug,
+    meta: {
+      titleSuffix: ' - Forest Catering CMS',
+      description: 'Panel administracyjny Forest Catering',
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },

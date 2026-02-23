@@ -1,3 +1,4 @@
+import { isAdmin } from '../access/isAdmin'
 import type { GlobalConfig } from 'payload'
 
 export const SiteSettings: GlobalConfig = {
@@ -5,6 +6,7 @@ export const SiteSettings: GlobalConfig = {
   label: 'Ustawienia strony',
   access: {
     read: () => true,
+    update: isAdmin,
   },
   fields: [
     { name: 'companyName', type: 'text', defaultValue: 'Forest Catering', label: 'Nazwa firmy' },
