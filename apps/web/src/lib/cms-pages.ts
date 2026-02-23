@@ -1,31 +1,43 @@
+import { unstable_noStore as noStore } from 'next/cache'
 import { draftMode } from 'next/headers'
 import { getPayload } from '@/lib/payload-client'
 import type { Page } from '@/payload-types'
 
-export const HOME_SLUG = process.env.HOME_PAGE_SLUG || 'home'
+export const HOME_PATH = process.env.HOME_PAGE_SLUG || 'home'
 
-export function normalizeSlug(slug: string): string {
-  return slug.replace(/^\/+|\/+$/g, '')
+export function normalizePath(pathValue: string): string {
+  return pathValue
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/\/+/g, '/')
+    .replace(/^\/|\/$/g, '')
 }
 
-export function slugFromSegments(segments: string[]): string {
-  return normalizeSlug(segments.join('/'))
+export function pathFromSegments(segments: string[]): string {
+  return normalizePath(segments.join('/'))
 }
 
-export function isSafeSlug(slug: string): boolean {
-  return /^[a-z0-9]+(?:[/-][a-z0-9]+)*$/i.test(slug)
+export function isSafePath(pathValue: string): boolean {
+  return /^[a-z0-9]+(?:[/-][a-z0-9]+)*$/i.test(pathValue)
 }
 
-export async function getPageBySlug(slug: string): Promise<Page | null> {
-  const normalized = normalizeSlug(slug)
-  if (!normalized || !isSafeSlug(normalized)) return null
+async function getDraftEnabled(): Promise<boolean> {
+  const { isEnabled } = await draftMode()
+  if (isEnabled) noStore()
+  return isEnabled
+}
+
+export async function getPageByPath(pathValue: string): Promise<Page | null> {
+  const normalized = normalizePath(pathValue)
+  if (!normalized || !isSafePath(normalized)) return null
 
   try {
-    const { isEnabled: isDraft } = await draftMode()
+    const isDraft = await getDraftEnabled()
     const payload = await getPayload()
     const result = await payload.find({
       collection: 'pages',
-      where: { slug: { equals: normalized } },
+      where: { path: { equals: normalized } },
       limit: 1,
       depth: 2,
       draft: isDraft,
@@ -37,7 +49,7 @@ export async function getPageBySlug(slug: string): Promise<Page | null> {
   }
 }
 
-export async function getPublishedPageSlugs(): Promise<string[]> {
+export async function getPublishedPagePaths(): Promise<string[]> {
   try {
     const payload = await getPayload()
     const result = await payload.find({
@@ -50,7 +62,10 @@ export async function getPublishedPageSlugs(): Promise<string[]> {
     })
 
     return result.docs
-      .map((doc) => (typeof doc.slug === 'string' ? normalizeSlug(doc.slug) : ''))
+      .map((doc) => {
+        const pagePath = (doc as { path?: unknown }).path
+        return typeof pagePath === 'string' ? normalizePath(pagePath) : ''
+      })
       .filter(Boolean)
   } catch {
     return []

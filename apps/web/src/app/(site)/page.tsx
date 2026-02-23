@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { BlockRenderer } from '@/components/cms/BlockRenderer'
 import type { SiteSetting } from '@/payload-types'
 import { getMediaUrl } from '@/lib/media'
 import { getPayload } from '@/lib/payload-client'
-import { getPageBySlug, HOME_SLUG } from '@/lib/cms-pages'
+import { getPageByPath, HOME_PATH } from '@/lib/cms-pages'
 
 async function getSiteSettings(): Promise<SiteSetting | null> {
   try {
@@ -15,7 +16,7 @@ async function getSiteSettings(): Promise<SiteSetting | null> {
 }
 
 export async function generateMetadata(): Promise<Metadata> {
-  const [page, settings] = await Promise.all([getPageBySlug(HOME_SLUG), getSiteSettings()])
+  const [page, settings] = await Promise.all([getPageByPath(HOME_PATH), getSiteSettings()])
   const title = page?.seo?.metaTitle ?? settings?.seoDefaults?.metaTitle ?? undefined
   const description = page?.seo?.metaDescription ?? settings?.seoDefaults?.metaDescription ?? undefined
   const ogImage = getMediaUrl(page?.seo?.ogImage ?? settings?.seoDefaults?.ogImage)
@@ -32,10 +33,30 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const page = await getPageBySlug(HOME_SLUG)
+  const [page, settings] = await Promise.all([getPageByPath(HOME_PATH), getSiteSettings()])
 
   if (!page?.sections || page.sections.length === 0) {
-    return <section className="px-4 py-28 text-center text-cream">Brak opublikowanej strony głównej w CMS.</section>
+    if (process.env.NODE_ENV !== 'production') {
+      return (
+        <section className="mx-auto max-w-3xl px-4 py-24 text-center text-cream">
+          <h1 className="mb-4 text-3xl font-semibold">Brak opublikowanej strony home w CMS.</h1>
+          <p className="mb-6 text-cream/80">Utwórz lub opublikuj stronę z path = &quot;home&quot; w panelu Payload.</p>
+          <Link href="/admin" className="inline-flex rounded-full bg-cream px-6 py-3 text-sm font-semibold text-forest-900">
+            Przejdź do /admin
+          </Link>
+        </section>
+      )
+    }
+
+    return (
+      <section className="px-4 py-24 text-center text-cream">
+        <h1 className="mb-4 text-3xl font-semibold">{settings?.companyName || 'Forest Catering'}</h1>
+        <p className="mb-6 text-cream/80">Skontaktuj się z nami, aby przygotować indywidualną ofertę cateringu.</p>
+        <Link href="/kontakt" className="inline-flex rounded-full bg-cream px-6 py-3 text-sm font-semibold text-forest-900">
+          Skontaktuj się
+        </Link>
+      </section>
+    )
   }
 
   return <BlockRenderer sections={page.sections} />

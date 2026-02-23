@@ -72,12 +72,99 @@ async function generatePlaceholder(label: string, color: string): Promise<Buffer
   return sharp(Buffer.from(svg)).png().toBuffer()
 }
 
+
+function isTruthy(value: string | undefined): boolean {
+  return value === '1' || value === 'true' || value === 'yes'
+}
+
+async function seedGlobalIfMissing({ payload, slug, data, force }: { payload: Awaited<ReturnType<typeof getPayload>>; slug: 'navigation' | 'site-settings'; data: Record<string, unknown>; force: boolean }) {
+  const existing = (await payload.findGlobal({ slug })) as unknown as Record<string, unknown>
+  const hasData = Object.entries(existing).some(([key, value]) => !['id', 'updatedAt', 'createdAt'].includes(key) && value != null && value !== '' && (!Array.isArray(value) || value.length > 0))
+
+  if (force || !hasData) {
+    await payload.updateGlobal({ slug, data })
+  }
+}
+
 async function seed() {
   if (!process.env.DATABASE_URI || !process.env.PAYLOAD_SECRET) throw new Error('DATABASE_URI and PAYLOAD_SECRET are required')
+
+  const forceSeed = isTruthy(process.env.SEED_FORCE)
+  const adminEmail = process.env.ADMIN_EMAIL
+  const adminPassword = process.env.ADMIN_PASSWORD
+
+  if (!adminEmail) throw new Error('ADMIN_EMAIL is required for seeding admin user.')
+
+  if (!adminPassword) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('ADMIN_PASSWORD is required in production. Refusing to seed without secure credentials.')
+    }
+  }
+
+  const safeAdminPassword = adminPassword || 'Admin123!'
 
   fs.mkdirSync(MEDIA_DIR, { recursive: true })
   const configPath = path.resolve(__dirname, '../../payload.config.ts')
   const payload = await getPayload({ config: (await import(configPath)).default })
+
+  const existingAdmin = await payload.find({ collection: 'users', where: { email: { equals: adminEmail } }, limit: 1 })
+  if (!existingAdmin.docs[0]) {
+    await payload.create({
+      collection: 'users',
+      data: {
+        email: adminEmail,
+        password: safeAdminPassword,
+        name: 'Admin',
+        role: 'admin',
+      } as never,
+    })
+  }
+
+  await seedGlobalIfMissing({
+    payload,
+    slug: 'navigation',
+    force: forceSeed,
+    data: {
+      headerItems: [
+        { label: 'Oferta', url: '/oferta' },
+        { label: 'Eventy', url: '/eventy' },
+        { label: 'Galeria', url: '/galeria' },
+        { label: 'Kontakt', url: '/kontakt' },
+      ],
+      footerColumns: [
+        {
+          title: 'Firma',
+          links: [
+            { label: 'Oferta', url: '/oferta' },
+            { label: 'Regulamin', url: '/regulamin' },
+          ],
+        },
+        {
+          title: 'Kontakt',
+          links: [
+            { label: 'Napisz do nas', url: '/kontakt' },
+            { label: 'Sklep', url: '/sklep' },
+          ],
+        },
+      ],
+    },
+  })
+
+  await seedGlobalIfMissing({
+    payload,
+    slug: 'site-settings',
+    force: forceSeed,
+    data: {
+      companyName: 'Forest Catering',
+      phone: '+48 123 456 789',
+      email: 'kontakt@forestcatering.pl',
+      address: { city: 'Szczecin' },
+      seoDefaults: {
+        metaTitle: 'Forest Catering',
+        metaDescription: 'Profesjonalny catering eventowy, firmowy i weselny.',
+      },
+    },
+  })
 
   const categoryMap: Record<string, number> = {}
   for (const category of CATEGORIES) {
@@ -373,41 +460,49 @@ async function seed() {
     },
   ]
 
-  let homePageId: string | number | undefined
-
   for (const pageData of pagesData) {
     const existingPage = await payload.find({ collection: 'pages', where: { slug: { equals: pageData.slug } }, limit: 1 })
 
     if (existingPage.docs[0]) {
-      const updated = await payload.update({ collection: 'pages', id: existingPage.docs[0].id, data: pageData as never })
-      if (pageData.slug === homeSlug) {
-        homePageId = updated.id
+      if (forceSeed) {
+        await payload.update({ collection: 'pages', id: existingPage.docs[0].id, data: pageData as never })
       }
     } else {
-      const created = await payload.create({ collection: 'pages', data: pageData as never })
-      if (pageData.slug === homeSlug) {
-        homePageId = created.id
-      }
+      await payload.create({ collection: 'pages', data: pageData as never })
     }
   }
 
-  if (homePageId) {
-    for (const childSlug of ['oferta', 'eventy', 'galeria', 'kontakt', 'regulamin']) {
-      const existingPage = await payload.find({ collection: 'pages', where: { slug: { equals: childSlug } }, limit: 1 })
-      if (existingPage.docs[0]) {
-        await payload.update({
-          collection: 'pages',
-          id: existingPage.docs[0].id,
-          data: { parent: homePageId } as never,
-        })
-      }
-    }
-  }
 
+
+
+  const ofertaPage = await payload.find({ collection: 'pages', where: { slug: { equals: 'oferta' } }, limit: 1 })
+  const pakietyPage = await payload.find({ collection: 'pages', where: { slug: { equals: 'pakiety' } }, limit: 1 })
+  if (ofertaPage.docs[0] && !pakietyPage.docs[0]) {
+    await payload.create({
+      collection: 'pages',
+      data: {
+        title: 'Pakiety',
+        slug: 'pakiety',
+        parent: ofertaPage.docs[0].id,
+        sortOrder: 11,
+        _status: 'published',
+        sections: [
+          {
+            blockType: 'pricing',
+            heading: 'Pakiety oferty',
+            packages: [
+              { name: 'Start', price: 'od 45 zł/os.', ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt' },
+              { name: 'Biznes', price: 'od 85 zł/os.', featured: true, ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt' },
+            ],
+          },
+        ],
+      } as never,
+    })
+  }
 
   const galleryMedia = await payload.find({ collection: 'media', limit: 12, sort: '-createdAt' })
-  if (galleryMedia.docs.length) {
-    const galleryPage = await payload.find({ collection: 'pages', where: { slug: { equals: 'galeria' } }, limit: 1, depth: 0 })
+  if (galleryMedia.docs.length && forceSeed) {
+    const galleryPage = await payload.find({ collection: 'pages', where: { path: { equals: 'home/galeria' } }, limit: 1, depth: 0 })
     if (galleryPage.docs[0]) {
       await payload.update({
         collection: 'pages',
