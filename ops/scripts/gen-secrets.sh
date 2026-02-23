@@ -1,20 +1,49 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ENV_FILE="$(cd "$(dirname "$0")/.." && pwd)/.env"
+OPS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+ENV_FILE="$OPS_DIR/.env"
+EXAMPLE_FILE="$OPS_DIR/.env.example"
 
-if [[ -f "$ENV_FILE" ]]; then
-  echo "⚠️  $ENV_FILE already exists. Not overwriting."
-  exit 0
+random_secret() {
+  openssl rand -base64 48 | tr -d '/+=' | cut -c1-48
+}
+
+upsert_env() {
+  local key="$1"
+  local value="$2"
+
+  if grep -q "^${key}=" "$ENV_FILE"; then
+    sed -i "s|^${key}=.*|${key}=${value}|" "$ENV_FILE"
+  else
+    printf '\n%s=%s\n' "$key" "$value" >> "$ENV_FILE"
+  fi
+}
+
+if [[ ! -f "$ENV_FILE" ]]; then
+  cp "$EXAMPLE_FILE" "$ENV_FILE"
+  echo "ℹ️  Created $ENV_FILE from .env.example"
 fi
 
-PG_PASS=$(openssl rand -base64 24 | tr -d '/+=')
-PAYLOAD_SECRET=$(openssl rand -base64 48 | tr -d '/+=')
+PG_PASS=$(random_secret)
+PAYLOAD_SECRET=$(random_secret)
+PAYLOAD_REVALIDATE_SECRET=$(random_secret)
+PAYLOAD_PREVIEW_SECRET=$(random_secret)
 
-cp "$(cd "$(dirname "$0")/.." && pwd)/.env.example" "$ENV_FILE"
+upsert_env "POSTGRES_PASSWORD" "$PG_PASS"
 
-sed -i "s|POSTGRES_PASSWORD=CHANGE_ME|POSTGRES_PASSWORD=${PG_PASS}|g" "$ENV_FILE"
-sed -i "s|CHANGE_ME@127|${PG_PASS}@127|g" "$ENV_FILE"
-sed -i "s|PAYLOAD_SECRET=CHANGE_ME_MIN_32_CHARS|PAYLOAD_SECRET=${PAYLOAD_SECRET}|g" "$ENV_FILE"
+if grep -q '^DATABASE_URI=' "$ENV_FILE"; then
+  sed -i "s|^DATABASE_URI=.*|DATABASE_URI=postgres://forestcatering:${PG_PASS}@127.0.0.1:5432/forestcatering|" "$ENV_FILE"
+else
+  printf '\nDATABASE_URI=postgres://forestcatering:%s@127.0.0.1:5432/forestcatering\n' "$PG_PASS" >> "$ENV_FILE"
+fi
 
-echo "✅ Generated $ENV_FILE with random secrets."
+upsert_env "PAYLOAD_SECRET" "$PAYLOAD_SECRET"
+upsert_env "PAYLOAD_REVALIDATE_SECRET" "$PAYLOAD_REVALIDATE_SECRET"
+upsert_env "PAYLOAD_PREVIEW_SECRET" "$PAYLOAD_PREVIEW_SECRET"
+
+if ! grep -q '^HOME_PAGE_SLUG=' "$ENV_FILE"; then
+  printf '\nHOME_PAGE_SLUG=home\n' >> "$ENV_FILE"
+fi
+
+echo "✅ Updated $ENV_FILE with generated secrets (idempotent upsert)."
