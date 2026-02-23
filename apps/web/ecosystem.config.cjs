@@ -8,6 +8,7 @@ module.exports = {
     instances: 1,
     autorestart: true,
     max_memory_restart: '500M',
+    env_file: path.resolve(__dirname, '../../ops/.env'),
     env_production: {
       NODE_ENV: 'production',
       PORT: 3000,

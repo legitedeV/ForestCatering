@@ -117,7 +117,7 @@ cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
 cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
 
 # 9. PM2
-pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --env production
+pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --env production --update-env
 
 # Wait for Next.js to be ready
 MAX_ATTEMPTS=30

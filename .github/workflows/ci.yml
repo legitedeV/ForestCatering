@@ -37,6 +37,9 @@ jobs:
           DATABASE_URI: postgres://test:testpass123@localhost:5432/forestcatering_test
           PAYLOAD_SECRET: ci-test-secret-that-is-at-least-32-characters-long
           NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          PAYLOAD_REVALIDATE_SECRET: ci-revalidate-secret-that-is-at-least-32-chars
+          PAYLOAD_PREVIEW_SECRET: ci-preview-secret-that-is-at-least-32-chars
+          HOME_PAGE_SLUG: home
         run: npm run build
       - name: Validate ops scripts
         run: |
@@ -77,6 +80,9 @@ jobs:
           DATABASE_URI: postgres://test:testpass123@localhost:5432/forestcatering_test
           PAYLOAD_SECRET: ci-test-secret-that-is-at-least-32-characters-long
           NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          PAYLOAD_REVALIDATE_SECRET: ci-revalidate-secret-that-is-at-least-32-chars
+          PAYLOAD_PREVIEW_SECRET: ci-preview-secret-that-is-at-least-32-chars
+          HOME_PAGE_SLUG: home
         run: npm run build
       - name: Seed data
         working-directory: apps/web
@@ -84,6 +90,9 @@ jobs:
           DATABASE_URI: postgres://test:testpass123@localhost:5432/forestcatering_test
           PAYLOAD_SECRET: ci-test-secret-that-is-at-least-32-characters-long
           NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          PAYLOAD_REVALIDATE_SECRET: ci-revalidate-secret-that-is-at-least-32-chars
+          PAYLOAD_PREVIEW_SECRET: ci-preview-secret-that-is-at-least-32-chars
+          HOME_PAGE_SLUG: home
         run: npm run seed
       - name: Run Playwright screenshots
         working-directory: apps/web
@@ -91,6 +100,9 @@ jobs:
           DATABASE_URI: postgres://test:testpass123@localhost:5432/forestcatering_test
           PAYLOAD_SECRET: ci-test-secret-that-is-at-least-32-characters-long
           NEXT_PUBLIC_SITE_URL: http://localhost:3000
+          PAYLOAD_REVALIDATE_SECRET: ci-revalidate-secret-that-is-at-least-32-chars
+          PAYLOAD_PREVIEW_SECRET: ci-preview-secret-that-is-at-least-32-chars
+          HOME_PAGE_SLUG: home
         run: |
           npm run start &
           npx wait-on http://localhost:3000 --timeout 30000
