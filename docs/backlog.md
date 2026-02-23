@@ -1,5 +1,9 @@
 # Backlog
 
+## CMS pages
+- [ ] Custom `SectionReorderPreview` UI in Payload admin (natywny DnD bloków już działa, ale warto dodać miniatury sekcji + szybkie przenoszenie).
+- [ ] Automatyczne generowanie drzewa nawigacji z kolekcji `pages` (`parent`/`sortOrder`) jako alternatywa dla ręcznej konfiguracji w globalu `navigation`.
+
 ## Part 2 (planned)
 - [ ] Full page content (sklep, koszyk, checkout, eventy, galeria, blog, kontakt)
 - [ ] Zustand cart store

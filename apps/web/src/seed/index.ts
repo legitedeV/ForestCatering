@@ -250,22 +250,185 @@ async function seed() {
     },
   ]
 
-  const homeData = {
-    title: 'Forest Catering — Strona główna',
-    slug: homeSlug,
-    _status: 'published' as const,
-    sections: homeSections,
-    seo: {
-      metaTitle: 'Forest Catering — Catering premium w Szczecinie',
-      metaDescription: 'Profesjonalny catering eventowy, firmowy i weselny w Szczecinie. Świeże lokalne składniki.',
+  const pagesData = [
+    {
+      title: 'Forest Catering — Strona główna',
+      slug: homeSlug,
+      sortOrder: 0,
+      _status: 'published' as const,
+      sections: homeSections,
+      seo: {
+        metaTitle: 'Forest Catering — Catering premium w Szczecinie',
+        metaDescription: 'Profesjonalny catering eventowy, firmowy i weselny w Szczecinie. Świeże lokalne składniki.',
+      },
     },
+    {
+      title: 'Oferta',
+      slug: 'oferta',
+      sortOrder: 10,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'hero',
+          heading: 'Nasza oferta',
+          subheading: 'Dopasujemy catering do Twoich potrzeb',
+          badge: 'Pakiety i wycena',
+          ctaText: 'Zapytaj o wycenę',
+          ctaLink: '/kontakt',
+        },
+        {
+          blockType: 'pricing',
+          heading: 'Pakiety cateringowe',
+          packages: [
+            { name: 'Catering firmowy', price: 'od 45 zł/os.', featured: false, ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?event=catering-firmowy', features: [{ text: 'Śniadania i lunche' }, { text: 'Menu sezonowe' }, { text: 'Dostawa do biura' }] },
+            { name: 'Catering eventowy', price: 'od 85 zł/os.', featured: false, ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?event=event-prywatny', features: [{ text: 'Catering na 20-500 osób' }, { text: 'Serwis kelnerski' }, { text: 'Dekoracje stołów' }] },
+            { name: 'Catering + Bar', price: 'od 120 zł/os.', featured: true, ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?event=catering-plus-bar', features: [{ text: 'Profesjonalni barmani' }, { text: 'Koktajle autorskie' }, { text: 'Pokazy barmańskie' }] },
+          ],
+        },
+      ],
+    },
+    {
+      title: 'Eventy',
+      slug: 'eventy',
+      sortOrder: 20,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'hero',
+          heading: 'Obsługa eventów',
+          subheading: 'Kompleksowa organizacja kulinarna wydarzeń prywatnych i firmowych',
+          ctaText: 'Umów konsultację',
+          ctaLink: '/kontakt?event=event-prywatny',
+        },
+        {
+          blockType: 'pricing',
+          heading: 'Pakiety eventowe',
+          packages: [
+            { name: 'BASIC', price: 'od 85 zł/os.', ctaText: 'Wybieram Basic', ctaLink: '/kontakt?pakiet=basic', features: [{ text: 'Dostawa i serwis' }, { text: 'Menu do wyboru' }] },
+            { name: 'PREMIUM', price: 'od 120 zł/os.', featured: true, ctaText: 'Wybieram Premium', ctaLink: '/kontakt?pakiet=premium', features: [{ text: 'Menu degustacyjne' }, { text: 'Serwis premium' }] },
+            { name: 'CATERING + BAR', price: 'od 160 zł/os.', ctaText: 'Wybieram Bar', ctaLink: '/kontakt?pakiet=bar', features: [{ text: 'Mobilny bar' }, { text: 'Obsługa barmanów' }] },
+          ],
+        },
+        {
+          blockType: 'steps',
+          heading: 'Jak to działa?',
+          steps: [
+            { emoji: '1️⃣', title: 'Kontakt i potrzeby', description: 'Opowiedz nam o wydarzeniu i budżecie.' },
+            { emoji: '2️⃣', title: 'Oferta i degustacja', description: 'Przygotowujemy propozycję menu i harmonogram.' },
+            { emoji: '3️⃣', title: 'Realizacja', description: 'Dostarczamy catering i obsługujemy event na miejscu.' },
+          ],
+        },
+      ],
+    },
+    {
+      title: 'Galeria',
+      slug: 'galeria',
+      sortOrder: 30,
+      _status: 'published' as const,
+      sections: [
+        { blockType: 'hero', heading: 'Galeria realizacji', subheading: 'Zobacz nasze ostatnie realizacje eventowe i cateringowe' },
+        { blockType: 'galleryFull', heading: 'Nasze realizacje', items: [] },
+      ],
+    },
+    {
+      title: 'Kontakt',
+      slug: 'kontakt',
+      sortOrder: 40,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'contactForm',
+          heading: 'Kontakt',
+          subheading: 'Napisz do nas — odpowiemy w ciągu 24h',
+        },
+      ],
+    },
+    {
+      title: 'Regulamin',
+      slug: 'regulamin',
+      sortOrder: 50,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'legalText',
+          heading: 'Regulamin',
+          effectiveDate: '2026-02-19',
+          content: {
+            root: {
+              type: 'root',
+              format: '',
+              indent: 0,
+              version: 1,
+              direction: 'ltr',
+              children: [
+                { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '§1 Postanowienia ogólne', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+                { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Sklep internetowy Forest Catering prowadzi sprzedaż produktów cateringowych oraz usług eventowych za pośrednictwem sieci Internet.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+                { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '§2 Reklamacje', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+                { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Klient ma prawo złożyć reklamację drogą mailową lub telefoniczną. Reklamacje są rozpatrywane w terminie 14 dni roboczych.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+              ],
+            },
+          },
+        },
+      ],
+    },
+  ]
+
+  let homePageId: string | number | undefined
+
+  for (const pageData of pagesData) {
+    const existingPage = await payload.find({ collection: 'pages', where: { slug: { equals: pageData.slug } }, limit: 1 })
+
+    if (existingPage.docs[0]) {
+      const updated = await payload.update({ collection: 'pages', id: existingPage.docs[0].id, data: pageData as never })
+      if (pageData.slug === homeSlug) {
+        homePageId = updated.id
+      }
+    } else {
+      const created = await payload.create({ collection: 'pages', data: pageData as never })
+      if (pageData.slug === homeSlug) {
+        homePageId = created.id
+      }
+    }
   }
 
-  const existingPage = await payload.find({ collection: 'pages', where: { slug: { equals: homeSlug } }, limit: 1 })
-  if (existingPage.docs[0]) {
-    await payload.update({ collection: 'pages', id: existingPage.docs[0].id, data: homeData as never })
-  } else {
-    await payload.create({ collection: 'pages', data: homeData as never })
+  if (homePageId) {
+    for (const childSlug of ['oferta', 'eventy', 'galeria', 'kontakt', 'regulamin']) {
+      const existingPage = await payload.find({ collection: 'pages', where: { slug: { equals: childSlug } }, limit: 1 })
+      if (existingPage.docs[0]) {
+        await payload.update({
+          collection: 'pages',
+          id: existingPage.docs[0].id,
+          data: { parent: homePageId } as never,
+        })
+      }
+    }
+  }
+
+
+  const galleryMedia = await payload.find({ collection: 'media', limit: 12, sort: '-createdAt' })
+  if (galleryMedia.docs.length) {
+    const galleryPage = await payload.find({ collection: 'pages', where: { slug: { equals: 'galeria' } }, limit: 1, depth: 0 })
+    if (galleryPage.docs[0]) {
+      await payload.update({
+        collection: 'pages',
+        id: galleryPage.docs[0].id,
+        data: {
+          sections: [
+            { blockType: 'hero', heading: 'Galeria realizacji', subheading: 'Zobacz nasze ostatnie realizacje eventowe i cateringowe' },
+            {
+              blockType: 'galleryFull',
+              heading: 'Nasze realizacje',
+              items: galleryMedia.docs.map((media, index) => ({
+                image: media.id,
+                alt: media.alt || `Realizacja ${index + 1}`,
+                category: index % 2 === 0 ? 'eventy-firmowe' : 'catering-prywatny',
+                categoryLabel: index % 2 === 0 ? 'Eventy firmowe' : 'Catering prywatny',
+              })),
+            },
+          ],
+        } as never,
+      })
+    }
   }
 
   console.log('✅ Seed complete')
