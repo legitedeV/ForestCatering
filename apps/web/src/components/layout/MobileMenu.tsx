@@ -3,21 +3,22 @@
 import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useCartItemCount } from '@/lib/cart-store'
+import type { NavLinkItem } from './types'
 
 interface MobileMenuProps {
   open: boolean
   onClose: () => void
-  links: { label: string; href: string }[]
+  links: NavLinkItem[]
+  contactPhone?: string | null
 }
 
-export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
+export function MobileMenu({ open, onClose, links, contactPhone }: MobileMenuProps) {
   const itemCount = useCartItemCount()
 
   return (
     <AnimatePresence>
       {open && (
         <>
-          {/* Backdrop */}
           <motion.div
             className="fixed inset-0 z-50 bg-forest-950/80 md:hidden"
             initial={{ opacity: 0 }}
@@ -26,7 +27,6 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
             onClick={onClose}
           />
 
-          {/* Panel */}
           <motion.div
             className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-forest-950/98 md:hidden"
             initial={{ x: '100%' }}
@@ -76,14 +76,16 @@ export function MobileMenu({ open, onClose, links }: MobileMenuProps) {
               </motion.div>
             </nav>
 
-            <motion.div
-              className="absolute bottom-10 text-forest-300"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              <a href="tel:+48123456789" className="text-sm hover:text-accent">📞 +48 123 456 789</a>
-            </motion.div>
+            {contactPhone && (
+              <motion.div
+                className="absolute bottom-10 text-forest-300"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                <a href={`tel:${contactPhone.replace(/\s+/g, '')}`} className="text-sm hover:text-accent">📞 {contactPhone}</a>
+              </motion.div>
+            )}
           </motion.div>
         </>
       )}

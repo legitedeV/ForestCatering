@@ -58,6 +58,7 @@ export const SiteSettings: GlobalConfig = {
       fields: [
         { name: 'metaTitle', type: 'text', label: 'Tytuł meta' },
         { name: 'metaDescription', type: 'textarea', label: 'Opis meta' },
+        { name: 'ogImage', type: 'upload', relationTo: 'media', label: 'Domyślny obraz OG' },
       ],
     },
   ],

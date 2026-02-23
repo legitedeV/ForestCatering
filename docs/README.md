@@ -33,6 +33,29 @@ Profesjonalna firma cateringowa ze Szczecina — Next.js 15 + Payload CMS 3 + Po
    - Site: http://localhost:3000
    - Admin: http://localhost:3000/admin
 
+
+### Preview + revalidate secrets
+
+`ops/.env` must define:
+
+- `PAYLOAD_PREVIEW_SECRET`
+- `PAYLOAD_REVALIDATE_SECRET`
+- `HOME_PAGE_SLUG` (default: `home`)
+
+Generate (or rotate) them idempotently:
+
+```bash
+bash ops/scripts/gen-secrets.sh
+```
+
+Manual revalidate smoke test:
+
+```bash
+BODY='{"collection":"pages","slug":"home"}'
+SIG=$(printf '%s' "$BODY" | openssl dgst -sha256 -hmac "$PAYLOAD_REVALIDATE_SECRET" -binary | xxd -p -c 256)
+curl -i -X POST http://localhost:3000/api/revalidate   -H 'Content-Type: application/json'   -H "x-payload-signature: $SIG"   --data "$BODY"
+```
+
 ## Project Structure
 
 ```
