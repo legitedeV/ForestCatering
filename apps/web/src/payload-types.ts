@@ -1200,6 +1200,7 @@ export interface SiteSetting {
   seoDefaults?: {
     metaTitle?: string | null;
     metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
   };
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -1263,6 +1264,7 @@ export interface SiteSettingsSelect<T extends boolean = true> {
     | {
         metaTitle?: T;
         metaDescription?: T;
+        ogImage?: T;
       };
   updatedAt?: T;
   createdAt?: T;

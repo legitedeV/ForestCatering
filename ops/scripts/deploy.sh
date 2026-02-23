@@ -6,6 +6,58 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 LOG_DIR="$PROJECT_ROOT/ops/logs"
 LOG_FILE="$LOG_DIR/deploy-$(date +%Y%m%d-%H%M%S).log"
 
+SCRIPT_PATH="$PROJECT_ROOT/ops/scripts/deploy.sh"
+SELF_REEXEC_GUARD="${DEPLOY_SELF_UPDATED:-0}"
+
+calc_hash() {
+  local target="$1"
+  if command -v sha256sum &>/dev/null; then
+    sha256sum "$target" | awk '{print $1}'
+  else
+    shasum -a 256 "$target" | awk '{print $1}'
+  fi
+}
+
+extract_uri_credentials() {
+  local uri="$1"
+  local authority
+  authority="${uri#*://}"
+  authority="${authority%%/*}"
+  echo "${authority%%@*}"
+}
+
+validate_db_env_consistency() {
+  local postgres_password="$1"
+  local database_uri="$2"
+
+  if [[ -z "$postgres_password" || -z "$database_uri" ]]; then
+    echo "❌ Missing POSTGRES_PASSWORD or DATABASE_URI in ops/.env"
+    echo "   Run: bash ops/scripts/gen-secrets.sh"
+    exit 1
+  fi
+
+  local credentials uri_user uri_password
+  credentials="$(extract_uri_credentials "$database_uri")"
+
+  if [[ "$credentials" != *:* ]]; then
+    echo "❌ DATABASE_URI has no explicit user:password section."
+    echo "   DATABASE_URI=$database_uri"
+    echo "   Run: bash ops/scripts/gen-secrets.sh"
+    exit 1
+  fi
+
+  uri_user="${credentials%%:*}"
+  uri_password="${credentials#*:}"
+
+  if [[ "$uri_password" != "$postgres_password" ]]; then
+    echo "❌ DB credentials drift detected: POSTGRES_PASSWORD != DATABASE_URI password"
+    echo "   POSTGRES_USER=$uri_user"
+    echo "   Refusing deploy to avoid /admin 500 (Postgres auth failure)."
+    echo "   Fix: bash ops/scripts/gen-secrets.sh"
+    exit 1
+  fi
+}
+
 mkdir -p "$LOG_DIR"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
@@ -22,12 +74,22 @@ done
 # 1. Capture SHA before pull
 cd "$PROJECT_ROOT"
 PREV_SHA=$(git rev-parse HEAD 2>/dev/null || echo "none")
+PRE_PULL_SCRIPT_HASH=$(calc_hash "$SCRIPT_PATH")
 
 # 2. Pull latest
 git pull origin main --ff-only
 
 # 3. Capture SHA after pull
 CURR_SHA=$(git rev-parse HEAD)
+POST_PULL_SCRIPT_HASH=$(calc_hash "$SCRIPT_PATH")
+
+if [[ "$PRE_PULL_SCRIPT_HASH" != "$POST_PULL_SCRIPT_HASH" ]]; then
+  if [[ "$SELF_REEXEC_GUARD" != "1" ]]; then
+    echo "♻️  deploy.sh was updated by git pull — re-executing latest script version."
+    exec env DEPLOY_SELF_UPDATED=1 bash "$SCRIPT_PATH" "$@"
+  fi
+  echo "⚠️  deploy.sh changed but self-reexec guard is active; continuing current run."
+fi
 
 # 4. Source env
 if [[ ! -f "$PROJECT_ROOT/ops/.env" ]]; then
@@ -38,6 +100,8 @@ fi
 set -a
 source "$PROJECT_ROOT/ops/.env"
 set +a
+
+validate_db_env_consistency "${POSTGRES_PASSWORD:-}" "${DATABASE_URI:-}"
 
 # 5. Run setup (idempotent)
 bash "$SCRIPT_DIR/setup.sh"
@@ -117,7 +181,7 @@ cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
 cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
 
 # 9. PM2
-pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --env production
+pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --env production --update-env
 
 # Wait for Next.js to be ready
 MAX_ATTEMPTS=30

@@ -6,17 +6,15 @@ import { usePathname } from 'next/navigation'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { MobileMenu } from './MobileMenu'
 import { useCart, useCartItemCount } from '@/lib/cart-store'
+import type { NavLinkItem } from './types'
 
-const navLinks = [
-  { label: 'Sklep', href: '/sklep' },
-  { label: 'Oferta', href: '/oferta' },
-  { label: 'Eventy', href: '/eventy' },
-  { label: 'Galeria', href: '/galeria' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'Kontakt', href: '/kontakt' },
-]
+interface NavbarProps {
+  links: NavLinkItem[]
+  companyName: string
+  contactPhone?: string | null
+}
 
-export function Navbar() {
+export function Navbar({ links, companyName, contactPhone }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
@@ -26,28 +24,26 @@ export function Navbar() {
   const { scrollY } = useScroll()
   const bgOpacity = useTransform(scrollY, [0, 100], [isHome ? 0 : 1, 1])
   const borderOpacity = useTransform(scrollY, [0, 100], [isHome ? 0 : 0.3, 0.3])
+  const backgroundColor = useTransform(bgOpacity, (v) => `rgba(21, 10, 4, ${v * 0.96})`)
+  const borderBottomColor = useTransform(borderOpacity, (v) => `rgba(62, 32, 15, ${v})`)
+  const backdropFilter = useTransform(bgOpacity, (v) => (v > 0.5 ? 'blur(12px)' : 'none'))
 
-  useEffect(() => { setMounted(true) }, [])
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <motion.header
-      className="fixed top-0 right-0 left-0 z-50"
-      style={{
-        backgroundColor: useTransform(bgOpacity, (v) => `rgba(21, 10, 4, ${v * 0.96})`),
-        borderBottomColor: useTransform(borderOpacity, (v) => `rgba(62, 32, 15, ${v})`),
-        borderBottomWidth: '1px',
-        backdropFilter: useTransform(bgOpacity, (v) => (v > 0.5 ? 'blur(12px)' : 'none')),
-      }}
+      className="fixed top-0 right-0 left-0 z-50 border-b border-transparent bg-forest-950/95 backdrop-blur-md"
+      style={mounted ? { backgroundColor, borderBottomColor, backdropFilter } : undefined}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-        {/* Logo */}
         <Link href="/" className="text-xl font-bold text-cream">
-          🌲 Forest Catering
+          🌲 {companyName}
         </Link>
 
-        {/* Desktop nav */}
         <nav className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
+          {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -65,7 +61,6 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Cart + hamburger */}
         <div className="flex items-center gap-4">
           <button
             onClick={toggleDrawer}
@@ -93,7 +88,7 @@ export function Navbar() {
         </div>
       </div>
 
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} links={navLinks} />
+      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} links={links} contactPhone={contactPhone} />
     </motion.header>
   )
 }
