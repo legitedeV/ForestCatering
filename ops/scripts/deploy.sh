@@ -6,6 +6,18 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 LOG_DIR="$PROJECT_ROOT/ops/logs"
 LOG_FILE="$LOG_DIR/deploy-$(date +%Y%m%d-%H%M%S).log"
 
+SCRIPT_PATH="$PROJECT_ROOT/ops/scripts/deploy.sh"
+SELF_REEXEC_GUARD="${DEPLOY_SELF_UPDATED:-0}"
+
+calc_hash() {
+  local target="$1"
+  if command -v sha256sum &>/dev/null; then
+    sha256sum "$target" | awk '{print $1}'
+  else
+    shasum -a 256 "$target" | awk '{print $1}'
+  fi
+}
+
 mkdir -p "$LOG_DIR"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
@@ -22,12 +34,22 @@ done
 # 1. Capture SHA before pull
 cd "$PROJECT_ROOT"
 PREV_SHA=$(git rev-parse HEAD 2>/dev/null || echo "none")
+PRE_PULL_SCRIPT_HASH=$(calc_hash "$SCRIPT_PATH")
 
 # 2. Pull latest
 git pull origin main --ff-only
 
 # 3. Capture SHA after pull
 CURR_SHA=$(git rev-parse HEAD)
+POST_PULL_SCRIPT_HASH=$(calc_hash "$SCRIPT_PATH")
+
+if [[ "$PRE_PULL_SCRIPT_HASH" != "$POST_PULL_SCRIPT_HASH" ]]; then
+  if [[ "$SELF_REEXEC_GUARD" != "1" ]]; then
+    echo "♻️  deploy.sh was updated by git pull — re-executing latest script version."
+    exec env DEPLOY_SELF_UPDATED=1 bash "$SCRIPT_PATH" "$@"
+  fi
+  echo "⚠️  deploy.sh changed but self-reexec guard is active; continuing current run."
+fi
 
 # 4. Source env
 if [[ ! -f "$PROJECT_ROOT/ops/.env" ]]; then
