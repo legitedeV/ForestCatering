@@ -58,6 +58,27 @@ validate_db_env_consistency() {
   fi
 }
 
+validate_db_connectivity() {
+  local database_uri="$1"
+
+  if ! command -v psql &>/dev/null; then
+    echo "❌ psql not found. Install PostgreSQL client before deploy."
+    echo "   Ubuntu/Debian: sudo apt-get install -y postgresql-client"
+    exit 1
+  fi
+
+  echo "🔎 Checking PostgreSQL connectivity via DATABASE_URI..."
+  if ! PGCONNECT_TIMEOUT=5 psql "$database_uri" -v ON_ERROR_STOP=1 -c "select 1;" >/dev/null; then
+    echo "❌ Database connectivity/authentication test failed."
+    echo "   Command: psql \"\$DATABASE_URI\" -c \"select 1;\""
+    echo "   Refusing deploy to avoid runtime /admin 500 payloadInitError."
+    echo "   Runbook: ops/README.md (DB auth recovery)"
+    exit 1
+  fi
+
+  echo "✅ PostgreSQL connectivity check passed."
+}
+
 mkdir -p "$LOG_DIR"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
@@ -102,6 +123,7 @@ source "$PROJECT_ROOT/ops/.env"
 set +a
 
 validate_db_env_consistency "${POSTGRES_PASSWORD:-}" "${DATABASE_URI:-}"
+validate_db_connectivity "${DATABASE_URI:-}"
 
 # 5. Run setup (idempotent)
 bash "$SCRIPT_DIR/setup.sh"
@@ -181,7 +203,7 @@ cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
 cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
 
 # 9. PM2
-pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --env production --update-env
+pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --update-env
 
 # Wait for Next.js to be ready
 MAX_ATTEMPTS=30
