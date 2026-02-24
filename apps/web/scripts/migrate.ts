@@ -1,4 +1,4 @@
-import { migrate } from 'payload/migrate'
+import { migrate } from 'payload'
 import payloadConfig from '../payload.config'
 
 async function run() {
