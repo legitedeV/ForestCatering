@@ -57,7 +57,7 @@ export async function FeaturedProductsBlock({ heading, limit, linkText, linkUrl 
                 const firstImg = product.images?.[0]?.image
                 const imgUrl = getMediaUrl(firstImg)
                 return imgUrl ? (
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[5/4] overflow-hidden">
                     <Image
                       src={imgUrl}
                       alt={product.name}
@@ -67,15 +67,15 @@ export async function FeaturedProductsBlock({ heading, limit, linkText, linkUrl 
                     />
                   </div>
                 ) : (
-                  <div className="flex aspect-[4/3] items-center justify-center bg-gradient-to-br from-forest-700 to-forest-800 text-4xl">
+                  <div className="flex aspect-[5/4] items-center justify-center bg-gradient-to-br from-forest-700 to-forest-800 text-4xl">
                     🍽️
                   </div>
                 )
               })()}
-              <div className="flex h-full flex-col p-5">
+              <div className="flex h-full flex-col p-4">
                 <h3 className="font-semibold text-cream">{product.name}</h3>
                 {product.shortDescription && (
-                  <p className="mt-1 text-sm text-forest-300 line-clamp-2">{product.shortDescription}</p>
+                  <p className="mt-1 text-sm text-forest-300 line-clamp-1">{product.shortDescription}</p>
                 )}
                 <div className="mt-auto flex items-center gap-2 pt-3">
                   <span className="text-lg font-bold text-accent">{formatPrice(product.price)}</span>
