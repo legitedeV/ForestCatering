@@ -30,6 +30,44 @@ check_optional() {
   fi
 }
 
+check_next_assets() {
+  local base_url="$1"
+  local html
+
+  html=$(curl -sS "$base_url/" 2>/dev/null || true)
+  if [[ -z "$html" ]]; then
+    echo "❌ $base_url/ → empty response body (cannot parse Next assets)"
+    FAIL=1
+    return
+  fi
+
+  mapfile -t assets < <(printf "%s" "$html" | grep -Eo '/_next/static/[^"[:space:]]+' | sort -u)
+
+  if [[ ${#assets[@]} -eq 0 ]]; then
+    echo "❌ $base_url/ → no /_next/static assets found in HTML"
+    FAIL=1
+    return
+  fi
+
+  local checked=0
+  for asset in "${assets[@]}"; do
+    local url="$base_url$asset"
+    local code
+    code=$(curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null || true)
+    [[ -n "$code" ]] || code="000"
+
+    if [[ "$code" =~ ^(200|304)$ ]]; then
+      echo "✅ $url → $code"
+    else
+      echo "❌ $url → $code"
+      FAIL=1
+    fi
+
+    checked=$((checked + 1))
+    [[ $checked -ge 6 ]] && break
+  done
+}
+
 REQUIRED_PATHS=(
   "/"
   "/admin"
@@ -54,6 +92,7 @@ done
 for p in "${OPTIONAL_CMS_PATHS[@]}"; do
   check_optional "http://127.0.0.1:3000${p}"
 done
+check_next_assets "http://127.0.0.1:3000"
 
 if systemctl is-active --quiet nginx 2>/dev/null; then
   for p in "${REQUIRED_PATHS[@]}"; do
@@ -62,6 +101,7 @@ if systemctl is-active --quiet nginx 2>/dev/null; then
   for p in "${OPTIONAL_CMS_PATHS[@]}"; do
     check_optional "http://forestbar.pl${p}"
   done
+  check_next_assets "http://forestbar.pl"
 fi
 
 for p in "${REQUIRED_PATHS[@]}"; do
@@ -70,6 +110,7 @@ done
 for p in "${OPTIONAL_CMS_PATHS[@]}"; do
   check_optional "https://forestbar.pl${p}"
 done
+check_next_assets "https://forestbar.pl"
 
 [[ $FAIL -eq 0 ]] || { echo "🔥 SMOKE FAILED"; exit 1; }
 echo "🎉 All smoke tests passed."

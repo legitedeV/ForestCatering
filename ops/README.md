@@ -83,3 +83,19 @@ npm run seed
 ```
 
 > Dla wymuszenia nadpisania seedowanych rekordów ustaw `SEED_FORCE=true`.
+
+## Frontend unstyled page (`/_next/static` asset diagnostics)
+
+Objaw: strona ładuje się jako "goły HTML" (bez Tailwind/CSS/JS), mimo że `/` odpowiada 200.
+
+### Szybka diagnostyka
+
+```bash
+bash ops/scripts/smoke.sh
+```
+
+Skrypt sprawdza teraz nie tylko statusy stron, ale także:
+- czy w HTML strony głównej są odwołania do `/_next/static/...`,
+- czy znalezione assety zwracają `200/304`.
+
+Jeśli assety zwracają `404/5xx`, to najczęściej problem jest w deployu standalone (`.next/static` nie zostało skopiowane) albo w routingu Nginx/proxy.
