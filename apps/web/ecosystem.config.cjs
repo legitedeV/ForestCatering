@@ -1,10 +1,12 @@
 const path = require('path');
 
+const standaloneCwd = path.resolve(__dirname, '.next/standalone/apps/web');
+
 module.exports = {
   apps: [{
     name: 'forestcatering',
-    cwd: __dirname,
-    script: path.resolve(__dirname, '.next/standalone/apps/web/server.js'),
+    cwd: standaloneCwd,
+    script: path.resolve(standaloneCwd, 'server.js'),
     instances: 1,
     autorestart: true,
     max_memory_restart: '500M',
