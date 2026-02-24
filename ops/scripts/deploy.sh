@@ -115,31 +115,97 @@ NODE
 }
 
 verify_standalone_static_artifacts() {
+  local source_next_dir="$PROJECT_ROOT/apps/web/.next"
+  local source_static_dir="$source_next_dir/static"
+  local standalone_next_dir="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next"
   local standalone_static_dir="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static"
-  local css_dir="$standalone_static_dir/css"
-  local chunks_dir="$standalone_static_dir/chunks"
+  local validation_failed=0
 
-  if [[ ! -d "$css_dir" ]]; then
-    echo "❌ Missing standalone CSS directory: $css_dir"
+  print_static_diagnostics() {
+    local candidate="$1"
+    echo "   → $candidate"
+    if [[ ! -e "$candidate" ]]; then
+      echo "     (missing)"
+      return
+    fi
+
+    ls -la "$candidate" 2>/dev/null || true
+    find "$candidate" -maxdepth 4 -type f | sort | sed 's/^/     /' || true
+  }
+
+  print_static_vs_standalone_summary() {
+    local source_path="$1"
+    local standalone_path="$2"
+    local source_state="missing"
+    local standalone_state="missing"
+
+    if [[ -d "$source_path" ]]; then
+      source_state="present"
+      if [[ -z "$(find "$source_path" -mindepth 1 -print -quit 2>/dev/null)" ]]; then
+        source_state="present but empty"
+      fi
+    fi
+
+    if [[ -d "$standalone_path" ]]; then
+      standalone_state="present"
+      if [[ -z "$(find "$standalone_path" -mindepth 1 -print -quit 2>/dev/null)" ]]; then
+        standalone_state="present but empty"
+      fi
+    fi
+
+    echo "🔎 Static source vs standalone summary:"
+    echo "   source:     $source_path [$source_state]"
+    echo "   standalone: $standalone_path [$standalone_state]"
+  }
+
+  require_manifest_when_used() {
+    local manifest_name="$1"
+    local source_manifest="$source_next_dir/$manifest_name"
+    local standalone_manifest="$standalone_next_dir/$manifest_name"
+
+    if [[ -f "$source_manifest" && ! -f "$standalone_manifest" ]]; then
+      echo "❌ Manifest '$manifest_name' exists in source build but is missing in standalone: $standalone_manifest"
+      validation_failed=1
+    fi
+
+    if [[ ! -f "$source_manifest" && -f "$standalone_manifest" ]]; then
+      echo "ℹ️ Manifest '$manifest_name' found only in standalone build: $standalone_manifest"
+    fi
+  }
+
+  if [[ ! -d "$standalone_static_dir" ]]; then
+    echo "❌ Missing standalone static directory: $standalone_static_dir"
+    validation_failed=1
+  fi
+
+  if [[ ! -d "$source_static_dir" ]]; then
+    echo "❌ Missing source static directory: $source_static_dir"
+    validation_failed=1
+  fi
+
+  if [[ -d "$standalone_static_dir" ]] && ! find "$standalone_static_dir" -type f -name '*.js' | grep -q .; then
+    echo "❌ No .js files found in standalone static assets: $standalone_static_dir"
+    validation_failed=1
+  fi
+
+  if [[ -d "$standalone_static_dir" ]] && ! find "$standalone_static_dir" -type f -name '*.css' | grep -q .; then
+    echo "❌ No .css files found in standalone static assets: $standalone_static_dir"
+    validation_failed=1
+  fi
+
+  require_manifest_when_used "build-manifest.json"
+  require_manifest_when_used "app-build-manifest.json"
+
+  if [[ "$validation_failed" -ne 0 ]]; then
+    echo "🧪 Standalone static diagnostics (source and standalone):"
+    print_static_diagnostics "$PROJECT_ROOT/apps/web/.next/static"
+    print_static_diagnostics "$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static"
+    print_static_vs_standalone_summary "$source_static_dir" "$standalone_static_dir"
+    echo "❌ Standalone/static validation failed. This may be a real asset copy/build issue or a validator mismatch; review diagnostics above."
     exit 1
   fi
 
-  if [[ ! -d "$chunks_dir" ]]; then
-    echo "❌ Missing standalone chunks directory: $chunks_dir"
-    exit 1
-  fi
-
-  if ! find "$css_dir" -type f | grep -q .; then
-    echo "❌ No CSS files found in standalone: $css_dir"
-    exit 1
-  fi
-
-  if ! find "$chunks_dir" -type f | grep -q .; then
-    echo "❌ No chunk files found in standalone: $chunks_dir"
-    exit 1
-  fi
-
-  echo "✅ Standalone static artifacts verified (css + chunks)."
+  echo "✅ Standalone static artifacts verified (.next/static contains .js + .css and manifests are consistent)."
 }
 
 sync_standalone_assets() {
