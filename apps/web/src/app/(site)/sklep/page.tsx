@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { getPayload } from '@/lib/payload-client'
 import type { Where } from 'payload'
-import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
+import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { ProductCard } from '@/components/shop/ProductCard'
 
 interface ProductDoc {
@@ -145,15 +145,13 @@ export default async function ShopPage({ searchParams }: Props) {
           <div className="flex-1">
             {products.length > 0 ? (
               <>
-                <AnimatedSection stagger>
-                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {products.map((product) => (
-                      <AnimatedItem key={product.id}>
-                        <ProductCard product={product} />
-                      </AnimatedItem>
-                    ))}
-                  </div>
-                </AnimatedSection>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {products.map((product) => (
+                    <div key={product.id}>
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
 
                 {/* Pagination */}
                 {totalPages > 1 && (
