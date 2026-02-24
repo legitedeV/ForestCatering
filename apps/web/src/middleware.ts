@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const EXCLUDED_PREFIXES = ['/admin', '/api', '/_next']
-const EXCLUDED_EXACT = ['/favicon.ico', '/robots.txt', '/sitemap.xml', '/access']
+const EXCLUDED_PREFIXES = ['/admin', '/api', '/_next', '/access']
+const EXCLUDED_EXACT = ['/favicon.ico', '/robots.txt', '/sitemap.xml']
 
 async function sign(value: string, secret: string) {
   const enc = new TextEncoder()
