@@ -287,6 +287,23 @@ cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
 cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
 
 # 9. PM2
+STANDALONE_SERVER_JS="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/server.js"
+STANDALONE_STATIC_DIR="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static"
+STANDALONE_APP_DIR="$PROJECT_ROOT/apps/web/.next/standalone/apps/web"
+
+echo "🔎 Standalone preflight check before PM2 restart..."
+if [[ ! -f "$STANDALONE_SERVER_JS" || ! -d "$STANDALONE_STATIC_DIR" ]]; then
+  echo "❌ Standalone artifacts are incomplete."
+  echo "   Required file missing? $STANDALONE_SERVER_JS"
+  echo "   Required dir missing?  $STANDALONE_STATIC_DIR"
+  echo "   Deploy aborted."
+  ls -l "$STANDALONE_APP_DIR" 2>/dev/null || true
+  exit 1
+fi
+
+echo "📂 Standalone directory snapshot:"
+ls -l "$STANDALONE_APP_DIR" || true
+
 pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --update-env
 
 # Wait for Next.js to be ready
