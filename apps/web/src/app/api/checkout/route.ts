@@ -83,7 +83,7 @@ export async function POST(req: Request) {
     })
 
     return NextResponse.json(
-      { orderNumber: order.orderNumber, status: order.status },
+      { orderNumber: order.orderNumber, status: order.status, total: order.total },
       { status: 201 }
     )
   } catch (error) {

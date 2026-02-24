@@ -12,7 +12,7 @@ interface StepSummaryProps {
   paymentMethod: 'transfer' | 'cash'
   onPaymentChange: (method: 'transfer' | 'cash') => void
   onBack: () => void
-  onSuccess: (orderNumber: string) => void
+  onSuccess: (orderNumber: string, orderTotal: number) => void
 }
 
 export function StepSummary({ contact, delivery, paymentMethod, onPaymentChange, onBack, onSuccess }: StepSummaryProps) {
@@ -48,7 +48,7 @@ export function StepSummary({ contact, delivery, paymentMethod, onPaymentChange,
         setLoading(false)
         return
       }
-      onSuccess(data.orderNumber)
+      onSuccess(data.orderNumber, data.total)
     } catch {
       show('Wystąpił błąd podczas składania zamówienia. Spróbuj ponownie.', 'error')
       setLoading(false)
