@@ -27,14 +27,13 @@ export const Pages: CollectionConfig = {
     title: true,
     slug: true,
     path: true,
-    parent: true,
     sortOrder: true,
     updatedAt: true,
     createdAt: true,
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'path', 'slug', 'parent', 'sortOrder', 'updatedAt'],
+    defaultColumns: ['title', 'path', 'slug', 'sortOrder', 'updatedAt'],
     preview: (doc) => {
       const pagePath = (doc?.path || doc?.slug) as string
       if (!pagePath) return ''
