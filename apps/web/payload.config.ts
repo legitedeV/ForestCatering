@@ -42,6 +42,11 @@ const emailAdapter = hasSmtpConfig
 
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+  localization: {
+    locales: ['pl'],
+    defaultLocale: 'pl',
+    fallback: true,
+  },
   editor: lexicalEditor(),
   db: postgresAdapter({
     migrationDir: path.resolve(dirname, 'src/migrations'),
@@ -74,6 +79,7 @@ export default buildConfig({
   },
   admin: {
     user: Users.slug,
+    dateFormat: 'dd.MM.yyyy',
     meta: {
       titleSuffix: ' - Forest Catering CMS',
       description: 'Panel administracyjny Forest Catering',
