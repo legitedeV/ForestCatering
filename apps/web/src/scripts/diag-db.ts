@@ -47,13 +47,44 @@ async function run() {
     console.log('ℹ️ current_schema():', schemaResult.rows[0]?.current_schema)
     console.log('ℹ️ search_path:', searchPathResult.rows[0]?.search_path)
 
-    for (const table of ['users', 'pages', 'payload_migrations']) {
-      console.log(`ℹ️ table ${table}:`, (await tableExists(client, table)) ? 'exists' : 'missing')
+    const requiredTables = [
+      'users',
+      'pages',
+      'payload_migrations',
+      'payload_locked_documents',
+      'payload_locked_documents_rels',
+      'payload_preferences',
+      'payload_preferences_rels',
+    ]
+
+    let hasErrors = false
+
+    for (const table of requiredTables) {
+      const exists = await tableExists(client, table)
+      console.log(`ℹ️ table ${table}:`, exists ? 'exists' : 'missing')
+      if (!exists) hasErrors = true
     }
 
-    for (const column of ['path', 'parent_id', 'sort_order']) {
-      console.log(`ℹ️ pages.${column}:`, (await columnExists(client, 'pages', column)) ? 'exists' : 'missing')
+    const requiredColumns: Array<[string, string]> = [
+      ['pages', 'path'],
+      ['pages', 'parent_id'],
+      ['pages', 'sort_order'],
+      ['payload_locked_documents_rels', 'path'],
+      ['payload_preferences_rels', 'path'],
+    ]
+
+    for (const [table, column] of requiredColumns) {
+      const exists = await columnExists(client, table, column)
+      console.log(`ℹ️ ${table}.${column}:`, exists ? 'exists' : 'missing')
+      if (!exists) hasErrors = true
     }
+
+    if (hasErrors) {
+      console.error('❌ DB schema diagnostics failed. Run Payload migrations and verify DATABASE_URI/search_path.')
+      process.exit(1)
+    }
+
+    console.log('✅ DB schema diagnostics passed.')
   } finally {
     await client.end()
   }
