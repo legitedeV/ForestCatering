@@ -61,14 +61,15 @@ check_homepage_static_assets() {
 
 check_admin_assets() {
   local base_url="$1"
-  local admin_html admin_path code
+  local admin_html="" admin_path="" code
   local -a js_assets css_assets
   local js_ok=0
   local css_ok=0
 
-  for admin_path in "/admin/collections/pages" "/admin"; do
-    admin_html=$(curl -fsSL -H "Cache-Control: no-cache" -H "Pragma: no-cache" "${base_url}${admin_path}" 2>/dev/null || true)
+  for candidate_path in "/admin" "/admin/collections/pages"; do
+    admin_html=$(curl -fsSL -H "Cache-Control: no-cache" -H "Pragma: no-cache" "${base_url}${candidate_path}" 2>/dev/null || true)
     if [[ -n "$admin_html" ]]; then
+      admin_path="$candidate_path"
       break
     fi
   done
@@ -83,7 +84,7 @@ check_admin_assets() {
   mapfile -t css_assets < <(printf '%s' "$admin_html" | grep -oE '/_next/static/[^"[:space:]]+\.css' | sort -u || true)
 
   if [[ ${#js_assets[@]} -eq 0 ]]; then
-    echo "❌ ${base_url}/admin → no JS asset reference found in admin HTML"
+    echo "❌ ${base_url}${admin_path} → no JS asset reference found in admin HTML"
     FAIL=1
   else
     for asset in "${js_assets[@]}"; do
@@ -98,13 +99,13 @@ check_admin_assets() {
     done
 
     if [[ $js_ok -eq 0 ]]; then
-      echo "❌ ${base_url}/admin → no JS asset responded with 200/301/302"
+      echo "❌ ${base_url}${admin_path} → no JS asset responded with 200/301/302"
       FAIL=1
     fi
   fi
 
   if [[ ${#css_assets[@]} -eq 0 ]]; then
-    echo "❌ ${base_url}/admin → no CSS asset reference found in admin HTML"
+    echo "❌ ${base_url}${admin_path} → no CSS asset reference found in admin HTML"
     FAIL=1
   else
     for asset in "${css_assets[@]}"; do
@@ -119,7 +120,7 @@ check_admin_assets() {
     done
 
     if [[ $css_ok -eq 0 ]]; then
-      echo "❌ ${base_url}/admin → no CSS asset responded with 200/301/302"
+      echo "❌ ${base_url}${admin_path} → no CSS asset responded with 200/301/302"
       FAIL=1
     fi
   fi
