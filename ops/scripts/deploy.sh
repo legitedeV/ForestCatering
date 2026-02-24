@@ -219,7 +219,12 @@ if ! npx --no-install payload --help >/dev/null 2>&1; then
 fi
 
 echo "🔄 Running Payload migrations..."
-if ! npx payload migrate; then
+if [[ ! -f "$PROJECT_ROOT/apps/web/tsconfig.payload.json" ]]; then
+  echo "❌ Missing apps/web/tsconfig.payload.json required for stable Payload CLI tsconfig detection."
+  exit 1
+fi
+
+if ! node ../../node_modules/payload/bin.js migrate --config payload.config.ts --tsconfig tsconfig.payload.json; then
   echo "❌ Payload migrations failed. Deploy aborted to prevent schema drift."
   exit 1
 fi
