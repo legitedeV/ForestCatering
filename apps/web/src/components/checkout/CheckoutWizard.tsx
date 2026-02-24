@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { useCart, useCartTotal } from '@/lib/cart-store'
+import { useCart } from '@/lib/cart-store'
 import type { CheckoutContact, CheckoutDelivery } from '@/lib/validators'
 import { StepContact } from './StepContact'
 import { StepDelivery } from './StepDelivery'
@@ -14,7 +14,6 @@ const steps = ['Dane', 'Dostawa', 'Podsumowanie', 'Potwierdzenie']
 export function CheckoutWizard() {
   const [currentStep, setCurrentStep] = useState(1)
   const { clearCart } = useCart()
-  const cartTotal = useCartTotal()
   const [contact, setContact] = useState<CheckoutContact>({
     name: '', email: '', phone: '', company: '', nip: '',
   })
@@ -38,7 +37,7 @@ export function CheckoutWizard() {
               <div key={label} className="flex flex-1 items-center">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition-colors ${
+                    className={`relative flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition-colors ${
                       isCompleted
                         ? 'bg-forest-300 text-forest-950'
                         : isActive
@@ -93,7 +92,7 @@ export function CheckoutWizard() {
           paymentMethod={paymentMethod}
           onPaymentChange={setPaymentMethod}
           onBack={() => setCurrentStep(2)}
-          onSuccess={(num) => { setOrderNumber(num); setOrderTotal(cartTotal); clearCart(); setCurrentStep(4) }}
+          onSuccess={(num, total) => { setOrderNumber(num); setOrderTotal(total); clearCart(); setCurrentStep(4) }}
         />
       )}
       {currentStep === 4 && (
