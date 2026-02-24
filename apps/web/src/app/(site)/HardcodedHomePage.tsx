@@ -182,12 +182,12 @@ export default async function HardcodedHomePage() {
                 Nasze bestsellery
               </h2>
             </AnimatedSection>
-            <div className="mt-12 flex gap-6 overflow-x-auto pb-4 snap-x">
+            <div className="mt-12 grid grid-flow-col auto-cols-[280px] gap-6 overflow-x-auto pb-4 snap-x">
               {featuredProducts.map((product) => (
                 <Link
                   key={product.id}
                   href={`/sklep/${product.slug}`}
-                  className="group min-w-[280px] shrink-0 snap-start rounded-xl border border-forest-700 bg-forest-800 overflow-hidden transition hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-lg"
+                  className="group flex h-full w-[280px] flex-col snap-start overflow-hidden rounded-xl border border-forest-700 bg-forest-800 transition hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-lg"
                 >
                   {(() => {
                     const firstImg = product.images?.[0]?.image
@@ -203,17 +203,17 @@ export default async function HardcodedHomePage() {
                         />
                       </div>
                     ) : (
-                      <div className="aspect-[4/3] bg-gradient-to-br from-forest-700 to-forest-800 flex items-center justify-center text-4xl">
+                      <div className="flex aspect-[4/3] items-center justify-center bg-gradient-to-br from-forest-700 to-forest-800 text-4xl">
                         🍽️
                       </div>
                     )
                   })()}
-                  <div className="p-5">
+                  <div className="flex h-full flex-col p-5">
                     <h3 className="font-semibold text-cream">{product.name}</h3>
                     {product.shortDescription && (
                       <p className="mt-1 text-sm text-forest-300 line-clamp-2">{product.shortDescription}</p>
                     )}
-                    <div className="mt-3 flex items-center gap-2">
+                    <div className="mt-auto flex items-center gap-2 pt-3">
                       <span className="text-lg font-bold text-accent">{formatPrice(product.price)}</span>
                       {product.compareAtPrice && (
                         <span className="text-sm text-forest-400 line-through">{formatPrice(product.compareAtPrice)}</span>
