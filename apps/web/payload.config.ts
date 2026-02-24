@@ -44,6 +44,7 @@ export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   editor: lexicalEditor(),
   db: postgresAdapter({
+    migrationDir: path.resolve(dirname, 'src/migrations'),
     pool: {
       connectionString: process.env.DATABASE_URI || '',
     },

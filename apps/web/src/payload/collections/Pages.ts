@@ -70,7 +70,7 @@ export const Pages: CollectionConfig = {
       unique: true,
       index: true,
       label: 'Path',
-      admin: { readOnly: true, position: 'sidebar' },
+      admin: { readOnly: true, position: 'sidebar', description: 'Wyliczane automatycznie z parent/slug.' },
     },
     {
       name: 'parent',

@@ -47,3 +47,15 @@ test('revalidate endpoint accepts signed request', async ({ request }) => {
 
   expect(response.ok()).toBeTruthy()
 })
+
+
+test('homepage resolves CMS page by path=home', async ({ page }) => {
+  const response = await page.goto('/', { waitUntil: 'networkidle' })
+  expect(response?.ok()).toBeTruthy()
+  await expect(page.locator('body')).not.toContainText(/Brak opublikowanej strony home w CMS/i)
+})
+
+test('pages API with parent/path fields does not fail', async ({ request }) => {
+  const response = await request.get('/api/pages?where[path][equals]=oferta&depth=1')
+  expect(response.status()).toBeLessThan(500)
+})

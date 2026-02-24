@@ -11,7 +11,9 @@
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
     "payload:generate": "payload generate:types && payload generate:importmap",
-    "seed": "tsx src/seed/index.ts"
+    "seed": "tsx src/seed/index.ts",
+    "migrate": "payload migrate",
+    "diag:db": "tsx src/scripts/diag-db.ts"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
