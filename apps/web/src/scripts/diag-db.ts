@@ -1,9 +1,9 @@
 import { Client } from 'pg'
 
-const DATABASE_URI = process.env.DATABASE_URI
+const DATABASE_URI = process.env.DATABASE_URI || process.env.DATABASE_URL
 
 if (!DATABASE_URI) {
-  console.error('❌ Missing DATABASE_URI env variable.')
+  console.error('❌ Missing DATABASE_URI/DATABASE_URL env variable.')
   process.exit(1)
 }
 
@@ -98,7 +98,7 @@ async function run() {
     }
 
     if (hasErrors) {
-      console.error('❌ DB schema diagnostics failed. Run Payload migrations and verify DATABASE_URI/search_path.')
+      console.error('❌ DB schema diagnostics failed. Run Payload migrations and verify DATABASE_URI or DATABASE_URL/search_path.')
       process.exit(1)
     }
 
