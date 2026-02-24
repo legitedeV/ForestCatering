@@ -52,3 +52,34 @@ pm2 restart forestcatering --update-env
 ```
 
 Po poprawnym haśle smoke testy z deploy powinny przejść, a `/` i `/admin` zwracać 200.
+
+## DB schema drift recovery (`relation does not exist` / `parserOpenTable`)
+
+Objaw: `/admin` pokazuje błąd przy `Strona nadrzędna`, a logi PM2/Postgres zawierają `relation does not exist`.
+
+### 1) Wykonaj migracje Payload (obowiązkowe)
+
+```bash
+cd apps/web
+npx payload migrate
+```
+
+### 2) Diagnostyka schematu (opcjonalnie)
+
+```bash
+cd apps/web
+npm run diag:db
+```
+
+Skrypt wypisze `current_schema`, `search_path` oraz obecność tabel i kolumn (`pages.path`, `pages.parent_id`, `pages.sort_order`).
+
+### 3) Seed minimalnych danych CMS
+
+```bash
+cd apps/web
+export ADMIN_EMAIL=admin@example.com
+export ADMIN_PASSWORD='ChangeMe!123' # wymagane na production
+npm run seed
+```
+
+> Dla wymuszenia nadpisania seedowanych rekordów ustaw `SEED_FORCE=true`.

@@ -46,46 +46,63 @@ export const computePagePath: CollectionBeforeValidateHook = async ({ data, req,
     throw new Error('Strona nie może być swoim własnym parentem.')
   }
 
-  if (!parentId) {
-    data.path = normalizedSlug
-    return data
+  let computedPath = normalizedSlug
+
+  if (parentId) {
+    const visited = new Set<string>(currentId ? [String(currentId)] : [])
+    let cursor: string | number | null = parentId
+    let depth = 0
+    let parentPath = ''
+
+    while (cursor) {
+      depth += 1
+      if (depth > MAX_PARENT_DEPTH) {
+        throw new Error(`Maksymalna głębokość drzewa stron to ${MAX_PARENT_DEPTH}.`)
+      }
+
+      const key = String(cursor)
+      if (visited.has(key)) {
+        throw new Error('Wykryto cykl w relacjach parent/child dla stron.')
+      }
+      visited.add(key)
+
+      const parentDoc = await req.payload.findByID({
+        collection: 'pages',
+        id: cursor,
+        depth: 0,
+        draft: true,
+      })
+
+      const parentDocPath = (parentDoc as { path?: unknown }).path
+      if (typeof parentDocPath !== 'string' || !parentDocPath) {
+        throw new Error('Strona nadrzędna musi mieć wyliczone pole path.')
+      }
+
+      parentPath = parentDocPath
+      cursor = getRelationshipId((parentDoc as { parent?: unknown }).parent)
+    }
+
+    computedPath = `${parentPath}/${normalizedSlug}`
   }
 
-  const visited = new Set<string>(currentId ? [String(currentId)] : [])
-  let cursor: string | number | null = parentId
-  let depth = 0
-  let parentPath = ''
+  data.path = computedPath
 
-  while (cursor) {
-    depth += 1
-    if (depth > MAX_PARENT_DEPTH) {
-      throw new Error(`Maksymalna głębokość drzewa stron to ${MAX_PARENT_DEPTH}.`)
-    }
+  const existingPath = await req.payload.find({
+    collection: 'pages',
+    where: {
+      and: [
+        { path: { equals: computedPath } },
+        ...(currentId ? [{ id: { not_equals: currentId } }] : []),
+      ],
+    },
+    depth: 0,
+    draft: true,
+    limit: 1,
+  })
 
-    const key = String(cursor)
-    if (visited.has(key)) {
-      throw new Error('Wykryto cykl w relacjach parent/child dla stron.')
-    }
-    visited.add(key)
-
-    const parentDoc = await req.payload.findByID({
-      collection: 'pages',
-      id: cursor,
-      depth: 0,
-      draft: true,
-    })
-
-    const parentDocPath = (parentDoc as { path?: unknown }).path
-    if (typeof parentDocPath !== 'string' || !parentDocPath) {
-      throw new Error('Strona nadrzędna musi mieć wyliczone pole path.')
-    }
-
-    parentPath = parentDocPath
-    cursor = getRelationshipId((parentDoc as { parent?: unknown }).parent)
+  if (existingPath.docs.length > 0) {
+    throw new Error('Taki URL już istnieje.')
   }
-
-  data.path = `${parentPath}/${normalizedSlug}`
 
   return data
 }
-

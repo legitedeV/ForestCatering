@@ -202,6 +202,29 @@ cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
 # Sync: standalone → source (catches any files Payload wrote to standalone)
 cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
 
+
+# 8. Run Payload migrations before restart
+MIGRATIONS_INDEX="$PROJECT_ROOT/apps/web/src/migrations/index.ts"
+if [[ ! -f "$MIGRATIONS_INDEX" ]]; then
+  echo "❌ Missing migrations index at $MIGRATIONS_INDEX"
+  echo "   Generate migrations before deploy (e.g. cd apps/web && npx payload migrate:create)."
+  exit 1
+fi
+
+cd "$PROJECT_ROOT/apps/web"
+if ! npx --no-install payload --help >/dev/null 2>&1; then
+  echo "❌ Payload CLI is not available. Cannot run migrations."
+  echo "   Ensure dependencies are installed (npm ci) and payload is present in node_modules."
+  exit 1
+fi
+
+echo "🔄 Running Payload migrations..."
+if ! npx payload migrate; then
+  echo "❌ Payload migrations failed. Deploy aborted to prevent schema drift."
+  exit 1
+fi
+echo "✅ Payload migrations completed."
+
 # 9. PM2
 pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --update-env
 
