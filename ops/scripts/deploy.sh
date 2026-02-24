@@ -79,6 +79,69 @@ validate_db_connectivity() {
   echo "✅ PostgreSQL connectivity check passed."
 }
 
+
+
+validate_pm2_standalone_entrypoint() {
+  local ecosystem_file="$PROJECT_ROOT/apps/web/ecosystem.config.cjs"
+
+  if [[ ! -f "$ecosystem_file" ]]; then
+    echo "❌ Missing PM2 config file: $ecosystem_file"
+    exit 1
+  fi
+
+  local pm2_check
+  pm2_check=$(node - "$ecosystem_file" <<'NODE'
+const path = require('path');
+const ecosystemPath = path.resolve(process.argv[2]);
+const cfg = require(ecosystemPath);
+const app = (cfg.apps && cfg.apps[0]) || {};
+const expectedCwd = path.resolve(path.dirname(ecosystemPath), '.next/standalone/apps/web');
+const expectedScript = path.resolve(expectedCwd, 'server.js');
+const actualCwd = path.resolve(app.cwd || '');
+const actualScript = path.resolve(app.script || '');
+if (actualCwd !== expectedCwd || actualScript !== expectedScript) {
+  console.error(`mismatch|${actualCwd}|${actualScript}|${expectedCwd}|${expectedScript}`);
+  process.exit(1);
+}
+console.log(`ok|${actualCwd}|${actualScript}`);
+NODE
+ 2>&1) || {
+    echo "❌ PM2 config must use standalone entrypoint apps/web/.next/standalone/apps/web/server.js"
+    echo "   Details: $pm2_check"
+    exit 1
+  }
+
+  echo "✅ PM2 config verified: ${pm2_check#ok|}"
+}
+
+verify_standalone_static_artifacts() {
+  local standalone_static_dir="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static"
+  local css_dir="$standalone_static_dir/css"
+  local chunks_dir="$standalone_static_dir/chunks"
+
+  if [[ ! -d "$css_dir" ]]; then
+    echo "❌ Missing standalone CSS directory: $css_dir"
+    exit 1
+  fi
+
+  if [[ ! -d "$chunks_dir" ]]; then
+    echo "❌ Missing standalone chunks directory: $chunks_dir"
+    exit 1
+  fi
+
+  if ! find "$css_dir" -type f | grep -q .; then
+    echo "❌ No CSS files found in standalone: $css_dir"
+    exit 1
+  fi
+
+  if ! find "$chunks_dir" -type f | grep -q .; then
+    echo "❌ No chunk files found in standalone: $chunks_dir"
+    exit 1
+  fi
+
+  echo "✅ Standalone static artifacts verified (css + chunks)."
+}
+
 sync_standalone_assets() {
   local standalone_next_dir="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next"
   local standalone_public_dir="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/public"
@@ -277,6 +340,7 @@ fi
 
 # Sync static/public assets into standalone before PM2 restart
 sync_standalone_assets
+verify_standalone_static_artifacts
 
 # Sync media source ↔ standalone after static/public sync (avoid media overwrite)
 mkdir -p "$MEDIA_SRC"
@@ -285,6 +349,8 @@ mkdir -p "$STANDALONE_MEDIA"
 cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
 # Sync: standalone → source (catches any files Payload wrote to standalone)
 cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
+
+validate_pm2_standalone_entrypoint
 
 # 9. PM2
 STANDALONE_SERVER_JS="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/server.js"
@@ -305,6 +371,7 @@ echo "📂 Standalone directory snapshot:"
 ls -l "$STANDALONE_APP_DIR" || true
 
 pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --update-env
+pm2 restart forestcatering --update-env
 
 # Wait for Next.js to be ready
 MAX_ATTEMPTS=30
@@ -323,7 +390,8 @@ done
 # 10. nginx
 bash "$SCRIPT_DIR/ensure-nginx.sh"
 
-# 11. Smoke tests
+# 11. Hard refresh-style cache bust + smoke tests
+curl -sS -H "Cache-Control: no-cache" -H "Pragma: no-cache" "http://127.0.0.1:3000/?_refresh=$(date +%s)" >/dev/null || true
 bash "$SCRIPT_DIR/smoke.sh"
 
 echo "✅ Deploy complete at $(date)"
