@@ -130,12 +130,45 @@ bash "$SCRIPT_DIR/setup.sh"
 
 # Determine whether a build is needed
 BUILD_ID_FILE="$PROJECT_ROOT/apps/web/.next/BUILD_ID"
+STANDALONE_SERVER="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/server.js"
+STANDALONE_STATIC="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static"
 NEED_BUILD=true
-if [[ "$FORCE_BUILD" == "false" ]] \
-   && [[ "$PREV_SHA" == "$CURR_SHA" ]] \
-   && [[ -f "$BUILD_ID_FILE" ]] \
-   && [[ "$(cat "$BUILD_ID_FILE")" == "$CURR_SHA" ]]; then
-  NEED_BUILD=false
+BUILD_DECISION_REASONS=()
+
+if [[ "$FORCE_BUILD" == "true" ]]; then
+  BUILD_DECISION_REASONS+=("force-build flag enabled")
+else
+  if [[ "$PREV_SHA" != "$CURR_SHA" ]]; then
+    BUILD_DECISION_REASONS+=("git revision changed ($PREV_SHA -> $CURR_SHA)")
+  fi
+
+  if [[ ! -f "$BUILD_ID_FILE" ]]; then
+    BUILD_DECISION_REASONS+=("missing BUILD_ID")
+  else
+    BUILD_ID_VALUE="$(cat "$BUILD_ID_FILE")"
+    if [[ "$BUILD_ID_VALUE" != "$CURR_SHA" ]]; then
+      BUILD_DECISION_REASONS+=("BUILD_ID mismatch ($BUILD_ID_VALUE != $CURR_SHA)")
+    fi
+  fi
+
+  if [[ ! -f "$STANDALONE_SERVER" ]]; then
+    BUILD_DECISION_REASONS+=("missing standalone server.js")
+  fi
+
+  if [[ ! -d "$STANDALONE_STATIC" ]]; then
+    BUILD_DECISION_REASONS+=("missing standalone static directory")
+  fi
+
+  if [[ ${#BUILD_DECISION_REASONS[@]} -eq 0 ]]; then
+    NEED_BUILD=false
+    BUILD_DECISION_REASONS+=("BUILD_ID matches current commit and standalone artifacts are present")
+  fi
+fi
+
+if [[ "$NEED_BUILD" == "true" ]]; then
+  echo "🧱 Build decision: BUILD (reasons: ${BUILD_DECISION_REASONS[*]})"
+else
+  echo "⏭️  Build decision: SKIP (reasons: ${BUILD_DECISION_REASONS[*]})"
 fi
 
 MEDIA_SRC="$PROJECT_ROOT/apps/web/public/media"
@@ -191,7 +224,7 @@ if [[ "$NEED_BUILD" == "true" ]]; then
     cp -rn "$PROJECT_ROOT/node_modules/"* "$STANDALONE_ROOT/node_modules/" 2>/dev/null || true
   fi
 else
-  echo "⏭️  Build skipped — code unchanged (commit $CURR_SHA already built)."
+  echo "⏭️  Build skipped — commit $CURR_SHA already has valid standalone artifacts."
 fi
 
 # Sync media source ↔ standalone (always, in case files were manually added)
