@@ -1,6 +1,7 @@
-import * as migration_20260219_230653 from './20260219_230653'
-import * as migration_20260224_000001_add_pages_tree_fields from './20260224_000001_add_pages_tree_fields'
-import * as migration_20260224_080000_add_missing_pages_block_tables from './20260224_080000_add_missing_pages_block_tables'
+import * as migration_20260219_230653 from './20260219_230653';
+import * as migration_20260224_000001_add_pages_tree_fields from './20260224_000001_add_pages_tree_fields';
+import * as migration_20260224_075113 from './20260224_075113';
+import * as migration_20260224_080000_add_missing_pages_block_tables from './20260224_080000_add_missing_pages_block_tables';
 
 export const migrations = [
   {
@@ -14,8 +15,13 @@ export const migrations = [
     name: '20260224_000001_add_pages_tree_fields',
   },
   {
+    up: migration_20260224_075113.up,
+    down: migration_20260224_075113.down,
+    name: '20260224_075113',
+  },
+  {
     up: migration_20260224_080000_add_missing_pages_block_tables.up,
     down: migration_20260224_080000_add_missing_pages_block_tables.down,
-    name: '20260224_080000_add_missing_pages_block_tables',
+    name: '20260224_080000_add_missing_pages_block_tables'
   },
-]
+];
