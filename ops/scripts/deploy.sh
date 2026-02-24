@@ -212,9 +212,10 @@ if [[ ! -f "$MIGRATIONS_INDEX" ]]; then
 fi
 
 cd "$PROJECT_ROOT/apps/web"
-if ! npx --no-install payload --help >/dev/null 2>&1; then
-  echo "❌ Payload CLI is not available. Cannot run migrations."
-  echo "   Ensure dependencies are installed (npm ci) and payload is present in node_modules."
+PAYLOAD_BIN="$PROJECT_ROOT/node_modules/payload/bin.js"
+if [[ ! -f "$PAYLOAD_BIN" ]]; then
+  echo "❌ Payload CLI is not available at $PAYLOAD_BIN. Cannot run migrations."
+  echo "   Ensure dependencies are installed (npm ci) and payload is present in root node_modules."
   exit 1
 fi
 
@@ -224,7 +225,7 @@ if [[ ! -f "$PROJECT_ROOT/apps/web/tsconfig.payload.json" ]]; then
   exit 1
 fi
 
-if ! node ../../node_modules/payload/bin.js migrate --config payload.config.ts --tsconfig tsconfig.payload.json; then
+if ! node "$PAYLOAD_BIN" migrate --config payload.config.ts --tsconfig tsconfig.payload.json; then
   echo "❌ Payload migrations failed. Deploy aborted to prevent schema drift."
   exit 1
 fi
