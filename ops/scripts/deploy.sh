@@ -183,12 +183,12 @@ verify_standalone_static_artifacts() {
     validation_failed=1
   fi
 
-  if [[ -d "$standalone_static_dir" ]] && ! find "$standalone_static_dir" -type f -name '*.js' | grep -q .; then
+  if [[ -d "$standalone_static_dir" ]] && [[ -z "$(find "$standalone_static_dir" -type f -name '*.js' -print -quit 2>/dev/null)" ]]; then
     echo "❌ No .js files found in standalone static assets: $standalone_static_dir"
     validation_failed=1
   fi
 
-  if [[ -d "$standalone_static_dir" ]] && ! find "$standalone_static_dir" -type f -name '*.css' | grep -q .; then
+  if [[ -d "$standalone_static_dir" ]] && [[ -z "$(find "$standalone_static_dir" -type f -name '*.css' -print -quit 2>/dev/null)" ]]; then
     echo "❌ No .css files found in standalone static assets: $standalone_static_dir"
     validation_failed=1
   fi
