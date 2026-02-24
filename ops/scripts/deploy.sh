@@ -231,6 +231,12 @@ if ! node "$PAYLOAD_BIN" migrate --config payload.config.ts --tsconfig tsconfig.
 fi
 echo "✅ Payload migrations completed."
 
+echo "🔎 Running DB schema diagnostics..."
+if ! npm run diag:db; then
+  echo "❌ DB schema diagnostics failed after migrations. Deploy aborted to prevent runtime SQL errors."
+  exit 1
+fi
+
 # 9. PM2
 pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --update-env
 
