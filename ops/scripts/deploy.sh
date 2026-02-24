@@ -79,6 +79,26 @@ validate_db_connectivity() {
   echo "✅ PostgreSQL connectivity check passed."
 }
 
+sync_standalone_assets() {
+  local standalone_next_dir="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next"
+  local standalone_public_dir="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/public"
+  local source_public_dir="$PROJECT_ROOT/apps/web/public"
+  local source_static_dir="$PROJECT_ROOT/apps/web/.next/static"
+  local standalone_static_dir="$standalone_next_dir/static"
+
+  if [[ ! -d "$source_static_dir" ]]; then
+    echo "❌ Missing Next.js static assets at $source_static_dir"
+    echo "   Build artifact is incomplete. Run deploy with a fresh build (e.g. --force-build)."
+    exit 1
+  fi
+
+  mkdir -p "$standalone_next_dir"
+  rm -rf "$standalone_public_dir" "$standalone_static_dir"
+
+  cp -r "$source_public_dir" "$standalone_public_dir"
+  cp -r "$source_static_dir" "$standalone_static_dir"
+}
+
 mkdir -p "$LOG_DIR"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
@@ -165,12 +185,6 @@ if [[ "$NEED_BUILD" == "true" ]]; then
   rm -rf .next
   npm run build
 
-  # Copy static assets for standalone mode (workspace-aware paths)
-  STANDALONE_DIR="$PROJECT_ROOT/apps/web/.next/standalone/apps/web"
-  cp -r "$PROJECT_ROOT/apps/web/public" "$STANDALONE_DIR/public" 2>/dev/null || true
-  mkdir -p "$STANDALONE_DIR/.next"
-  cp -r "$PROJECT_ROOT/apps/web/.next/static" "$STANDALONE_DIR/.next/static" 2>/dev/null || true
-
   # Restore media files after build
   mkdir -p "$MEDIA_SRC"
   mkdir -p "$STANDALONE_MEDIA"
@@ -193,15 +207,6 @@ if [[ "$NEED_BUILD" == "true" ]]; then
 else
   echo "⏭️  Build skipped — code unchanged (commit $CURR_SHA already built)."
 fi
-
-# Sync media source ↔ standalone (always, in case files were manually added)
-mkdir -p "$MEDIA_SRC"
-mkdir -p "$STANDALONE_MEDIA"
-# Sync: source → standalone (catches any files from git or manual placement)
-cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
-# Sync: standalone → source (catches any files Payload wrote to standalone)
-cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
-
 
 # 8. Run Payload migrations before restart
 MIGRATIONS_INDEX="$PROJECT_ROOT/apps/web/src/migrations/index.ts"
@@ -236,6 +241,17 @@ if ! npm run diag:db; then
   echo "❌ DB schema diagnostics failed after migrations. Deploy aborted to prevent runtime SQL errors."
   exit 1
 fi
+
+# Sync static/public assets into standalone before PM2 restart
+sync_standalone_assets
+
+# Sync media source ↔ standalone after static/public sync (avoid media overwrite)
+mkdir -p "$MEDIA_SRC"
+mkdir -p "$STANDALONE_MEDIA"
+# Sync: source → standalone (catches any files from git or manual placement)
+cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
+# Sync: standalone → source (catches any files Payload wrote to standalone)
+cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
 
 # 9. PM2
 pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --update-env
