@@ -23,6 +23,15 @@ import { GalleryFullBlock } from '../blocks/GalleryFullBlock'
 export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: { singular: 'Strona', plural: 'Strony' },
+  defaultPopulate: {
+    title: true,
+    slug: true,
+    path: true,
+    parent: true,
+    sortOrder: true,
+    updatedAt: true,
+    createdAt: true,
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'path', 'slug', 'parent', 'sortOrder', 'updatedAt'],
@@ -76,6 +85,7 @@ export const Pages: CollectionConfig = {
       name: 'parent',
       type: 'relationship',
       relationTo: 'pages',
+      maxDepth: 1,
       label: 'Strona nadrzędna',
       admin: {
         description: 'Wybierz stronę nadrzędną (opcjonalnie).',

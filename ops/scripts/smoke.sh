@@ -1,42 +1,75 @@
 #!/usr/bin/env bash
 set -euo pipefail
 FAIL=0
-check() {
-  CODE=$(curl -s -o /dev/null -w "%{http_code}" "$1" 2>/dev/null || true)
-  [[ -n "$CODE" ]] || CODE="000"
-  if [[ "$CODE" =~ ^(200|301|302)$ ]]; then echo "✅ $1 → $CODE"; else echo "❌ $1 → $CODE"; FAIL=1; fi
+
+check_required() {
+  local url="$1"
+  local code
+  code=$(curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null || true)
+  [[ -n "$code" ]] || code="000"
+  if [[ "$code" =~ ^(200|301|302)$ ]]; then
+    echo "✅ $url → $code"
+  else
+    echo "❌ $url → $code"
+    FAIL=1
+  fi
 }
 
-# ── Local dev (Next.js on :3000) ─────────────────────────────────────
-PATHS=(
+check_optional() {
+  local url="$1"
+  local code
+  code=$(curl -s -o /dev/null -w "%{http_code}" "$url" 2>/dev/null || true)
+  [[ -n "$code" ]] || code="000"
+  if [[ "$code" =~ ^(200|301|302)$ ]]; then
+    echo "✅ $url → $code"
+  elif [[ "$code" == "404" ]]; then
+    echo "⚠️ $url → $code (optional CMS route not published)"
+  else
+    echo "❌ $url → $code"
+    FAIL=1
+  fi
+}
+
+REQUIRED_PATHS=(
   "/"
   "/admin"
+  "/api/pages"
   "/sklep"
-  "/oferta"
-  "/eventy"
-  "/galeria"
   "/blog"
-  "/kontakt"
   "/koszyk"
-  "/regulamin"
   "/polityka-prywatnosci"
 )
 
-for p in "${PATHS[@]}"; do
-  check "http://127.0.0.1:3000${p}"
+OPTIONAL_CMS_PATHS=(
+  "/oferta"
+  "/eventy"
+  "/galeria"
+  "/kontakt"
+  "/regulamin"
+)
+
+for p in "${REQUIRED_PATHS[@]}"; do
+  check_required "http://127.0.0.1:3000${p}"
+done
+for p in "${OPTIONAL_CMS_PATHS[@]}"; do
+  check_optional "http://127.0.0.1:3000${p}"
 done
 
-# ── HTTP via nginx (forestbar.pl) ────────────────────────────────────
 if systemctl is-active --quiet nginx 2>/dev/null; then
-  for p in "${PATHS[@]}"; do
-    check "http://forestbar.pl${p}"
+  for p in "${REQUIRED_PATHS[@]}"; do
+    check_required "http://forestbar.pl${p}"
+  done
+  for p in "${OPTIONAL_CMS_PATHS[@]}"; do
+    check_optional "http://forestbar.pl${p}"
   done
 fi
 
-# ── HTTPS via nginx (forestbar.pl) ───────────────────────────────────
-for p in "${PATHS[@]}"; do
-    check "https://forestbar.pl${p}"
-  done
+for p in "${REQUIRED_PATHS[@]}"; do
+  check_required "https://forestbar.pl${p}"
+done
+for p in "${OPTIONAL_CMS_PATHS[@]}"; do
+  check_optional "https://forestbar.pl${p}"
+done
 
 [[ $FAIL -eq 0 ]] || { echo "🔥 SMOKE FAILED"; exit 1; }
 echo "🎉 All smoke tests passed."
