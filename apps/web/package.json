@@ -14,7 +14,8 @@
     "seed": "tsx src/seed/index.ts",
     "migrate": "payload migrate",
     "diag:db": "tsx src/scripts/diag-db.ts",
-    "seed:barman-pages": "tsx src/seed/seed-barman-pages.ts"
+    "seed:barman-pages": "tsx src/seed/seed-barman-pages.ts",
+    "seed:products:unsplash": "tsx src/seed/seed-products-unsplash.ts"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
