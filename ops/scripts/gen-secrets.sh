@@ -54,8 +54,10 @@ if needs_value "$POSTGRES_PASSWORD_CURRENT"; then
   upsert_env "POSTGRES_PASSWORD" "$POSTGRES_PASSWORD_CURRENT"
 fi
 
-# Keep DB credentials consistent across setup.sh (role password) and app runtime (DATABASE_URI)
-upsert_env "DATABASE_URI" "postgres://${POSTGRES_USER_CURRENT}:${POSTGRES_PASSWORD_CURRENT}@${POSTGRES_HOST_CURRENT}:${POSTGRES_PORT_CURRENT}/${POSTGRES_DB_CURRENT}"
+# Keep DB credentials consistent across setup.sh (role password) and app runtime
+DB_URI="postgres://${POSTGRES_USER_CURRENT}:${POSTGRES_PASSWORD_CURRENT}@${POSTGRES_HOST_CURRENT}:${POSTGRES_PORT_CURRENT}/${POSTGRES_DB_CURRENT}"
+upsert_env "DATABASE_URL" "$DB_URI"
+upsert_env "DATABASE_URI" "$DB_URI"
 
 if needs_value "$PAYLOAD_SECRET_CURRENT"; then
   upsert_env "PAYLOAD_SECRET" "$(random_secret)"
