@@ -24,6 +24,8 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   labels: { singular: 'Strona', plural: 'Strony' },
   defaultPopulate: {
+    id: true,
+    _status: true,
     title: true,
     slug: true,
     path: true,
