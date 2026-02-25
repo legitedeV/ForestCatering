@@ -7,6 +7,7 @@ module.exports = {
     name: 'forestcatering',
     cwd: standaloneCwd,
     script: path.resolve(standaloneCwd, 'server.js'),
+    exec_mode: 'fork',
     instances: 1,
     autorestart: true,
     max_memory_restart: '500M',
