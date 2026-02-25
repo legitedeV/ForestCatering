@@ -102,7 +102,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | 'pl' | 'pl'[];
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
@@ -111,7 +111,7 @@ export interface Config {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
   };
-  locale: null;
+  locale: 'pl';
   user: User;
   jobs: {
     tasks: unknown;
@@ -622,6 +622,74 @@ export interface Page {
         id?: string | null;
         blockName?: string | null;
         blockType: 'legalText';
+      }
+    | {
+        heading: string;
+        items: {
+          logo: number | Media;
+          name: string;
+          url?: string | null;
+          id?: string | null;
+        }[];
+        variant?: ('grid' | 'carousel') | null;
+        grayscale?: boolean | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'partners';
+      }
+    | {
+        heading?: string | null;
+        people: {
+          photo: number | Media;
+          name: string;
+          role: string;
+          bio?: string | null;
+          socials?:
+            | {
+                label: string;
+                url: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'team';
+      }
+    | {
+        heading?: string | null;
+        description?: string | null;
+        embedUrl: string;
+        cities?:
+          | {
+              name: string;
+              id?: string | null;
+            }[]
+          | null;
+        note?: string | null;
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'mapArea';
+      }
+    | {
+        heading?: string | null;
+        cards: {
+          title: string;
+          priceFrom?: string | null;
+          badge?: string | null;
+          featured?: boolean | null;
+          features: {
+            text: string;
+            id?: string | null;
+          }[];
+          ctaText?: string | null;
+          ctaLink?: string | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+        blockName?: string | null;
+        blockType: 'offerCards';
       }
   )[];
   seo?: {
@@ -1161,6 +1229,86 @@ export interface PagesSelect<T extends boolean = true> {
               heading?: T;
               effectiveDate?: T;
               content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        partners?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    logo?: T;
+                    name?: T;
+                    url?: T;
+                    id?: T;
+                  };
+              variant?: T;
+              grayscale?: T;
+              id?: T;
+              blockName?: T;
+            };
+        team?:
+          | T
+          | {
+              heading?: T;
+              people?:
+                | T
+                | {
+                    photo?: T;
+                    name?: T;
+                    role?: T;
+                    bio?: T;
+                    socials?:
+                      | T
+                      | {
+                          label?: T;
+                          url?: T;
+                          id?: T;
+                        };
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        mapArea?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              embedUrl?: T;
+              cities?:
+                | T
+                | {
+                    name?: T;
+                    id?: T;
+                  };
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+        offerCards?:
+          | T
+          | {
+              heading?: T;
+              cards?:
+                | T
+                | {
+                    title?: T;
+                    priceFrom?: T;
+                    badge?: T;
+                    featured?: T;
+                    features?:
+                      | T
+                      | {
+                          text?: T;
+                          id?: T;
+                        };
+                    ctaText?: T;
+                    ctaLink?: T;
+                    id?: T;
+                  };
               id?: T;
               blockName?: T;
             };
