@@ -19,6 +19,10 @@ import { StepsBlock } from '../blocks/StepsBlock'
 import { ContactFormBlock } from '../blocks/ContactFormBlock'
 import { LegalTextBlock } from '../blocks/LegalTextBlock'
 import { GalleryFullBlock } from '../blocks/GalleryFullBlock'
+import { PartnersBlock } from '../blocks/PartnersBlock'
+import { TeamBlock } from '../blocks/TeamBlock'
+import { MapAreaBlock } from '../blocks/MapAreaBlock'
+import { OfferCardsBlock } from '../blocks/OfferCardsBlock'
 
 export const Pages: CollectionConfig = {
   slug: 'pages',
@@ -114,6 +118,10 @@ export const Pages: CollectionConfig = {
         StepsBlock,
         ContactFormBlock,
         LegalTextBlock,
+        PartnersBlock,
+        TeamBlock,
+        MapAreaBlock,
+        OfferCardsBlock,
       ],
     },
     {

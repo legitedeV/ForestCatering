@@ -14,6 +14,10 @@ import { StepsBlock } from './blocks/StepsBlock'
 import { ContactFormBlock } from './blocks/ContactFormBlock'
 import { LegalTextBlock } from './blocks/LegalTextBlock'
 import { GalleryFullBlock } from './blocks/GalleryFullBlock'
+import { PartnersBlock } from './blocks/PartnersBlock'
+import { TeamBlock } from './blocks/TeamBlock'
+import { MapAreaBlock } from './blocks/MapAreaBlock'
+import { OfferCardsBlock } from './blocks/OfferCardsBlock'
 
 interface Props {
   sections: PageSection[]
@@ -55,6 +59,14 @@ export function BlockRenderer({ sections }: Props) {
             return <ContactFormBlock key={key} {...block} />
           case 'legalText':
             return <LegalTextBlock key={key} {...block} />
+          case 'partners':
+            return <PartnersBlock key={key} {...block} />
+          case 'team':
+            return <TeamBlock key={key} {...block} />
+          case 'mapArea':
+            return <MapAreaBlock key={key} {...block} />
+          case 'offerCards':
+            return <OfferCardsBlock key={key} {...block} />
           default:
             return null
         }
