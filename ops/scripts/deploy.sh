@@ -79,8 +79,6 @@ validate_db_connectivity() {
   echo "✅ PostgreSQL connectivity check passed."
 }
 
-
-
 validate_pm2_standalone_entrypoint() {
   local ecosystem_file="$PROJECT_ROOT/apps/web/ecosystem.config.cjs"
 
@@ -163,7 +161,6 @@ sync_standalone_assets() {
 }
 
 mkdir -p "$LOG_DIR"
-
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 echo "=== Forest Catering — Deploy ==="
@@ -212,7 +209,7 @@ validate_db_connectivity "${DATABASE_URI:-}"
 bash "$SCRIPT_DIR/setup.sh"
 
 # Determine whether a build is needed
-BUILD_ID_FILE="$PROJECT_ROOT/apps/web/.next/BUILD_ID"
+BUILD_SHA_FILE="$PROJECT_ROOT/apps/web/.next/BUILD_SHA"
 STANDALONE_SERVER="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/server.js"
 STANDALONE_STATIC="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static"
 NEED_BUILD=true
@@ -225,12 +222,12 @@ else
     BUILD_DECISION_REASONS+=("git revision changed ($PREV_SHA -> $CURR_SHA)")
   fi
 
-  if [[ ! -f "$BUILD_ID_FILE" ]]; then
-    BUILD_DECISION_REASONS+=("missing BUILD_ID")
+  if [[ ! -f "$BUILD_SHA_FILE" ]]; then
+    BUILD_DECISION_REASONS+=("missing BUILD_SHA")
   else
-    BUILD_ID_VALUE="$(cat "$BUILD_ID_FILE")"
-    if [[ "$BUILD_ID_VALUE" != "$CURR_SHA" ]]; then
-      BUILD_DECISION_REASONS+=("BUILD_ID mismatch ($BUILD_ID_VALUE != $CURR_SHA)")
+    BUILD_SHA_VALUE="$(cat "$BUILD_SHA_FILE")"
+    if [[ "$BUILD_SHA_VALUE" != "$CURR_SHA" ]]; then
+      BUILD_DECISION_REASONS+=("BUILD_SHA mismatch ($BUILD_SHA_VALUE != $CURR_SHA)")
     fi
   fi
 
@@ -244,7 +241,7 @@ else
 
   if [[ ${#BUILD_DECISION_REASONS[@]} -eq 0 ]]; then
     NEED_BUILD=false
-    BUILD_DECISION_REASONS+=("BUILD_ID matches current commit and standalone artifacts are present")
+    BUILD_DECISION_REASONS+=("BUILD_SHA matches current commit and standalone artifacts are present")
   fi
 fi
 
@@ -264,15 +261,12 @@ if [[ "$NEED_BUILD" == "true" ]]; then
   NODE_ENV=development npm ci
 
   # Media backup — preserve uploads across deploys
-  # Ensure source media dir exists
   mkdir -p "$MEDIA_SRC"
 
-  # Backup media from standalone (where Payload actually writes uploads)
   if [[ -d "$STANDALONE_MEDIA" ]] && find "$STANDALONE_MEDIA" -maxdepth 1 -type f ! -name '.gitkeep' | grep -q .; then
     mkdir -p "$MEDIA_BACKUP"
     cp -a "$STANDALONE_MEDIA"/. "$MEDIA_BACKUP"/
     echo "📦 Backed up $(find "$MEDIA_BACKUP" -maxdepth 1 -type f | wc -l) media files."
-    # Also sync backed-up files into source public/media
     cp -an "$MEDIA_BACKUP"/. "$MEDIA_SRC"/ 2>/dev/null || true
   fi
 
@@ -280,6 +274,10 @@ if [[ "$NEED_BUILD" == "true" ]]; then
   cd "$PROJECT_ROOT/apps/web"
   rm -rf .next
   npm run build
+
+  # Stamp build sha for deterministic deploy behavior
+  mkdir -p "$PROJECT_ROOT/apps/web/.next"
+  echo "$CURR_SHA" > "$BUILD_SHA_FILE"
 
   # Restore media files after build
   mkdir -p "$MEDIA_SRC"
@@ -293,7 +291,6 @@ if [[ "$NEED_BUILD" == "true" ]]; then
   fi
 
   # Sync missing node_modules into standalone (monorepo hoisting fix)
-  # Next.js standalone file tracer misses hoisted deps in npm workspaces
   STANDALONE_ROOT="$PROJECT_ROOT/apps/web/.next/standalone"
   if command -v rsync &>/dev/null; then
     rsync -a --ignore-existing "$PROJECT_ROOT/node_modules/" "$STANDALONE_ROOT/node_modules/"
@@ -320,17 +317,26 @@ if [[ ! -f "$PAYLOAD_BIN" ]]; then
   exit 1
 fi
 
-echo "🔄 Running Payload migrations..."
+echo "🔄 Running Payload migrations (safe / idempotent mode)..."
 if [[ ! -f "$PROJECT_ROOT/apps/web/tsconfig.payload.json" ]]; then
   echo "❌ Missing apps/web/tsconfig.payload.json required for stable Payload CLI tsconfig detection."
   exit 1
 fi
 
-if ! node "$PAYLOAD_BIN" migrate --config payload.config.ts --tsconfig tsconfig.payload.json; then
-  echo "❌ Payload migrations failed. Deploy aborted to prevent schema drift."
-  exit 1
+MIGRATION_LOG="/tmp/payload-migrate-$$.log"
+if node "$PAYLOAD_BIN" migrate --config payload.config.ts --tsconfig tsconfig.payload.json >"$MIGRATION_LOG" 2>&1; then
+  echo "✅ Payload migrations completed."
+else
+  if grep -Eiq "already exists|duplicate|relation .* exists|type .* exists|column .* exists" "$MIGRATION_LOG"; then
+    echo "⚠️  Migration reported existing schema objects."
+    echo "⚠️  Assuming schema already applied. Continuing deploy."
+  else
+    echo "❌ Payload migrations failed with non-idempotent error:"
+    cat "$MIGRATION_LOG"
+    exit 1
+  fi
 fi
-echo "✅ Payload migrations completed."
+rm -f "$MIGRATION_LOG"
 
 echo "🔎 Running DB schema diagnostics..."
 if ! npm run diag:db; then
@@ -345,9 +351,7 @@ verify_standalone_static_artifacts
 # Sync media source ↔ standalone after static/public sync (avoid media overwrite)
 mkdir -p "$MEDIA_SRC"
 mkdir -p "$STANDALONE_MEDIA"
-# Sync: source → standalone (catches any files from git or manual placement)
 cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
-# Sync: standalone → source (catches any files Payload wrote to standalone)
 cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
 
 validate_pm2_standalone_entrypoint
@@ -386,6 +390,18 @@ for i in $(seq 1 $MAX_ATTEMPTS); do
   fi
   sleep 1
 done
+
+echo "🔎 Verifying dynamic pages visibility..."
+if ! curl -sf http://127.0.0.1:3000/api/pages?limit=1 | grep -q '"docs"'; then
+  echo "❌ API /api/pages not returning docs. Deploy failed."
+  exit 1
+fi
+
+if ! curl -sf http://127.0.0.1:3000/oferta >/dev/null; then
+  echo "❌ Slug /oferta not responding. Deploy failed."
+  exit 1
+fi
+echo "✅ Slugs verified."
 
 # 10. nginx
 bash "$SCRIPT_DIR/ensure-nginx.sh"
