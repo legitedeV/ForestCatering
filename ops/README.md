@@ -1,101 +1,108 @@
-# Ops runbook
+# ForestCatering Ops Runbook (deterministic monorepo deploy)
 
-## DB auth recovery (`28P01` / `payloadInitError`)
+This repository is operated as one npm workspace monorepo.
 
-Objaw: `/admin` zwraca `500 payloadInitError`, w logach jest `password authentication failed` dla usera aplikacji.
+## Canonical paths
 
-### 1) Sprawdź env i połączenie
+- **Dependencies (single tree):** `node_modules/` at repository root.
+- **App source:** `apps/web`.
+- **Build output (single canonical location):** `apps/web/.next`.
+- **Standalone runtime:** `apps/web/.next/standalone/apps/web/server.js`.
+- **Production env source of truth:** `ops/.env`.
+- **Deploy scripts:** `ops/scripts/*`.
 
-```bash
-set -a
-source ops/.env
-set +a
-
-echo "$DATABASE_URI"
-psql "$DATABASE_URI" -v ON_ERROR_STOP=1 -c "select 1;"
-```
-
-Jeśli `psql` zwraca błąd auth, hasło usera w Postgres nie zgadza się z `DATABASE_URI`/`POSTGRES_PASSWORD`.
-
-### 2) Zresetuj hasło usera aplikacyjnego
-
-Zaloguj się jako superuser Postgresa (np. `postgres`) i ustaw hasło na wartość z `ops/.env`:
+## 0) One-time setup
 
 ```bash
-set -a
-source ops/.env
-set +a
-
-sudo -u postgres psql -d postgres -v ON_ERROR_STOP=1 \
-  -c "ALTER USER \"$POSTGRES_USER\" WITH PASSWORD '$POSTGRES_PASSWORD';"
+cp ops/.env.example ops/.env
+# edit ops/.env with real values
 ```
 
-> Jeśli masz niestandardowy host/port, użyj połączenia administracyjnego zgodnie z infrastrukturą.
+Required variables: `DATABASE_URL`, `PAYLOAD_SECRET`, `PAYLOAD_REVALIDATE_SECRET`, `PAYLOAD_PREVIEW_SECRET`, `HOME_PAGE_SLUG`.
 
-### 3) Zweryfikuj połączenie userem aplikacji
+> `DATABASE_URI` is kept as compatibility alias, but `DATABASE_URL` is the canonical key.
+
+## 1) Local production-like build (single command)
+
+From repository root:
 
 ```bash
-set -a
-source ops/.env
-set +a
-
-psql "$DATABASE_URI" -v ON_ERROR_STOP=1 -c "select current_user, current_database();"
-psql "$DATABASE_URI" -v ON_ERROR_STOP=1 -c "select 1;"
+npm run build:web
 ```
 
-### 4) Restart procesu aplikacji
+What this does (always in same order):
+
+1. Loads env from `ops/.env`.
+2. Runs `npm ci` from root (workspace install).
+3. Runs Payload migrations for `apps/web`.
+4. Runs `next build` for `apps/web`.
+5. Prepares standalone runtime artifacts:
+   - copies `apps/web/.next/static` → `apps/web/.next/standalone/apps/web/.next/static`
+   - copies `apps/web/public` → `apps/web/.next/standalone/apps/web/public`
+   - validates `.next/static/chunks` is non-empty.
+
+## 2) Run app locally (standalone runtime)
 
 ```bash
-bash ops/scripts/deploy.sh
-# lub awaryjnie
-pm2 restart forestcatering --update-env
+cd /path/to/ForestCatering
+set -a && source ops/.env && set +a
+node apps/web/.next/standalone/apps/web/server.js
 ```
 
-Po poprawnym haśle smoke testy z deploy powinny przejść, a `/` i `/admin` zwracać 200.
+## 3) CMS migrations and seed
 
-## DB schema drift recovery (`relation does not exist` / `parserOpenTable`)
+### Migrations only
 
-Objaw: `/admin` pokazuje błąd przy `Strona nadrzędna`, a logi PM2/Postgres zawierają `relation does not exist`.
+```bash
+npm run migrate:web
+```
 
-### 1) Wykonaj migracje Payload (obowiązkowe)
+### Seed
 
 ```bash
 cd apps/web
-npx payload migrate
-```
-
-### 2) Diagnostyka schematu (opcjonalnie)
-
-```bash
-cd apps/web
-npm run diag:db
-```
-
-Skrypt wypisze `current_schema`, `search_path` oraz obecność tabel i kolumn (`pages.path`, `pages.parent_id`, `pages.sort_order`).
-
-### 3) Seed minimalnych danych CMS
-
-```bash
-cd apps/web
-export ADMIN_EMAIL=admin@example.com
-export ADMIN_PASSWORD='ChangeMe!123' # wymagane na production
+set -a && source ../../ops/.env && set +a
 npm run seed
 ```
 
-> Dla wymuszenia nadpisania seedowanych rekordów ustaw `SEED_FORCE=true`.
-
-## Frontend unstyled page (`/_next/static` asset diagnostics)
-
-Objaw: strona ładuje się jako "goły HTML" (bez Tailwind/CSS/JS), mimo że `/` odpowiada 200.
-
-### Szybka diagnostyka
+## 4) Production deploy + PM2 restart (single command)
 
 ```bash
-bash ops/scripts/smoke.sh
+bash ops/scripts/deploy.sh
 ```
 
-Skrypt sprawdza teraz nie tylko statusy stron, ale także:
-- czy w HTML strony głównej są odwołania do `/_next/static/...`,
-- czy znalezione assety zwracają `200/304`.
+Deploy script guarantees:
 
-Jeśli assety zwracają `404/5xx`, to najczęściej problem jest w deployu standalone (`.next/static` nie zostało skopiowane) albo w routingu Nginx/proxy.
+1. Loads `ops/.env`.
+2. Runs unified pipeline (`npm run build:web`).
+3. Verifies standalone server exists.
+4. Verifies standalone static chunk files exist.
+5. Restarts PM2 using standalone server and standalone cwd.
+6. Uses `--update-env` so PM2 runtime matches `ops/.env`.
+
+PM2 command used by deploy:
+
+```bash
+pm2 delete forestcatering || true
+pm2 start apps/web/.next/standalone/apps/web/server.js \
+  --name forestcatering \
+  --cwd apps/web/.next/standalone/apps/web \
+  -i max \
+  --update-env
+pm2 save
+```
+
+## 5) Safe PM2 operations
+
+```bash
+pm2 status
+pm2 logs forestcatering
+pm2 restart forestcatering --update-env
+```
+
+## 6) Rules that prevent drift
+
+- Do **not** run production builds outside `apps/web/.next`.
+- Do **not** use nested `apps/web/node_modules`.
+- Do **not** keep production secrets in `apps/web/.env*`.
+- Always deploy through `ops/scripts/deploy.sh`.

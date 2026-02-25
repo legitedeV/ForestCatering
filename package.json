@@ -3,5 +3,12 @@
   "private": true,
   "workspaces": [
     "apps/web"
-  ]
+  ],
+  "scripts": {
+    "ci:install": "npm ci",
+    "migrate:web": "bash ops/scripts/run-migrations-web.sh",
+    "build:web": "bash ops/scripts/build-web.sh",
+    "prepare:standalone:web": "bash ops/scripts/prepare-standalone.sh",
+    "deploy": "bash ops/scripts/deploy.sh"
+  }
 }
