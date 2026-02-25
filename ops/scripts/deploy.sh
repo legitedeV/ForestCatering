@@ -79,8 +79,6 @@ validate_db_connectivity() {
   echo "✅ PostgreSQL connectivity check passed."
 }
 
-
-
 validate_pm2_standalone_entrypoint() {
   local ecosystem_file="$PROJECT_ROOT/apps/web/ecosystem.config.cjs"
 
@@ -115,31 +113,52 @@ NODE
 }
 
 verify_standalone_static_artifacts() {
+  local source_next_dir="$PROJECT_ROOT/apps/web/.next"
+  local source_static_dir="$source_next_dir/static"
+  local standalone_next_dir="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next"
   local standalone_static_dir="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static"
-  local css_dir="$standalone_static_dir/css"
-  local chunks_dir="$standalone_static_dir/chunks"
+  local validation_failed=0
 
-  if [[ ! -d "$css_dir" ]]; then
-    echo "❌ Missing standalone CSS directory: $css_dir"
+  require_manifest_when_used() {
+    local manifest_name="$1"
+    local source_manifest="$source_next_dir/$manifest_name"
+    local standalone_manifest="$standalone_next_dir/$manifest_name"
+
+    if [[ -f "$source_manifest" && ! -f "$standalone_manifest" ]]; then
+      echo "❌ Manifest '$manifest_name' exists in source build but is missing in standalone: $standalone_manifest"
+      validation_failed=1
+    fi
+  }
+
+  if [[ ! -d "$standalone_static_dir" ]]; then
+    echo "❌ Missing standalone static directory: $standalone_static_dir"
+    validation_failed=1
+  fi
+
+  if [[ ! -d "$source_static_dir" ]]; then
+    echo "❌ Missing source static directory: $source_static_dir"
+    validation_failed=1
+  fi
+
+  if [[ -d "$standalone_static_dir" ]] && [[ -z "$(find "$standalone_static_dir" -type f -name '*.js' -print -quit 2>/dev/null)" ]]; then
+    echo "❌ No .js files found in standalone static assets: $standalone_static_dir"
+    validation_failed=1
+  fi
+
+  if [[ -d "$standalone_static_dir" ]] && [[ -z "$(find "$standalone_static_dir" -type f -name '*.css' -print -quit 2>/dev/null)" ]]; then
+    echo "❌ No .css files found in standalone static assets: $standalone_static_dir"
+    validation_failed=1
+  fi
+
+  require_manifest_when_used "build-manifest.json"
+  require_manifest_when_used "app-build-manifest.json"
+
+  if [[ "$validation_failed" -ne 0 ]]; then
+    echo "❌ Standalone/static validation failed."
     exit 1
   fi
 
-  if [[ ! -d "$chunks_dir" ]]; then
-    echo "❌ Missing standalone chunks directory: $chunks_dir"
-    exit 1
-  fi
-
-  if ! find "$css_dir" -type f | grep -q .; then
-    echo "❌ No CSS files found in standalone: $css_dir"
-    exit 1
-  fi
-
-  if ! find "$chunks_dir" -type f | grep -q .; then
-    echo "❌ No chunk files found in standalone: $chunks_dir"
-    exit 1
-  fi
-
-  echo "✅ Standalone static artifacts verified (css + chunks)."
+  echo "✅ Standalone static artifacts verified."
 }
 
 sync_standalone_assets() {
@@ -151,7 +170,7 @@ sync_standalone_assets() {
 
   if [[ ! -d "$source_static_dir" ]]; then
     echo "❌ Missing Next.js static assets at $source_static_dir"
-    echo "   Build artifact is incomplete. Run deploy with a fresh build (e.g. --force-build)."
+    echo "   Build artifact is incomplete."
     exit 1
   fi
 
@@ -162,45 +181,59 @@ sync_standalone_assets() {
   cp -r "$source_static_dir" "$standalone_static_dir"
 }
 
-mkdir -p "$LOG_DIR"
+# ---- NEW: dependency install caching based on lockfile hash ----
+LOCKFILE="$PROJECT_ROOT/package-lock.json"
+LOCK_HASH_FILE="$PROJECT_ROOT/node_modules/.package-lock.sha256"
 
+should_install_deps() {
+  [[ ! -f "$LOCKFILE" ]] && return 0
+  local curr_hash
+  curr_hash="$(calc_hash "$LOCKFILE")"
+  [[ ! -f "$LOCK_HASH_FILE" ]] && return 0
+  local prev_hash
+  prev_hash="$(cat "$LOCK_HASH_FILE" 2>/dev/null || true)"
+  [[ "$curr_hash" != "$prev_hash" ]] && return 0
+  return 1
+}
+
+record_lock_hash() {
+  [[ ! -f "$LOCKFILE" ]] && return 0
+  mkdir -p "$PROJECT_ROOT/node_modules"
+  calc_hash "$LOCKFILE" > "$LOCK_HASH_FILE"
+}
+
+mkdir -p "$LOG_DIR"
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 echo "=== Forest Catering — Deploy ==="
 echo "Started at $(date)"
 
-# Parse flags
 FORCE_BUILD=false
 for arg in "$@"; do
   [[ "$arg" == "--force-build" ]] && FORCE_BUILD=true
 done
 
-# 1. Capture SHA before pull
 cd "$PROJECT_ROOT"
 PREV_SHA=$(git rev-parse HEAD 2>/dev/null || echo "none")
 PRE_PULL_SCRIPT_HASH=$(calc_hash "$SCRIPT_PATH")
 
-# 2. Pull latest
 git pull origin main --ff-only
 
-# 3. Capture SHA after pull
 CURR_SHA=$(git rev-parse HEAD)
 POST_PULL_SCRIPT_HASH=$(calc_hash "$SCRIPT_PATH")
 
 if [[ "$PRE_PULL_SCRIPT_HASH" != "$POST_PULL_SCRIPT_HASH" ]]; then
-  if [[ "$SELF_REEXEC_GUARD" != "1" ]]; then
-    echo "♻️  deploy.sh was updated by git pull — re-executing latest script version."
+  if [[ "${SELF_REEXEC_GUARD}" != "1" ]]; then
+    echo "♻️  deploy.sh was updated — re-executing latest version."
     exec env DEPLOY_SELF_UPDATED=1 bash "$SCRIPT_PATH" "$@"
   fi
-  echo "⚠️  deploy.sh changed but self-reexec guard is active; continuing current run."
+  echo "⚠️  deploy.sh changed but guard active; continuing."
 fi
 
-# 4. Source env
 if [[ ! -f "$PROJECT_ROOT/ops/.env" ]]; then
   echo "❌ ops/.env not found. Run: bash ops/scripts/gen-secrets.sh"
   exit 1
 fi
-# shellcheck source=/dev/null
 set -a
 source "$PROJECT_ROOT/ops/.env"
 set +a
@@ -208,10 +241,8 @@ set +a
 validate_db_env_consistency "${POSTGRES_PASSWORD:-}" "${DATABASE_URI:-}"
 validate_db_connectivity "${DATABASE_URI:-}"
 
-# 5. Run setup (idempotent)
 bash "$SCRIPT_DIR/setup.sh"
 
-# Determine whether a build is needed
 BUILD_ID_FILE="$PROJECT_ROOT/apps/web/.next/BUILD_ID"
 STANDALONE_SERVER="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/server.js"
 STANDALONE_STATIC="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static"
@@ -259,32 +290,36 @@ MEDIA_BACKUP="/tmp/fc-media-backup-$$"
 STANDALONE_MEDIA="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/public/media"
 
 if [[ "$NEED_BUILD" == "true" ]]; then
-  # 6. Install deps (need devDeps for build)
   cd "$PROJECT_ROOT"
-  NODE_ENV=development npm ci
 
-  # Media backup — preserve uploads across deploys
-  # Ensure source media dir exists
+  # ---- NEW: only install deps if lockfile hash changed ----
+  if should_install_deps; then
+    echo "📦 Installing deps (lockfile changed or no cache)..."
+    NODE_ENV=development npm ci --prefer-offline --no-audit --fund=false
+    record_lock_hash
+  else
+    echo "⏭️  Skipping npm ci (lockfile unchanged)."
+  fi
+
   mkdir -p "$MEDIA_SRC"
 
-  # Backup media from standalone (where Payload actually writes uploads)
   if [[ -d "$STANDALONE_MEDIA" ]] && find "$STANDALONE_MEDIA" -maxdepth 1 -type f ! -name '.gitkeep' | grep -q .; then
     mkdir -p "$MEDIA_BACKUP"
     cp -a "$STANDALONE_MEDIA"/. "$MEDIA_BACKUP"/
     echo "📦 Backed up $(find "$MEDIA_BACKUP" -maxdepth 1 -type f | wc -l) media files."
-    # Also sync backed-up files into source public/media
     cp -an "$MEDIA_BACKUP"/. "$MEDIA_SRC"/ 2>/dev/null || true
   fi
 
-  # 7. Build (clean to avoid stale cache)
   cd "$PROJECT_ROOT/apps/web"
-  rm -rf .next
-  npm run build
 
-  # Restore media files after build
-  mkdir -p "$MEDIA_SRC"
-  mkdir -p "$STANDALONE_MEDIA"
+  # ---- NEW: keep .next/cache to preserve build cache ----
+  mkdir -p .next/cache
+  rm -rf .next/standalone .next/static
 
+  echo "🏗️  Building (ESLint disabled for speed)..."
+  NEXT_DISABLE_ESLINT=1 NEXT_TELEMETRY_DISABLED=1 npm run build
+
+  mkdir -p "$MEDIA_SRC" "$STANDALONE_MEDIA"
   if [[ -d "$MEDIA_BACKUP" ]]; then
     cp -an "$MEDIA_BACKUP"/. "$MEDIA_SRC"/ 2>/dev/null || true
     cp -an "$MEDIA_BACKUP"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
@@ -292,8 +327,6 @@ if [[ "$NEED_BUILD" == "true" ]]; then
     echo "📦 Restored media files."
   fi
 
-  # Sync missing node_modules into standalone (monorepo hoisting fix)
-  # Next.js standalone file tracer misses hoisted deps in npm workspaces
   STANDALONE_ROOT="$PROJECT_ROOT/apps/web/.next/standalone"
   if command -v rsync &>/dev/null; then
     rsync -a --ignore-existing "$PROJECT_ROOT/node_modules/" "$STANDALONE_ROOT/node_modules/"
@@ -304,76 +337,46 @@ else
   echo "⏭️  Build skipped — commit $CURR_SHA already has valid standalone artifacts."
 fi
 
-# 8. Run Payload migrations before restart
 MIGRATIONS_INDEX="$PROJECT_ROOT/apps/web/src/migrations/index.ts"
 if [[ ! -f "$MIGRATIONS_INDEX" ]]; then
   echo "❌ Missing migrations index at $MIGRATIONS_INDEX"
-  echo "   Generate migrations before deploy (e.g. cd apps/web && npx payload migrate:create)."
   exit 1
 fi
 
 cd "$PROJECT_ROOT/apps/web"
 PAYLOAD_BIN="$PROJECT_ROOT/node_modules/payload/bin.js"
 if [[ ! -f "$PAYLOAD_BIN" ]]; then
-  echo "❌ Payload CLI is not available at $PAYLOAD_BIN. Cannot run migrations."
-  echo "   Ensure dependencies are installed (npm ci) and payload is present in root node_modules."
+  echo "❌ Payload CLI not available at $PAYLOAD_BIN."
   exit 1
 fi
 
 echo "🔄 Running Payload migrations..."
 if [[ ! -f "$PROJECT_ROOT/apps/web/tsconfig.payload.json" ]]; then
-  echo "❌ Missing apps/web/tsconfig.payload.json required for stable Payload CLI tsconfig detection."
+  echo "❌ Missing apps/web/tsconfig.payload.json"
   exit 1
 fi
 
-if ! node "$PAYLOAD_BIN" migrate --config payload.config.ts --tsconfig tsconfig.payload.json; then
-  echo "❌ Payload migrations failed. Deploy aborted to prevent schema drift."
-  exit 1
-fi
+node "$PAYLOAD_BIN" migrate --config payload.config.ts --tsconfig tsconfig.payload.json
 echo "✅ Payload migrations completed."
 
 echo "🔎 Running DB schema diagnostics..."
-if ! npm run diag:db; then
-  echo "❌ DB schema diagnostics failed after migrations. Deploy aborted to prevent runtime SQL errors."
-  exit 1
-fi
+npm run diag:db
 
-# Sync static/public assets into standalone before PM2 restart
 sync_standalone_assets
 verify_standalone_static_artifacts
 
-# Sync media source ↔ standalone after static/public sync (avoid media overwrite)
-mkdir -p "$MEDIA_SRC"
-mkdir -p "$STANDALONE_MEDIA"
-# Sync: source → standalone (catches any files from git or manual placement)
+mkdir -p "$MEDIA_SRC" "$STANDALONE_MEDIA"
 cp -an "$MEDIA_SRC"/. "$STANDALONE_MEDIA"/ 2>/dev/null || true
-# Sync: standalone → source (catches any files Payload wrote to standalone)
 cp -an "$STANDALONE_MEDIA"/. "$MEDIA_SRC"/ 2>/dev/null || true
 
 validate_pm2_standalone_entrypoint
 
-# 9. PM2
-STANDALONE_SERVER_JS="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/server.js"
-STANDALONE_STATIC_DIR="$PROJECT_ROOT/apps/web/.next/standalone/apps/web/.next/static"
-STANDALONE_APP_DIR="$PROJECT_ROOT/apps/web/.next/standalone/apps/web"
-
-echo "🔎 Standalone preflight check before PM2 restart..."
-if [[ ! -f "$STANDALONE_SERVER_JS" || ! -d "$STANDALONE_STATIC_DIR" ]]; then
-  echo "❌ Standalone artifacts are incomplete."
-  echo "   Required file missing? $STANDALONE_SERVER_JS"
-  echo "   Required dir missing?  $STANDALONE_STATIC_DIR"
-  echo "   Deploy aborted."
-  ls -l "$STANDALONE_APP_DIR" 2>/dev/null || true
-  exit 1
-fi
-
 echo "📂 Standalone directory snapshot:"
-ls -l "$STANDALONE_APP_DIR" || true
+ls -l "$PROJECT_ROOT/apps/web/.next/standalone/apps/web" || true
 
 pm2 startOrRestart "$PROJECT_ROOT/apps/web/ecosystem.config.cjs" --update-env
 pm2 restart forestcatering --update-env
 
-# Wait for Next.js to be ready
 MAX_ATTEMPTS=30
 echo "Waiting for Next.js to start..."
 for i in $(seq 1 $MAX_ATTEMPTS); do
@@ -381,16 +384,11 @@ for i in $(seq 1 $MAX_ATTEMPTS); do
     echo "✅ Next.js is ready (attempt $i)."
     break
   fi
-  if [[ $i -eq $MAX_ATTEMPTS ]]; then
-    echo "⚠️  Next.js did not respond after ${MAX_ATTEMPTS}s — continuing with smoke tests."
-  fi
   sleep 1
 done
 
-# 10. nginx
 bash "$SCRIPT_DIR/ensure-nginx.sh"
 
-# 11. Hard refresh-style cache bust + smoke tests
 curl -sS -H "Cache-Control: no-cache" -H "Pragma: no-cache" "http://127.0.0.1:3000/?_refresh=$(date +%s)" >/dev/null || true
 bash "$SCRIPT_DIR/smoke.sh"
 

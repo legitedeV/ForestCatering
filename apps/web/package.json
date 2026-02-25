@@ -12,7 +12,7 @@
     "generate:importmap": "payload generate:importmap",
     "payload:generate": "payload generate:types && payload generate:importmap",
     "seed": "tsx src/seed/index.ts",
-    "migrate": "payload migrate",
+    "migrate": "tsx src/scripts/run-migrate.ts",
     "diag:db": "tsx src/scripts/diag-db.ts",
     "seed:barman-pages": "tsx src/seed/seed-barman-pages.ts",
     "seed:products:unsplash": "tsx src/seed/seed-products-unsplash.ts"

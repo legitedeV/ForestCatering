@@ -22,9 +22,10 @@ Profesjonalna firma cateringowa ze Szczecina — Next.js 15 + Payload CMS 3 + Po
 
 2. Install PostgreSQL 16, create DB from `ops/.env`
 
-3. Install and run:
+3. Install, load env, and run:
    ```bash
    npm install        # from repo root (workspace install)
+   set -a; source ops/.env; set +a
    cd apps/web
    npm run dev
    ```
@@ -33,6 +34,13 @@ Profesjonalna firma cateringowa ze Szczecina — Next.js 15 + Payload CMS 3 + Po
    - Site: http://localhost:3000
    - Admin: http://localhost:3000/admin
 
+
+
+For commands that need Payload + DB (e.g. `npm run migrate`, `npm run seed`, `npm run diag:db`), load env first in the same shell:
+
+```bash
+set -a; source ops/.env; set +a
+```
 
 ### Preview + revalidate secrets
 
