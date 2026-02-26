@@ -7,7 +7,7 @@ export function StepsBlock({ heading, steps }: StepsProps) {
   if (!steps?.length) return null
 
   return (
-    <section className="bg-forest-950 py-20">
+    <section className="bg-forest-950 py-14">
       <div className="mx-auto max-w-7xl px-4">
         {heading && (
           <AnimatedSection>
@@ -17,13 +17,13 @@ export function StepsBlock({ heading, steps }: StepsProps) {
         )}
 
         <AnimatedSection stagger>
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="mt-10 grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, i) => (
               <AnimatedItem key={step.id ?? i}>
-                <article className="rounded-xl border border-forest-700 bg-forest-800 p-6">
-                  <p className="text-4xl">{step.emoji}</p>
-                  <h3 className="mt-4 text-xl font-semibold text-cream">{step.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-forest-200">{step.description}</p>
+                <article className="rounded-lg border border-forest-700 bg-forest-800 p-3">
+                  <p className="text-2xl">{step.emoji}</p>
+                  <h3 className="mt-3 text-base font-semibold text-cream">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-forest-200 line-clamp-2">{step.description}</p>
                 </article>
               </AnimatedItem>
             ))}
