@@ -13,6 +13,7 @@ export const Media: CollectionConfig = {
   },
   upload: {
     staticDir: 'public/media',
+    adminThumbnail: 'thumbnail',
     mimeTypes: ['image/*'],
     imageSizes: [
       { name: 'thumbnail', width: 300, height: 300, position: 'centre' },
