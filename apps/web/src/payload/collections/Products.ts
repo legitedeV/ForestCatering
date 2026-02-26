@@ -6,9 +6,10 @@ export const Products: CollectionConfig = {
   labels: { singular: 'Produkt', plural: 'Produkty' },
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'category', 'price', 'isAvailable'],
+    defaultColumns: ['name', 'category', 'price', 'isAvailable', 'isFeatured'],
   },
   hooks: {
+    // slug generowany z nazwy – ważne przy tworzeniu w panelu
     beforeValidate: [populateSlug],
   },
   access: {
@@ -18,6 +19,7 @@ export const Products: CollectionConfig = {
     delete: ({ req }) => req.user?.role === 'admin',
   },
   fields: [
+    // ────────────────── PODSTAWOWE DANE ──────────────────
     { name: 'name', type: 'text', required: true, maxLength: 200, label: 'Nazwa' },
     {
       name: 'slug',
@@ -25,10 +27,15 @@ export const Products: CollectionConfig = {
       required: true,
       unique: true,
       label: 'Slug (URL)',
-      admin: { position: 'sidebar' },
+      admin: {
+        position: 'sidebar',
+        description: 'Automatycznie z nazwy, możesz nadpisać ręcznie.',
+      },
     },
     { name: 'shortDescription', type: 'textarea', maxLength: 300, label: 'Krótki opis' },
     { name: 'description', type: 'richText', label: 'Pełny opis' },
+
+    // ────────────────── CENA ──────────────────
     {
       name: 'price',
       type: 'number',
@@ -44,6 +51,8 @@ export const Products: CollectionConfig = {
       label: 'Cena przed rabatem',
       admin: { description: 'Cena przed rabatem w groszach' },
     },
+
+    // ────────────────── KATEGORIA ──────────────────
     {
       name: 'category',
       type: 'relationship',
@@ -51,17 +60,67 @@ export const Products: CollectionConfig = {
       required: true,
       label: 'Kategoria',
     },
+
+    // ────────────────── MEDIA / PREZENTACJA ──────────────────
     {
-      name: 'images',
-      type: 'array',
-      minRows: 0,
-      maxRows: 8,
-      label: 'Zdjęcia',
-      labels: { singular: 'Zdjęcie', plural: 'Zdjęcia' },
+      type: 'collapsible',
+      label: 'Media i prezentacja',
+      admin: { initCollapsed: false },
       fields: [
-        { name: 'image', type: 'upload', relationTo: 'media', required: true, label: 'Zdjęcie' },
+        {
+          name: 'images',
+          type: 'array',
+          minRows: 0,
+          maxRows: 8,
+          label: 'Zdjęcia (upload)',
+          labels: { singular: 'Zdjęcie', plural: 'Zdjęcia' },
+          fields: [
+            {
+              name: 'image',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+              label: 'Zdjęcie',
+            },
+          ],
+        },
+        {
+          name: 'imageUrl',
+          type: 'text',
+          label: 'Zewnętrzny URL zdjęcia (np. Unsplash)',
+          admin: {
+            description:
+              'Jeśli ustawione, frontend może używać tego URL zamiast pierwszego zdjęcia z uploadu.',
+          },
+        },
+        {
+          name: 'unsplashId',
+          type: 'text',
+          label: 'Unsplash photo ID',
+          admin: {
+            description:
+              'ID zdjęcia z Unsplash (część z URL). Seeder może to nadpisywać automatycznie.',
+          },
+        },
+        {
+          name: 'color',
+          type: 'text',
+          label: 'Kolor akcentu (HEX)',
+          admin: {
+            description: 'Używany np. w kafelkach produktu, np. #4A7C59.',
+          },
+          validate: (value: unknown) => {
+            if (!value) return true
+            if (typeof value !== 'string') return 'Nieprawidłowy format koloru.'
+            return /^#([0-9a-fA-F]{3}){1,2}$/.test(value)
+              ? true
+              : 'Podaj poprawny HEX, np. #4A7C59.'
+          },
+        },
       ],
     },
+
+    // ────────────────── ALERGENY / DIETY ──────────────────
     {
       name: 'allergens',
       type: 'select',
@@ -94,8 +153,12 @@ export const Products: CollectionConfig = {
         { label: 'Low-carb', value: 'low-carb' },
       ],
     },
+
+    // ────────────────── PARAMETRY PORCJI ──────────────────
     { name: 'weight', type: 'text', label: 'Waga' },
     { name: 'servings', type: 'number', min: 1, label: 'Liczba porcji' },
+
+    // ────────────────── TYP PRODUKTU ──────────────────
     {
       name: 'productType',
       type: 'select',
@@ -108,6 +171,8 @@ export const Products: CollectionConfig = {
         { label: 'Bar', value: 'bar' },
       ],
     },
+
+    // ────────────────── STATUS / SORTOWANIE ──────────────────
     {
       name: 'isAvailable',
       type: 'checkbox',

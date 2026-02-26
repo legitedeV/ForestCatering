@@ -8,8 +8,8 @@ module.exports = {
       name: 'forestcatering',
       cwd: standaloneCwd,
       script: path.resolve(standaloneCwd, 'server.js'),
-      exec_mode: 'cluster',
-      instances: 'max',
+      exec_mode: 'fork',
+      instances: '1',
       env: {
         NODE_ENV: 'production',
         PORT: process.env.PORT || '3000',

@@ -10,5 +10,8 @@
     "build:web": "bash ops/scripts/build-web.sh",
     "prepare:standalone:web": "bash ops/scripts/prepare-standalone.sh",
     "deploy": "bash ops/scripts/deploy.sh"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.2.1"
   }
 }

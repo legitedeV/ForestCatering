@@ -23,18 +23,11 @@ if [[ ! -f "$SERVER_JS" ]]; then
   exit 1
 fi
 
-if [[ ! -d "$STATIC_CHUNKS_DIR" ]] || [[ -z "$(find "$STATIC_CHUNKS_DIR" -type f -print -quit)" ]]; then
-  echo "❌ Deploy failed: standalone chunks are missing at $STATIC_CHUNKS_DIR"
-  exit 1
-fi
+bash ops/scripts/prepare-standalone.sh
 
 echo "♻️ Restarting PM2 app: $PM2_APP_NAME"
-pm2 delete "$PM2_APP_NAME" >/dev/null 2>&1 || true
-pm2 start "$SERVER_JS" \
-  --name "$PM2_APP_NAME" \
-  --cwd "$STANDALONE_APP_DIR" \
-  -i max \
-  --update-env
+# Nowe — 1 proces wg ecosystem.config.cjs
+pm2 delete forestcatering || true
+pm2 start ecosystem.config.cjs --only forestcatering --update-env
 pm2 save
-
 echo "✅ Deploy finished successfully"

@@ -1,34 +1,41 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-WEB_DIR="$PROJECT_ROOT/apps/web"
-STANDALONE_APP_DIR="$WEB_DIR/.next/standalone/apps/web"
-NEXT_STATIC_DIR="$WEB_DIR/.next/static"
-STANDALONE_NEXT_DIR="$STANDALONE_APP_DIR/.next"
-STANDALONE_STATIC_DIR="$STANDALONE_NEXT_DIR/static"
-PUBLIC_DIR="$WEB_DIR/public"
-STANDALONE_PUBLIC_DIR="$STANDALONE_APP_DIR/public"
+ROOT_DIR="/home/forest/ForestCatering"
+WEB_DIR="$ROOT_DIR/apps/web"
+OUT_DIR="$WEB_DIR/.next"
+STANDALONE_DIR="$OUT_DIR/standalone/apps/web"
 
-if [[ ! -f "$STANDALONE_APP_DIR/server.js" ]]; then
-  echo "❌ Missing standalone server: $STANDALONE_APP_DIR/server.js"
+echo "=== prepare-standalone: sanity ==="
+
+if [ ! -f "$OUT_DIR/BUILD_ID" ]; then
+  echo "❌ Brak BUILD_ID w $OUT_DIR – najpierw musi być uruchomiony next build."
   exit 1
 fi
 
-if [[ ! -d "$NEXT_STATIC_DIR" ]]; then
-  echo "❌ Missing Next static build output: $NEXT_STATIC_DIR"
+if [ ! -f "$STANDALONE_DIR/server.js" ]; then
+  echo "❌ Brak server.js w $STANDALONE_DIR – output: 'standalone' nie został wygenerowany (sprawdź next.config)."
   exit 1
 fi
 
-mkdir -p "$STANDALONE_NEXT_DIR"
-rm -rf "$STANDALONE_STATIC_DIR" "$STANDALONE_PUBLIC_DIR"
-cp -R "$NEXT_STATIC_DIR" "$STANDALONE_STATIC_DIR"
-cp -R "$PUBLIC_DIR" "$STANDALONE_PUBLIC_DIR"
-
-if [[ ! -d "$STANDALONE_STATIC_DIR/chunks" ]] || [[ -z "$(find "$STANDALONE_STATIC_DIR/chunks" -type f -print -quit)" ]]; then
-  echo "❌ Standalone static chunks are missing: $STANDALONE_STATIC_DIR/chunks"
+if [ ! -d "$OUT_DIR/static" ]; then
+  echo "❌ Brak katalogu $OUT_DIR/static – Next nie wygenerował static assets."
   exit 1
 fi
 
-echo "✅ Standalone prepared: $STANDALONE_APP_DIR"
+echo "=== Sync: .next/static -> standalone/.next/static (cp -a) ==="
+rm -rf "$STANDALONE_DIR/.next/static"
+mkdir -p "$STANDALONE_DIR/.next/static"
+cp -a "$OUT_DIR/static/." "$STANDALONE_DIR/.next/static/"
+
+echo "=== Sync: public -> standalone/public (cp -a) ==="
+if [ -d "$WEB_DIR/public" ]; then
+  rm -rf "$STANDALONE_DIR/public"
+  mkdir -p "$STANDALONE_DIR/public"
+  cp -a "$WEB_DIR/public/." "$STANDALONE_DIR/public/"
+fi
+
+echo "=== Sample pliki z runtime static ==="
+find "$STANDALONE_DIR/.next/static" -maxdepth 5 -type f \( -name '*.js' -o -name '*.css' \) | head -n 40 || true
+
+echo "✅ prepare-standalone: OK (server.js + .next/static + public gotowe)"
