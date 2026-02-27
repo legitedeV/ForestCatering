@@ -14,10 +14,9 @@ export const Media: CollectionConfig = {
     delete: isAdmin,
   },
   upload: {
-    // Use /media as canonical public URL and allow overriding the on-disk path
-    // in production standalone runtime (PM2 cwd points to .next/standalone/apps/web).
+    // Allow overriding the on-disk path in production standalone runtime
+    // (PM2 cwd points to .next/standalone/apps/web).
     staticDir: mediaStaticDir,
-    staticURL: '/media',
     adminThumbnail: 'thumbnail',
     mimeTypes: ['image/*'],
     imageSizes: [
