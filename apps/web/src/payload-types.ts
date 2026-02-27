@@ -143,6 +143,9 @@ export interface UserAuthOperations {
 export interface Product {
   id: number;
   name: string;
+  /**
+   * Automatycznie z nazwy, możesz nadpisać ręcznie.
+   */
   slug: string;
   shortDescription?: string | null;
   description?: {
@@ -175,6 +178,18 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Jeśli ustawione, frontend może używać tego URL zamiast pierwszego zdjęcia z uploadu.
+   */
+  imageUrl?: string | null;
+  /**
+   * ID zdjęcia z Unsplash (część z URL). Seeder może to nadpisywać automatycznie.
+   */
+  unsplashId?: string | null;
+  /**
+   * Używany np. w kafelkach produktu, np. #4A7C59.
+   */
+  color?: string | null;
   allergens?:
     | (
         | 'gluten'
@@ -223,6 +238,7 @@ export interface Category {
 export interface Media {
   id: number;
   alt: string;
+  imageSlug: string;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -268,7 +284,7 @@ export interface Media {
 export interface Order {
   id: number;
   orderNumber: string;
-  status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled';
+  status: 'pending_payment' | 'paid' | 'failed' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled';
   customer: {
     name: string;
     email: string;
@@ -297,6 +313,18 @@ export interface Order {
   total: number;
   paymentMethod?: ('transfer' | 'cash' | 'online') | null;
   paymentStatus?: ('unpaid' | 'paid' | 'refunded') | null;
+  paymentProvider?: ('p24' | 'dotpay') | null;
+  paymentSessionId?: string | null;
+  transactionId?: string | null;
+  paymentMeta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   internalNotes?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -899,6 +927,9 @@ export interface ProductsSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
+  imageUrl?: T;
+  unsplashId?: T;
+  color?: T;
   allergens?: T;
   dietary?: T;
   weight?: T;
@@ -965,6 +996,10 @@ export interface OrdersSelect<T extends boolean = true> {
   total?: T;
   paymentMethod?: T;
   paymentStatus?: T;
+  paymentProvider?: T;
+  paymentSessionId?: T;
+  transactionId?: T;
+  paymentMeta?: T;
   internalNotes?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1363,6 +1398,7 @@ export interface GalleryItemsSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  imageSlug?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

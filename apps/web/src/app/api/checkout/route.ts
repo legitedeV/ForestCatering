@@ -63,7 +63,7 @@ export async function POST(req: Request) {
       collection: 'orders',
       data: {
         orderNumber: '',
-        status: 'pending',
+        status: 'pending_payment',
         customer,
         deliveryAddress: {
           street: delivery.street,
@@ -77,13 +77,17 @@ export async function POST(req: Request) {
         subtotal,
         deliveryFee: actualDeliveryFee,
         total,
-        paymentMethod,
+        paymentMethod: 'online',
+        paymentProvider: paymentMethod,
         paymentStatus: 'unpaid',
+        paymentSessionId: '',
+        transactionId: '',
+        paymentMeta: {},
       },
     })
 
     return NextResponse.json(
-      { orderNumber: order.orderNumber, status: order.status },
+      { orderId: order.id, orderNumber: order.orderNumber, status: order.status, paymentProvider: order.paymentProvider },
       { status: 201 }
     )
   } catch (error) {

@@ -32,7 +32,7 @@ export const orderApiSchema = z.object({
     productId: z.string().min(1),
     quantity: z.number().int().min(1).max(99),
   })).min(1, 'Koszyk nie może być pusty'),
-  paymentMethod: z.enum(['transfer', 'cash']),
+  paymentMethod: z.enum(['p24', 'dotpay']),
 })
 
 export type CheckoutContact = z.infer<typeof checkoutContactSchema>
