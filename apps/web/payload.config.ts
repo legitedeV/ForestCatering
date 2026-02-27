@@ -19,6 +19,7 @@ import { Media } from './src/payload/collections/Media'
 import { Users } from './src/payload/collections/Users'
 import { SiteSettings } from './src/payload/globals/SiteSettings'
 import { Navigation } from './src/payload/globals/Navigation'
+import { navigationImportEndpoint } from './src/payload/endpoints/navigationImport'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -71,6 +72,7 @@ export default buildConfig({
     Users,
   ],
   globals: [SiteSettings, Navigation],
+  endpoints: [navigationImportEndpoint],
   secret: process.env.PAYLOAD_SECRET || '',
   email: emailAdapter,
   sharp,
