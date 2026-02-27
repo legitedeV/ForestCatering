@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
-import { populateSlug } from '../hooks/populateSlug'
+import { generateAutoSlug } from '../hooks/generateAutoSlug'
 import { revalidatePages } from '../hooks/revalidatePages'
 import { computePagePath } from '../hooks/computePagePath'
 import { HeroBlock } from '../blocks/Hero'
@@ -65,7 +65,14 @@ export const Pages: CollectionConfig = {
     maxPerDoc: 50,
   },
   hooks: {
-    beforeValidate: [populateSlug, computePagePath],
+    beforeValidate: [
+      generateAutoSlug({
+        slugField: 'slug',
+        sourceFields: ['title', 'name'],
+        fallbackPrefix: 'page',
+      }),
+      computePagePath,
+    ],
     afterChange: [revalidatePages],
   },
   access: {

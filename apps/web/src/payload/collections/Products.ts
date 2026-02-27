@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { populateSlug } from '../hooks/populateSlug'
+import { generateAutoSlug } from '../hooks/generateAutoSlug'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -10,7 +10,12 @@ export const Products: CollectionConfig = {
   },
   hooks: {
     // slug generowany z nazwy – ważne przy tworzeniu w panelu
-    beforeValidate: [populateSlug],
+    beforeValidate: [
+      generateAutoSlug({
+        slugField: 'slug',
+        sourceFields: ['title', 'name'],
+      }),
+    ],
   },
   access: {
     read: () => true,
