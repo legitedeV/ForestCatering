@@ -1,14 +1,19 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
-import { populateSlug } from '../hooks/populateSlug'
+import { generateAutoSlug } from '../hooks/generateAutoSlug'
 
 export const EventPackages: CollectionConfig = {
   slug: 'event-packages',
   labels: { singular: 'Pakiet eventowy', plural: 'Pakiety eventowe' },
   admin: { useAsTitle: 'name' },
   hooks: {
-    beforeValidate: [populateSlug],
+    beforeValidate: [
+      generateAutoSlug({
+        slugField: 'slug',
+        sourceFields: ['title', 'name'],
+      }),
+    ],
   },
   access: {
     read: () => true,

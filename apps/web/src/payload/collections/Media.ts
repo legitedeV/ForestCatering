@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { isAdmin } from '../access/isAdmin'
+import { generateAutoSlug } from '../hooks/generateAutoSlug'
 
 const mediaStaticDir = process.env.PAYLOAD_MEDIA_ROOT?.trim() || 'public/media'
 
@@ -12,6 +13,15 @@ export const Media: CollectionConfig = {
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdmin,
+  },
+  hooks: {
+    beforeValidate: [
+      generateAutoSlug({
+        slugField: 'imageSlug',
+        sourceFields: ['title', 'alt', 'originalFilename'],
+        fallbackPrefix: 'image',
+      }),
+    ],
   },
   upload: {
     // Allow overriding the on-disk path in production standalone runtime
@@ -25,5 +35,15 @@ export const Media: CollectionConfig = {
       { name: 'hero', width: 1920, height: 1080, position: 'centre' },
     ],
   },
-  fields: [{ name: 'alt', type: 'text', required: true, label: 'Opis alternatywny (alt)' }],
+  fields: [
+    { name: 'alt', type: 'text', required: true, label: 'Opis alternatywny (alt)' },
+    {
+      name: 'imageSlug',
+      type: 'text',
+      required: true,
+      unique: true,
+      label: 'Slug obrazka',
+      admin: { position: 'sidebar' },
+    },
+  ],
 }

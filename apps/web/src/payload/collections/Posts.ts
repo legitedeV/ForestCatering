@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
-import { populateSlug } from '../hooks/populateSlug'
+import { generateAutoSlug } from '../hooks/generateAutoSlug'
 
 export const Posts: CollectionConfig = {
   slug: 'posts',
@@ -11,7 +11,13 @@ export const Posts: CollectionConfig = {
     defaultColumns: ['title', 'status', 'publishedAt'],
   },
   hooks: {
-    beforeValidate: [populateSlug],
+    beforeValidate: [
+      generateAutoSlug({
+        slugField: 'slug',
+        sourceFields: ['title'],
+        fallbackPrefix: 'post',
+      }),
+    ],
   },
   access: {
     read: () => true,

@@ -1,14 +1,19 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
-import { populateSlug } from '../hooks/populateSlug'
+import { generateAutoSlug } from '../hooks/generateAutoSlug'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
   labels: { singular: 'Kategoria', plural: 'Kategorie' },
   admin: { useAsTitle: 'name' },
   hooks: {
-    beforeValidate: [populateSlug],
+    beforeValidate: [
+      generateAutoSlug({
+        slugField: 'slug',
+        sourceFields: ['title', 'name'],
+      }),
+    ],
   },
   access: {
     read: () => true,
