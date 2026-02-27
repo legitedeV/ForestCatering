@@ -18,9 +18,11 @@ cp ops/.env.example ops/.env
 # edit ops/.env with real values
 ```
 
-Required variables: `DATABASE_URL`, `PAYLOAD_SECRET`, `PAYLOAD_REVALIDATE_SECRET`, `PAYLOAD_PREVIEW_SECRET`, `HOME_PAGE_SLUG`.
+Required variables: `DATABASE_URL`, `PAYLOAD_SECRET`, `PAYLOAD_REVALIDATE_SECRET`, `PAYLOAD_PREVIEW_SECRET`, `HOME_PAGE_SLUG`, `PAYLOAD_MEDIA_ROOT`.
 
 > `DATABASE_URI` is kept as compatibility alias, but `DATABASE_URL` is the canonical key.
+
+- `PAYLOAD_MEDIA_ROOT` should point to the persistent media directory in the repo (recommended: `/home/forest/ForestCatering/apps/web/public/media`). This prevents Payload uploads from being written into temporary standalone runtime folders.
 
 ## 1) Local production-like build (single command)
 
