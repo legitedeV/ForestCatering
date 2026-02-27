@@ -20,6 +20,8 @@ module.exports = {
         NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
         PAYLOAD_PREVIEW_SECRET: process.env.PAYLOAD_PREVIEW_SECRET,
         PAYLOAD_REVALIDATE_SECRET: process.env.PAYLOAD_REVALIDATE_SECRET,
+        PAYLOAD_MEDIA_ROOT:
+          process.env.PAYLOAD_MEDIA_ROOT || '/home/forest/ForestCatering/apps/web/public/media',
         HOME_PAGE_SLUG: process.env.HOME_PAGE_SLUG || 'home',
       },
     },
