@@ -148,3 +148,5 @@ npm run lint
    - payloady `<script>` i atrybuty `on*` są usuwane.
 
 Renderer znajduje się w `apps/web/src/components/blog/RichTextRenderer.tsx` i obsługuje zarówno Lexical JSON z Payload, jak i bezpieczny fallback dla HTML string.
+
+- [Automatyczne slugi i nazwy plików (Payload v3)](./payload-slug-autogeneration-guide.md)
