@@ -38,5 +38,14 @@ export const Navigation: GlobalConfig = {
         },
       ],
     },
+    {
+      name: 'navigationJSONImport',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/src/payload/admin/components/ImportExportNavigation#ImportExportNavigation',
+        },
+      },
+    },
   ],
 }
