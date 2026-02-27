@@ -2,6 +2,8 @@ import type { CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { isAdmin } from '../access/isAdmin'
 
+const mediaStaticDir = process.env.PAYLOAD_MEDIA_ROOT?.trim() || 'public/media'
+
 export const Media: CollectionConfig = {
   slug: 'media',
   labels: { singular: 'Plik', plural: 'Media' },
@@ -12,7 +14,9 @@ export const Media: CollectionConfig = {
     delete: isAdmin,
   },
   upload: {
-    staticDir: 'public/media',
+    // Allow overriding the on-disk path in production standalone runtime
+    // (PM2 cwd points to .next/standalone/apps/web).
+    staticDir: mediaStaticDir,
     adminThumbnail: 'thumbnail',
     mimeTypes: ['image/*'],
     imageSizes: [
