@@ -1,1 +1,33 @@
+:root {
+  --theme-bg: #1f242b;
+  --theme-text: #f3f5f7;
+  --theme-elevation-0: #12161b;
+  --theme-elevation-50: #1f242b;
+  --theme-elevation-100: #333a43;
+  --theme-elevation-150: #4a535e;
+  --theme-elevation-200: #626c79;
+  --theme-elevation-250: #7e8896;
+  --theme-elevation-300: #9ca6b2;
+  --theme-elevation-400: #bdc5cd;
+  --theme-success-500: #7e8896;
+  --theme-warning-500: #9ca6b2;
+  --theme-error-500: #626c79;
+}
+
+[class*='app-header'],
+[class*='nav'],
+header {
+  border-color: var(--theme-elevation-150) !important;
+}
+
+[class*='app-header'] {
+  background: rgba(18, 22, 27, 0.95) !important;
+  backdrop-filter: blur(10px);
+}
+
+[class*='nav'] a:hover,
+[class*='nav'] button:hover {
+  color: var(--theme-elevation-400) !important;
+}
+
 /* Payload admin custom styles */

@@ -1,0 +1,67 @@
+diff --git a/apps/web/src/app/globals.css b/apps/web/src/app/globals.css
+--- a/apps/web/src/app/globals.css
++++ b/apps/web/src/app/globals.css
+@@ -54,7 +54,7 @@
+ }
+ 
+ ::-webkit-scrollbar-thumb:hover {
+-  background: #C4813A;
++  background: #7E8896;
+ }
+
+diff --git a/apps/web/src/components/layout/Navbar.tsx b/apps/web/src/components/layout/Navbar.tsx
+--- a/apps/web/src/components/layout/Navbar.tsx
++++ b/apps/web/src/components/layout/Navbar.tsx
+@@ -24,13 +24,13 @@ export function Navbar() {
+   const itemCount = useCartItemCount()
+   const { scrollY } = useScroll()
+   const bgOpacity = useTransform(scrollY, [0, 100], [isHome ? 0 : 1, 1])
+   const borderOpacity = useTransform(scrollY, [0, 100], [isHome ? 0 : 0.3, 0.3])
+ 
+-  const backgroundColor =
+-    useTransform(bgOpacity, (v) => `rgba(21, 10, 4, ${v * 0.96})`)
+-  const borderBottomColor =
+-    useTransform(borderOpacity, (v) => `rgba(62, 32, 15, ${v})`)
++  const backgroundColor =
++    useTransform(bgOpacity, (v) => `rgba(18, 22, 27, ${v * 0.96})`)
++  const borderBottomColor =
++    useTransform(borderOpacity, (v) => `rgba(74, 83, 94, ${v})`)
+ 
+   const backdropFilter =
+     useTransform(bgOpacity, (v) => (v > 0.5 ? 'blur(12px)' : 'none'))
+
+diff --git a/apps/web/src/app/(payload)/custom.scss b/apps/web/src/app/(payload)/custom.scss
+--- a/apps/web/src/app/(payload)/custom.scss
++++ b/apps/web/src/app/(payload)/custom.scss
+@@ -1,3 +1,34 @@
++:root {
++  --theme-bg: #1f242b;
++  --theme-text: #f3f5f7;
++  --theme-elevation-0: #12161b;
++  --theme-elevation-50: #1f242b;
++  --theme-elevation-100: #333a43;
++  --theme-elevation-150: #4a535e;
++  --theme-elevation-200: #626c79;
++  --theme-elevation-250: #7e8896;
++  --theme-elevation-300: #9ca6b2;
++  --theme-elevation-400: #bdc5cd;
++  --theme-success-500: #7e8896;
++  --theme-warning-500: #9ca6b2;
++  --theme-error-500: #626c79;
++}
++
++[class*='app-header'],
++[class*='nav'],
++header {
++  border-color: var(--theme-elevation-150) !important;
++}
++
++[class*='app-header'] {
++  background: rgba(18, 22, 27, 0.95) !important;
++  backdrop-filter: blur(10px);
++}
++
++[class*='nav'] a:hover,
++[class*='nav'] button:hover {
++  color: var(--theme-elevation-400) !important;
++}
