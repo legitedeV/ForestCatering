@@ -1,1 +1,28 @@
 /* Payload admin custom styles */
+
+:root {
+  --theme-text: #f3f5f7;
+  --theme-text-light: #d9dee3;
+  --theme-input-text: #f3f5f7;
+  --theme-elevation-0: #1f242b;
+  --theme-elevation-50: #2a3038;
+}
+
+body,
+.payload,
+.payload * {
+  color: var(--theme-text);
+}
+
+.payload input,
+.payload textarea,
+.payload select,
+.payload [contenteditable='true'] {
+  color: var(--theme-input-text) !important;
+}
+
+.payload input::placeholder,
+.payload textarea::placeholder {
+  color: var(--theme-text-light) !important;
+  opacity: 1;
+}
