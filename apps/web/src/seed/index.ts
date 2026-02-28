@@ -3,6 +3,7 @@ import fs from 'fs'
 import { getPayload } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
+import { slugifySafe } from '../payload/lib/slug'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -184,17 +185,20 @@ async function seed() {
     const mediaExisting = await payload.find({ collection: 'media', where: { alt: { equals: product.name } }, limit: 1 })
     const media = mediaExisting.docs[0]
       ? mediaExisting.docs[0]
-       : await payload.create({
-     collection: 'media',
-     data: { alt: product.name },
-     draft: false,
-     file: {
-       data: imgBuffer,
-       name: filename,
-       mimetype: 'image/png',
-       size: imgBuffer.length,
-     },
-   })
+      : await payload.create({
+          collection: 'media',
+          data: {
+            alt: product.name,
+            imageSlug: slugifySafe(product.slug) || `image-${Date.now()}`,
+          },
+          draft: false,
+          file: {
+            data: imgBuffer,
+            name: filename,
+            mimetype: 'image/png',
+            size: imgBuffer.length,
+          },
+        })
 
     const existing = await payload.find({ collection: 'products', where: { slug: { equals: product.slug } }, limit: 1 })
     const data = {
