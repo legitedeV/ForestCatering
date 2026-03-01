@@ -36,11 +36,10 @@ export function AnimationPicker({ blockIndex }: AnimationPickerProps) {
   const updateBlockField = usePageEditor((s) => s.updateBlockField)
 
   const block = sections[blockIndex] as Record<string, unknown> | undefined
-  if (!block) return null
 
-  const currentAnimation = (block.animation as string) ?? ''
-  const currentDelay = (block.animationDelay as number) ?? 0
-  const currentDuration = (block.animationDuration as number) ?? 0
+  const currentAnimation = ((block?.animation as string) ?? '')
+  const currentDelay = ((block?.animationDelay as number) ?? 0)
+  const currentDuration = ((block?.animationDuration as number) ?? 0)
 
   const [filterCategory, setFilterCategory] = useState<string>('all')
 
@@ -64,6 +63,8 @@ export function AnimationPicker({ blockIndex }: AnimationPickerProps) {
     },
     [blockIndex, updateBlockField],
   )
+
+  if (!block) return null
 
   const filtered =
     filterCategory === 'all'
