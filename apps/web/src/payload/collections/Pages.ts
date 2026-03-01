@@ -104,6 +104,15 @@ export const Pages: CollectionConfig = {
     },
     { name: 'sortOrder', type: 'number', defaultValue: 0, label: 'Kolejność', admin: { position: 'sidebar' } },
     {
+      name: 'visualEditor',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '/src/payload/admin/components/OpenVisualEditorButton#OpenVisualEditorButton',
+        },
+      },
+    },
+    {
       name: 'sections',
       type: 'blocks',
       label: 'Sekcje',
