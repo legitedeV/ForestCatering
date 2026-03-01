@@ -20,9 +20,9 @@
 
 #### Phase 1 — Editing depth (next)
 - [ ] Inline array items editing w sidebar (FAQ/Steps/Pricing/Services/Testimonials/OfferCards/Stats/Team)
-- [ ] Nested array editing (np. pricing package → features[])
+- [x] Nested array editing (np. pricing package → features[])
 - [ ] Media picker inline w sidebar (wybór obrazu z kolekcji Media bez wychodzenia do Payload)
-- [ ] Edycja `blockName` per-block w sidebar
+- [x] Edycja `blockName` per-block w sidebar
 - [ ] Keyboard shortcuts: Ctrl+S (save), Delete (remove block), Ctrl+D (duplicate)
 
 #### Phase 2 — Visual precision

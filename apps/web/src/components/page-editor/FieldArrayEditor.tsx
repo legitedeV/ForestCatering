@@ -22,8 +22,26 @@ export interface ArrayFieldConfig {
   fields: Array<{
     key: string      // klucz w obiekcie itemu (np. "question")
     label: string    // etykieta PL
-    type: 'text' | 'textarea' | 'number' | 'toggle'
+    type: 'text' | 'textarea' | 'number' | 'toggle' | 'array'
+    arrayConfig?: ArrayFieldConfig  // config dla zagnieżdżonej tablicy
   }>
+}
+
+// Odczyt zagnieżdżonej wartości z obiektu (np. "packages.0.features")
+function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+  const keys = path.split('.')
+  let current: unknown = obj
+  for (const key of keys) {
+    if (current === null || current === undefined) return undefined
+    if (Array.isArray(current)) {
+      current = current[Number(key)]
+    } else if (typeof current === 'object') {
+      current = (current as Record<string, unknown>)[key]
+    } else {
+      return undefined
+    }
+  }
+  return current
 }
 
 // ────────────────────────────────────────────────────────
@@ -33,9 +51,13 @@ export interface ArrayFieldConfig {
 export function FieldArrayEditor({
   config,
   blockIndex,
+  fieldPrefix,
+  nested,
 }: {
   config: ArrayFieldConfig
   blockIndex: number
+  fieldPrefix?: string
+  nested?: boolean
 }) {
   const sections = usePageEditor((s) => s.sections)
   const updateBlockField = usePageEditor((s) => s.updateBlockField)
@@ -44,12 +66,13 @@ export function FieldArrayEditor({
   const block = sections[blockIndex] as Record<string, unknown> | undefined
   if (!block) return null
 
-  const items = (block[config.name] as Array<Record<string, unknown>>) ?? []
+  const fullPath = fieldPrefix ? `${fieldPrefix}.${config.name}` : config.name
+  const items = (getNestedValue(block, fullPath) as Array<Record<string, unknown>>) ?? []
 
   // ── Handlers ──
 
   const handleFieldCommit = (itemIndex: number, fieldKey: string, value: unknown) => {
-    updateBlockField(blockIndex, `${config.name}.${itemIndex}.${fieldKey}`, value)
+    updateBlockField(blockIndex, `${fullPath}.${itemIndex}.${fieldKey}`, value)
   }
 
   const handleAdd = () => {
@@ -58,16 +81,17 @@ export function FieldArrayEditor({
     for (const f of config.fields) {
       if (f.type === 'number') newItem[f.key] = 0
       else if (f.type === 'toggle') newItem[f.key] = false
+      else if (f.type === 'array') newItem[f.key] = []
       else newItem[f.key] = ''
     }
-    updateBlockField(blockIndex, config.name, [...items, newItem])
+    updateBlockField(blockIndex, fullPath, [...items, newItem])
     setExpandedIndex(items.length)
   }
 
   const handleRemove = (itemIndex: number) => {
     if (!window.confirm(`Usunąć ${config.itemLabel} #${itemIndex + 1}?`)) return
     const newItems = items.filter((_, i) => i !== itemIndex)
-    updateBlockField(blockIndex, config.name, newItems)
+    updateBlockField(blockIndex, fullPath, newItems)
     if (expandedIndex === itemIndex) setExpandedIndex(null)
     else if (expandedIndex !== null && expandedIndex > itemIndex) setExpandedIndex(expandedIndex - 1)
   }
@@ -76,7 +100,7 @@ export function FieldArrayEditor({
     if (itemIndex === 0) return
     const newItems = [...items]
     ;[newItems[itemIndex - 1], newItems[itemIndex]] = [newItems[itemIndex], newItems[itemIndex - 1]]
-    updateBlockField(blockIndex, config.name, newItems)
+    updateBlockField(blockIndex, fullPath, newItems)
     if (expandedIndex === itemIndex) setExpandedIndex(itemIndex - 1)
     else if (expandedIndex === itemIndex - 1) setExpandedIndex(itemIndex)
   }
@@ -85,7 +109,7 @@ export function FieldArrayEditor({
     if (itemIndex >= items.length - 1) return
     const newItems = [...items]
     ;[newItems[itemIndex], newItems[itemIndex + 1]] = [newItems[itemIndex + 1], newItems[itemIndex]]
-    updateBlockField(blockIndex, config.name, newItems)
+    updateBlockField(blockIndex, fullPath, newItems)
     if (expandedIndex === itemIndex) setExpandedIndex(itemIndex + 1)
     else if (expandedIndex === itemIndex + 1) setExpandedIndex(itemIndex)
   }
@@ -104,7 +128,7 @@ export function FieldArrayEditor({
   // ── Render ──
 
   return (
-    <div className="space-y-2">
+    <div className={`space-y-2${nested ? ' border-l-2 border-forest-600 pl-3 ml-1' : ''}`}>
       <span className={labelClasses}>{config.label}</span>
 
       {items.length === 0 && (
@@ -211,6 +235,17 @@ export function FieldArrayEditor({
                         label={field.label}
                         checked={!!val}
                         onChange={(v) => handleFieldCommit(i, field.key, v)}
+                      />
+                    )
+                  }
+                  if (field.type === 'array' && field.arrayConfig) {
+                    return (
+                      <FieldArrayEditor
+                        key={field.key}
+                        config={field.arrayConfig}
+                        blockIndex={blockIndex}
+                        fieldPrefix={`${fullPath}.${i}`}
+                        nested
                       />
                     )
                   }

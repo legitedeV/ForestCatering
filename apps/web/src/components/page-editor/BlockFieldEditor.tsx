@@ -68,6 +68,12 @@ const ARRAY_CONFIGS: Record<string, ArrayFieldConfig> = {
       { key: 'ctaText', label: 'Tekst CTA', type: 'text' },
       { key: 'ctaLink', label: 'Link CTA', type: 'text' },
       { key: 'featured', label: 'Wyróżniony', type: 'toggle' },
+      { key: 'features', label: 'Cechy', type: 'array', arrayConfig: {
+        name: 'features',
+        label: 'Cechy pakietu',
+        itemLabel: 'Cecha',
+        fields: [{ key: 'text', label: 'Treść', type: 'text' }],
+      }},
     ],
   },
   services: {
@@ -104,6 +110,12 @@ const ARRAY_CONFIGS: Record<string, ArrayFieldConfig> = {
       { key: 'featured', label: 'Wyróżniona', type: 'toggle' },
       { key: 'ctaText', label: 'Tekst CTA', type: 'text' },
       { key: 'ctaLink', label: 'Link CTA', type: 'text' },
+      { key: 'features', label: 'Cechy', type: 'array', arrayConfig: {
+        name: 'features',
+        label: 'Cechy karty',
+        itemLabel: 'Cecha',
+        fields: [{ key: 'text', label: 'Treść', type: 'text' }],
+      }},
     ],
   },
   stats: {
@@ -125,6 +137,13 @@ const ARRAY_CONFIGS: Record<string, ArrayFieldConfig> = {
       { key: 'role', label: 'Stanowisko', type: 'text' },
       { key: 'bio', label: 'Bio', type: 'textarea' },
     ],
+  },
+  about: {
+    name: 'highlights',
+    label: 'Wyróżniki',
+    itemLabel: 'Wyróżnik',
+    maxItems: 8,
+    fields: [{ key: 'text', label: 'Tekst', type: 'text' }],
   },
 }
 
@@ -172,6 +191,13 @@ export function BlockFieldEditor() {
 
       {/* Pola wg blockType */}
       <div className="space-y-3">
+        {/* Wspólne pole blockName */}
+        <FieldText
+          label="Nazwa bloku (opcjonalna)"
+          value={(block.blockName as string) ?? ''}
+          onCommit={onCommit('blockName')}
+        />
+
         {block.blockType === 'hero' && (
           <>
             <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
@@ -304,6 +330,7 @@ export function BlockFieldEditor() {
             <FieldText label="Badge" value={v('badge')} onCommit={onCommit('badge')} />
             <FieldText label="Tekst CTA" value={v('ctaText')} onCommit={onCommit('ctaText')} />
             <FieldText label="Link CTA" value={v('ctaLink')} onCommit={onCommit('ctaLink')} />
+            <FieldArrayEditor config={ARRAY_CONFIGS.about} blockIndex={idx} />
           </>
         )}
 
