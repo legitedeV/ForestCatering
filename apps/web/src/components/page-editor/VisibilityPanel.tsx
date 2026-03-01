@@ -12,17 +12,17 @@ export function VisibilityPanel({ blockIndex }: Props) {
   const sections = usePageEditor((s) => s.sections)
   const updateBlockField = usePageEditor((s) => s.updateBlockField)
 
-  const block = sections[blockIndex] as Record<string, unknown> | undefined
-  if (!block) return null
-
-  const so = (block.styleOverrides ?? {}) as Record<string, unknown>
-
   const set = useCallback(
     (key: string, value: unknown) => {
       updateBlockField(blockIndex, `styleOverrides.${key}`, value)
     },
     [blockIndex, updateBlockField],
   )
+
+  const block = sections[blockIndex] as Record<string, unknown> | undefined
+  if (!block) return null
+
+  const so = (block.styleOverrides ?? {}) as Record<string, unknown>
 
   return (
     <div className="space-y-2">

@@ -28,6 +28,13 @@ export function BorderShadowPanel({ blockIndex }: Props) {
   const sections = usePageEditor((s) => s.sections)
   const updateBlockField = usePageEditor((s) => s.updateBlockField)
 
+  const set = useCallback(
+    (key: string, value: unknown) => {
+      updateBlockField(blockIndex, `styleOverrides.${key}`, value)
+    },
+    [blockIndex, updateBlockField],
+  )
+
   const block = sections[blockIndex] as Record<string, unknown> | undefined
   if (!block) return null
 
@@ -40,13 +47,6 @@ export function BorderShadowPanel({ blockIndex }: Props) {
   const boxShadowCustom = (so.boxShadow as string) ?? ''
   const opacity = (so.opacity as number) ?? 1
   const overflow = (so.overflow as string) ?? 'visible'
-
-  const set = useCallback(
-    (key: string, value: unknown) => {
-      updateBlockField(blockIndex, `styleOverrides.${key}`, value)
-    },
-    [blockIndex, updateBlockField],
-  )
 
   return (
     <div className="space-y-3">

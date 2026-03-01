@@ -50,7 +50,7 @@ export function ColorPickerField({
 }: ColorPickerFieldProps) {
   const [hexInput, setHexInput] = useState(colorToHex(value))
   const [opacity, setOpacity] = useState(hexToOpacity(value))
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>()
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   useEffect(() => {
     setHexInput(colorToHex(value))

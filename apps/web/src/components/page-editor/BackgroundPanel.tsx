@@ -21,6 +21,13 @@ export function BackgroundPanel({ blockIndex }: Props) {
   const sections = usePageEditor((s) => s.sections)
   const updateBlockField = usePageEditor((s) => s.updateBlockField)
 
+  const set = useCallback(
+    (key: string, value: unknown) => {
+      updateBlockField(blockIndex, `styleOverrides.${key}`, value)
+    },
+    [blockIndex, updateBlockField],
+  )
+
   const block = sections[blockIndex] as Record<string, unknown> | undefined
   if (!block) return null
 
@@ -30,13 +37,6 @@ export function BackgroundPanel({ blockIndex }: Props) {
   const bgImage = (styleOverrides.backgroundImage as string) ?? ''
   const overlayOpacity = (styleOverrides.backgroundOverlayOpacity as number) ?? 0
   const bgBlur = (styleOverrides.backgroundBlur as number) ?? 0
-
-  const set = useCallback(
-    (key: string, value: unknown) => {
-      updateBlockField(blockIndex, `styleOverrides.${key}`, value)
-    },
-    [blockIndex, updateBlockField],
-  )
 
   return (
     <div className="space-y-3">

@@ -37,18 +37,6 @@ export function TypographyPanel({ blockIndex }: Props) {
   const sections = usePageEditor((s) => s.sections)
   const updateBlockField = usePageEditor((s) => s.updateBlockField)
 
-  const block = sections[blockIndex] as Record<string, unknown> | undefined
-  if (!block) return null
-
-  const styleOverrides = (block.styleOverrides ?? {}) as Record<string, unknown>
-
-  const fontSize = (styleOverrides.fontSize as number) ?? 16
-  const fontWeight = String((styleOverrides.fontWeight as number) ?? 400)
-  const lineHeight = (styleOverrides.lineHeight as number) ?? 1.5
-  const letterSpacing = (styleOverrides.letterSpacing as number) ?? 0
-  const textAlign = (styleOverrides.textAlign as string) ?? 'left'
-  const textTransform = (styleOverrides.textTransform as string) ?? 'none'
-
   const set = useCallback(
     (key: string, value: unknown) => {
       updateBlockField(blockIndex, `styleOverrides.${key}`, value)
@@ -68,6 +56,18 @@ export function TypographyPanel({ blockIndex }: Props) {
     },
     [set],
   )
+
+  const block = sections[blockIndex] as Record<string, unknown> | undefined
+  if (!block) return null
+
+  const styleOverrides = (block.styleOverrides ?? {}) as Record<string, unknown>
+
+  const fontSize = (styleOverrides.fontSize as number) ?? 16
+  const fontWeight = String((styleOverrides.fontWeight as number) ?? 400)
+  const lineHeight = (styleOverrides.lineHeight as number) ?? 1.5
+  const letterSpacing = (styleOverrides.letterSpacing as number) ?? 0
+  const textAlign = (styleOverrides.textAlign as string) ?? 'left'
+  const textTransform = (styleOverrides.textTransform as string) ?? 'none'
 
   return (
     <div className="space-y-3">

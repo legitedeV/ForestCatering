@@ -13,9 +13,7 @@ export function CustomCssEditor({ blockIndex }: Props) {
   const updateBlockField = usePageEditor((s) => s.updateBlockField)
 
   const block = sections[blockIndex] as Record<string, unknown> | undefined
-  if (!block) return null
-
-  const so = (block.styleOverrides ?? {}) as Record<string, unknown>
+  const so = (block?.styleOverrides ?? {}) as Record<string, unknown>
   const customCss = (so.customCss as string) ?? ''
 
   const commitCss = useCallback(
@@ -26,6 +24,8 @@ export function CustomCssEditor({ blockIndex }: Props) {
   )
 
   const [local, setLocal] = useLocalField(customCss, commitCss, 600)
+
+  if (!block) return null
 
   return (
     <div className="space-y-2">
