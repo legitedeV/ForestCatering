@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { usePageEditor } from '@/lib/page-editor-store'
 import { getBlockMeta } from '@/lib/block-metadata'
 import type { PageSection } from '@/components/cms/types'
@@ -14,6 +15,7 @@ import { FieldArrayEditor } from './FieldArrayEditor'
 import type { ArrayFieldConfig } from './FieldArrayEditor'
 import { FieldMediaPicker } from './FieldMediaPicker'
 import { AnimationPicker } from './AnimationPicker'
+import { AiSuggestPopover } from './AiSuggestPopover'
 import { CollapsibleSection } from './CollapsibleSection'
 import { TypographyPanel } from './TypographyPanel'
 import { ColorsPanel } from './ColorsPanel'
@@ -188,6 +190,99 @@ const ARRAY_CONFIGS: Record<string, ArrayFieldConfig> = {
 }
 
 // ────────────────────────────────────────────────────────
+// AI Suggest wrapper for text fields
+// ────────────────────────────────────────────────────────
+
+// Field paths that should NOT show AI suggest (links, urls, emails, phones)
+const AI_EXCLUDED_PATTERNS = ['link', 'url', 'email', 'phone', 'Link', 'Url', 'embedUrl']
+
+function AiFieldText({
+  label,
+  value,
+  onCommit,
+  blockType,
+  fieldPath,
+  type,
+}: {
+  label: string
+  value: string
+  onCommit: (v: string) => void
+  blockType: string
+  fieldPath: string
+  type?: string
+}) {
+  const [showAi, setShowAi] = useState(false)
+  const isExcluded = AI_EXCLUDED_PATTERNS.some((p) => fieldPath.toLowerCase().includes(p.toLowerCase()))
+
+  return (
+    <div className="relative">
+      {!isExcluded && (
+        <button
+          onClick={() => setShowAi(!showAi)}
+          className="absolute -top-0.5 right-0 z-10 rounded px-1 py-0.5 text-[10px] text-forest-500 transition hover:bg-forest-800 hover:text-accent"
+          title="Sugestie AI"
+          aria-label="Sugestie AI"
+          type="button"
+        >
+          ✨
+        </button>
+      )}
+      <FieldText label={label} value={value} onCommit={onCommit} type={type} />
+      {showAi && !isExcluded && (
+        <AiSuggestPopover
+          blockType={blockType}
+          fieldPath={fieldPath}
+          onApply={(v) => onCommit(v)}
+          onClose={() => setShowAi(false)}
+        />
+      )}
+    </div>
+  )
+}
+
+function AiFieldTextarea({
+  label,
+  value,
+  onCommit,
+  blockType,
+  fieldPath,
+}: {
+  label: string
+  value: string
+  onCommit: (v: string) => void
+  blockType: string
+  fieldPath: string
+}) {
+  const [showAi, setShowAi] = useState(false)
+  const isExcluded = AI_EXCLUDED_PATTERNS.some((p) => fieldPath.toLowerCase().includes(p.toLowerCase()))
+
+  return (
+    <div className="relative">
+      {!isExcluded && (
+        <button
+          onClick={() => setShowAi(!showAi)}
+          className="absolute -top-0.5 right-0 z-10 rounded px-1 py-0.5 text-[10px] text-forest-500 transition hover:bg-forest-800 hover:text-accent"
+          title="Sugestie AI"
+          aria-label="Sugestie AI"
+          type="button"
+        >
+          ✨
+        </button>
+      )}
+      <FieldTextarea label={label} value={value} onCommit={onCommit} />
+      {showAi && !isExcluded && (
+        <AiSuggestPopover
+          blockType={blockType}
+          fieldPath={fieldPath}
+          onApply={(v) => onCommit(v)}
+          onClose={() => setShowAi(false)}
+        />
+      )}
+    </div>
+  )
+}
+
+// ────────────────────────────────────────────────────────
 // Główny komponent
 // ────────────────────────────────────────────────────────
 
@@ -245,9 +340,9 @@ export function BlockFieldEditor() {
 
         {block.blockType === 'hero' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
-            <FieldTextarea label="Podnagłówek" value={v('subheading')} onCommit={onCommit('subheading')} />
-            <FieldText label="Tekst CTA" value={v('ctaText')} onCommit={onCommit('ctaText')} />
+            <AiFieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} blockType="hero" fieldPath="heading" />
+            <AiFieldTextarea label="Podnagłówek" value={v('subheading')} onCommit={onCommit('subheading')} blockType="hero" fieldPath="subheading" />
+            <AiFieldText label="Tekst CTA" value={v('ctaText')} onCommit={onCommit('ctaText')} blockType="hero" fieldPath="ctaText" />
             <FieldText label="Link CTA" value={v('ctaLink')} onCommit={onCommit('ctaLink')} />
             <FieldText label="Badge" value={v('badge')} onCommit={onCommit('badge')} />
             <FieldText label="Drugi CTA tekst" value={v('secondaryCtaText')} onCommit={onCommit('secondaryCtaText')} />
@@ -272,16 +367,16 @@ export function BlockFieldEditor() {
 
         {block.blockType === 'services' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
+            <AiFieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} blockType="services" fieldPath="heading" />
             <FieldArrayEditor config={ARRAY_CONFIGS.services} blockIndex={idx} />
           </>
         )}
 
         {block.blockType === 'cta' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
-            <FieldTextarea label="Tekst" value={v('text')} onCommit={onCommit('text')} />
-            <FieldText label="Tekst przycisku" value={v('buttonText')} onCommit={onCommit('buttonText')} />
+            <AiFieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} blockType="cta" fieldPath="heading" />
+            <AiFieldTextarea label="Tekst" value={v('text')} onCommit={onCommit('text')} blockType="cta" fieldPath="text" />
+            <AiFieldText label="Tekst przycisku" value={v('buttonText')} onCommit={onCommit('buttonText')} blockType="cta" fieldPath="buttonText" />
             <FieldText label="Link przycisku" value={v('buttonLink')} onCommit={onCommit('buttonLink')} />
           </>
         )}
@@ -299,8 +394,8 @@ export function BlockFieldEditor() {
 
         {block.blockType === 'pricing' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
-            <FieldTextarea label="Podnagłówek" value={v('subheading')} onCommit={onCommit('subheading')} />
+            <AiFieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} blockType="pricing" fieldPath="heading" />
+            <AiFieldTextarea label="Podnagłówek" value={v('subheading')} onCommit={onCommit('subheading')} blockType="pricing" fieldPath="subheading" />
             <FieldArrayEditor config={ARRAY_CONFIGS.pricing} blockIndex={idx} />
           </>
         )}
@@ -314,8 +409,8 @@ export function BlockFieldEditor() {
 
         {block.blockType === 'contactForm' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
-            <FieldTextarea label="Podnagłówek" value={v('subheading')} onCommit={onCommit('subheading')} />
+            <AiFieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} blockType="contactForm" fieldPath="heading" />
+            <AiFieldTextarea label="Podnagłówek" value={v('subheading')} onCommit={onCommit('subheading')} blockType="contactForm" fieldPath="subheading" />
           </>
         )}
 
@@ -378,8 +473,8 @@ export function BlockFieldEditor() {
 
         {block.blockType === 'about' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
-            <FieldText label="Badge" value={v('badge')} onCommit={onCommit('badge')} />
+            <AiFieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} blockType="about" fieldPath="heading" />
+            <AiFieldText label="Badge" value={v('badge')} onCommit={onCommit('badge')} blockType="about" fieldPath="badge" />
             <FieldText label="Tekst CTA" value={v('ctaText')} onCommit={onCommit('ctaText')} />
             <FieldText label="Link CTA" value={v('ctaLink')} onCommit={onCommit('ctaLink')} />
             <FieldMediaPicker

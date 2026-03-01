@@ -15,6 +15,7 @@ import {
 } from './undo-redo-engine'
 import type { BlockComment } from './block-comments'
 import { loadComments, saveComments } from './block-comments'
+import type { A11yIssue } from './a11y-checks'
 
 // Domyślne wartości dla nowych bloków
 const BLOCK_DEFAULTS: Record<string, Partial<PageSection>> = {
@@ -246,6 +247,14 @@ interface EditorState {
   // Batch Selection
   selectedBlockIndices: number[]
 
+  // Split Preview
+  splitPreviewEnabled: boolean
+  splitPreviewBreakpoints: ('desktop' | 'tablet' | 'mobile')[]
+
+  // A11y Audit
+  a11yPanelOpen: boolean
+  a11yIssues: A11yIssue[]
+
   // Akcje — strona
   loadPage: (pageId: number) => Promise<void>
   savePage: () => Promise<void>
@@ -312,6 +321,14 @@ interface EditorState {
   clearBlockSelection: () => void
   batchDeleteBlocks: () => void
   batchDuplicateBlocks: () => void
+
+  // Akcje — Split Preview
+  toggleSplitPreview: () => void
+  setSplitPreviewBreakpoints: (bps: ('desktop' | 'tablet' | 'mobile')[]) => void
+
+  // Akcje — A11y Audit
+  toggleA11yPanel: () => void
+  setA11yIssues: (issues: A11yIssue[]) => void
 }
 
 const initialState = {
@@ -349,6 +366,10 @@ const initialState = {
   shortcutsOpen: false,
   inlineEditEnabled: false,
   selectedBlockIndices: [] as number[],
+  splitPreviewEnabled: false,
+  splitPreviewBreakpoints: ['desktop', 'tablet', 'mobile'] as ('desktop' | 'tablet' | 'mobile')[],
+  a11yPanelOpen: false,
+  a11yIssues: [] as A11yIssue[],
 }
 
 export const usePageEditor = create<EditorState>()((set, get) => ({
@@ -881,4 +902,12 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
       isDirty: true,
     }
   }),
+
+  // Split Preview
+  toggleSplitPreview: () => set((s) => ({ splitPreviewEnabled: !s.splitPreviewEnabled })),
+  setSplitPreviewBreakpoints: (bps) => set({ splitPreviewBreakpoints: bps }),
+
+  // A11y Audit
+  toggleA11yPanel: () => set((s) => ({ a11yPanelOpen: !s.a11yPanelOpen })),
+  setA11yIssues: (issues) => set({ a11yIssues: issues }),
 }))
