@@ -1,5 +1,20 @@
 # Backlog
 
+## Running database migrations
+
+Payload CMS migrations live in `apps/web/src/migrations/`.
+
+```bash
+# From the repository root (uses ops/scripts/run-migrations-web.sh):
+npm run migrate:web
+
+# Or directly from the web workspace:
+npm run -w apps/web migrate
+```
+
+> **Note:** Do NOT use `npx run migrate` — this is not a valid way to run
+> package.json scripts. Use `npm run` (or `pnpm run`) instead.
+
 ## CMS pages
 - [x] Custom `SectionReorderPreview` UI in Payload admin → **zrealizowane jako Visual Page Editor v1**
 - [ ] Automatyczne generowanie drzewa nawigacji z kolekcji `pages` (`parent`/`sortOrder`) jako alternatywa dla ręcznej konfiguracji w globalu `navigation`.
