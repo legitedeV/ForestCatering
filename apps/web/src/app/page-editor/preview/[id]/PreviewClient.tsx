@@ -310,14 +310,14 @@ export function PreviewClient({ initialSections }: Props) {
         el.focus()
         setActiveEditLabel(field.label)
 
-        let debounceTimer: ReturnType<typeof setTimeout>
+        let debounceTimer: ReturnType<typeof setTimeout> | null = null
 
         const commit = () => {
           const newVal = el.textContent ?? ''
           el.contentEditable = 'false'
           el.classList.remove('ring-2', 'ring-accent-warm', 'outline-none', 'rounded')
           setActiveEditLabel(null)
-          clearTimeout(debounceTimer)
+          if (debounceTimer !== null) clearTimeout(debounceTimer)
           window.parent.postMessage(
             { type: 'preview:inline-edit', blockIndex, fieldPath: field.fieldPath, value: newVal },
             '*',
@@ -329,11 +329,11 @@ export function PreviewClient({ initialSections }: Props) {
           el.contentEditable = 'false'
           el.classList.remove('ring-2', 'ring-accent-warm', 'outline-none', 'rounded')
           setActiveEditLabel(null)
-          clearTimeout(debounceTimer)
+          if (debounceTimer !== null) clearTimeout(debounceTimer)
         }
 
         const onInput = () => {
-          clearTimeout(debounceTimer)
+          if (debounceTimer !== null) clearTimeout(debounceTimer)
           debounceTimer = setTimeout(() => {
             window.parent.postMessage(
               { type: 'preview:inline-edit', blockIndex, fieldPath: field.fieldPath, value: el.textContent ?? '' },

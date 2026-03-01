@@ -597,7 +597,15 @@ html {
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  [class*="anim-"], [class*="anim-"] * { animation: none !important; transition: none !important; }
+  .anim-pulse-glow, .anim-float, .anim-gentle-rotate, .anim-breathe,
+  .anim-shimmer-fast, .anim-shimmer-fast::after, .anim-border-trace::before,
+  .anim-gradient-text, .anim-parallax-slow, .anim-morph-bg,
+  .anim-fade-up-soft, .anim-fade-down, .anim-slide-left-bounce, .anim-slide-right-bounce,
+  .anim-scale-elastic, .anim-rotate-in, .anim-blur-in, .anim-flip-y, .anim-flip-x,
+  .anim-clip-reveal, .anim-clip-left, .anim-bounce-in, .anim-cascade > * {
+    animation: none !important;
+    transition: none !important;
+  }
 }
 
 /* --- EDITOR GRID OVERLAY --- */

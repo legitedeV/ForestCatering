@@ -67,8 +67,8 @@ function BlockCard({
   const subtitle = getBlockSubtitle(block)
   const blockName = (block as Record<string, unknown>).blockName as string | undefined
 
-  const handleSelect = useCallback((e: React.MouseEvent) => {
-    if (e.ctrlKey || e.metaKey) {
+  const handleSelect = useCallback((e?: React.MouseEvent) => {
+    if (e && (e.ctrlKey || e.metaKey)) {
       toggleBlockSelection(index)
       return
     }
@@ -92,7 +92,7 @@ function BlockCard({
       onKeyDown={(e: React.KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault()
-          handleSelect(e as unknown as React.MouseEvent)
+          handleSelect()
         }
       }}
       tabIndex={0}
