@@ -20,6 +20,9 @@ export function LivePreviewFrame() {
   const previewBreakpoint = usePageEditor((s) => s.previewBreakpoint)
   const selectBlock = usePageEditor((s) => s.selectBlock)
   const setSidebarTab = usePageEditor((s) => s.setSidebarTab)
+  const pageTemplate = usePageEditor((s) => s.pageTemplate)
+  const cssOverrides = usePageEditor((s) => s.cssOverrides)
+  const customCss = usePageEditor((s) => s.customCss)
 
   const [isLoaded, setIsLoaded] = useState(false)
   const [scale, setScale] = useState(1)
@@ -76,6 +79,23 @@ export function LivePreviewFrame() {
       '*',
     )
   }, [selectedBlockIndex, isLoaded])
+
+  // Wyślij CSS overrides do iframe
+  useEffect(() => {
+    if (!isLoaded) return
+    const timer = setTimeout(() => {
+      iframeRef.current?.contentWindow?.postMessage(
+        {
+          type: 'editor:css-overrides',
+          overrides: cssOverrides,
+          template: pageTemplate,
+          customCss,
+        },
+        '*',
+      )
+    }, 150)
+    return () => clearTimeout(timer)
+  }, [cssOverrides, pageTemplate, customCss, isLoaded])
 
   // Odbieraj zdarzenia z iframe (kliknięcie bloku)
   useEffect(() => {

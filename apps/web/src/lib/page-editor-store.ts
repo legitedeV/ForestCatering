@@ -106,7 +106,12 @@ interface EditorState {
   previewBreakpoint: 'desktop' | 'tablet' | 'mobile'
 
   // Stan sidebara
-  sidebarTab: 'blocks' | 'settings' | 'add'
+  sidebarTab: 'blocks' | 'settings' | 'add' | 'style'
+
+  // Styl / Template
+  pageTemplate: string | null
+  cssOverrides: Record<string, string>
+  customCss: string
 
   // Akcje — strona
   loadPage: (pageId: number) => Promise<void>
@@ -122,8 +127,14 @@ interface EditorState {
 
   // Akcje — UI
   setPreviewBreakpoint: (bp: 'desktop' | 'tablet' | 'mobile') => void
-  setSidebarTab: (tab: 'blocks' | 'settings' | 'add') => void
+  setSidebarTab: (tab: 'blocks' | 'settings' | 'add' | 'style') => void
   resetEditor: () => void
+
+  // Akcje — Styl
+  setPageTemplate: (template: string | null) => void
+  setCssOverride: (variable: string, value: string) => void
+  resetCssOverrides: () => void
+  setCustomCss: (css: string) => void
 }
 
 const initialState = {
@@ -139,6 +150,9 @@ const initialState = {
   error: null,
   previewBreakpoint: 'desktop' as const,
   sidebarTab: 'blocks' as const,
+  pageTemplate: null as string | null,
+  cssOverrides: {} as Record<string, string>,
+  customCss: '',
 }
 
 export const usePageEditor = create<EditorState>()((set, get) => ({
@@ -276,4 +290,19 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
 
   // Resetuj stan edytora
   resetEditor: () => set(initialState),
+
+  // Ustaw template strony
+  setPageTemplate: (template) => set({ pageTemplate: template, isDirty: true }),
+
+  // Ustaw nadpisanie zmiennej CSS
+  setCssOverride: (variable, value) => set((state) => ({
+    cssOverrides: { ...state.cssOverrides, [variable]: value },
+    isDirty: true,
+  })),
+
+  // Resetuj nadpisania CSS
+  resetCssOverrides: () => set({ cssOverrides: {}, isDirty: true }),
+
+  // Ustaw niestandardowy CSS
+  setCustomCss: (css) => set({ customCss: css, isDirty: true }),
 }))

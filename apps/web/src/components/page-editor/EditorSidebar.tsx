@@ -4,11 +4,13 @@ import { usePageEditor } from '@/lib/page-editor-store'
 import { getBlockMeta } from '@/lib/block-metadata'
 import { BlockPalette } from './BlockPalette'
 import { BlockFieldEditor } from './BlockFieldEditor'
+import { StylePanel } from './StylePanel'
 
 const TABS = [
-  { key: 'blocks' as const, label: 'Sekcje' },
-  { key: 'settings' as const, label: 'Edycja' },
-  { key: 'add' as const, label: 'Dodaj' },
+  { key: 'blocks' as const, label: 'Sekcje', icon: '📋' },
+  { key: 'settings' as const, label: 'Edycja', icon: '⚙️' },
+  { key: 'add' as const, label: 'Dodaj', icon: '➕' },
+  { key: 'style' as const, label: 'Styl', icon: '🎨' },
 ]
 
 export function EditorSidebar() {
@@ -37,7 +39,7 @@ export function EditorSidebar() {
             aria-selected={sidebarTab === tab.key}
             role="tab"
           >
-            {tab.label}
+            {tab.icon} {tab.label}
           </button>
         ))}
       </div>
@@ -81,6 +83,9 @@ export function EditorSidebar() {
 
         {/* Tab: Dodaj */}
         {sidebarTab === 'add' && <BlockPalette />}
+
+        {/* Tab: Styl */}
+        {sidebarTab === 'style' && <StylePanel />}
       </div>
     </aside>
   )

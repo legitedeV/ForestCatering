@@ -32,14 +32,15 @@
 - [ ] Spacing inspector (wizualizacja marginów/paddingów on hover)
 
 #### Phase 3 — Styling control
-- [ ] Color picker per-element (text, background, border, accent)
+- [x] Color picker per-element (text, background, border, accent) — CSS variables override w panelu Styl
 - [ ] Custom CSS per-block z panelu bocznego
+- [x] Custom CSS per-page (advanced editor w panelu Styl)
 - [ ] Typography controls (font-size, weight, line-height, letter-spacing)
 - [ ] Background: solid/gradient/image per-block
 - [ ] Border radius / shadow controls per-block
 
 #### Phase 4 — Layout management
-- [ ] Layout templates (save/load presetów całych stron)
+- [x] Layout templates (save/load presetów całych stron) — template selector A-E w panelu Styl
 - [ ] Block templates / snippets (zapisywanie ulubionych konfiguracji bloków)
 - [ ] Export/Import layout JSON
 - [ ] Multi-page template apply (zastosuj template do wielu stron)
@@ -57,6 +58,13 @@
 - [ ] AI assistant do generowania treści bloków
 - [ ] Keyboard shortcuts panel (? key — modal z listą skrótów)
 - [ ] Accessibility audit per-page (automated checks)
+
+#### Phase 7 — Style system (backlog)
+- [ ] Per-block CSS class picker (wybór klas CSS z globals.css per-block)
+- [ ] CSS variables persistence w bazie (pole `cssOverrides` na Page document)
+- [ ] Full globals.css editor strona standalone (`/page-editor/css`)
+- [ ] Template preview thumbnails (screenshot-based)
+- [ ] Template export/import (JSON z CSS overrides)
 
 ## Part 2 (planned)
 - [ ] Full page content (sklep, koszyk, checkout, eventy, galeria, blog, kontakt)
