@@ -8,6 +8,9 @@ import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { AddToCartButton } from '@/components/shop/AddToCartButton'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const allergenLabels: Record<string, string> = {
   gluten: '🌾 Gluten', dairy: '🥛 Nabiał', eggs: '🥚 Jaja', nuts: '🥜 Orzechy',
   soy: '🫘 Soja', fish: '🐟 Ryby', shellfish: '🦐 Skorupiaki', celery: '🥬 Seler',

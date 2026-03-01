@@ -24,11 +24,11 @@ export function isSafePath(pathValue: string): boolean {
 
 async function getDraftEnabled(): Promise<boolean> {
   const { isEnabled } = await draftMode()
-  if (isEnabled) noStore()
   return isEnabled
 }
 
 export async function getPageByPath(pathValue: string): Promise<Page | null> {
+  noStore()
   const normalized = normalizePath(pathValue)
   if (!normalized || !isSafePath(normalized)) return null
 
@@ -50,6 +50,7 @@ export async function getPageByPath(pathValue: string): Promise<Page | null> {
 }
 
 export async function getPublishedPagePaths(): Promise<string[]> {
+  noStore()
   try {
     const payload = await getPayload()
     const result = await payload.find({
