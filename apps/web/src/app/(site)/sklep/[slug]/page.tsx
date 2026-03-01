@@ -1,11 +1,12 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
-import Image from 'next/image'
 import { getPayload } from '@/lib/payload-client'
 import { formatPrice } from '@/lib/format'
 import { getMediaUrl, getMediaAlt } from '@/lib/media'
-import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
+import { AnimatedSection } from '@/components/ui/AnimatedSection'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import { ProductCard } from '@/components/shop/ProductCard'
+import { ProductImageGallery } from '@/components/shop/ProductImageGallery'
+import { ProductTabs } from '@/components/shop/ProductTabs'
 import { AddToCartButton } from '@/components/shop/AddToCartButton'
 
 export const dynamic = 'force-dynamic'
@@ -85,48 +86,50 @@ export default async function ProductDetailPage({ params }: Props) {
 
   if (!product) notFound()
 
-  const firstImage = product.images?.[0]?.image
-  const imageUrl = getMediaUrl(firstImage) || product.imageUrl || undefined
-  const imageAlt = getMediaAlt(firstImage, product.name)
+  const allImages = (product.images ?? [])
+    .map((img) => {
+      const url = getMediaUrl(img.image)
+      const alt = getMediaAlt(img.image, product.name)
+      return url ? { url, alt } : null
+    })
+    .filter((img): img is { url: string; alt: string } => img !== null)
+
+  // Fallback to imageUrl if no uploaded images
+  if (allImages.length === 0 && product.imageUrl) {
+    allImages.push({ url: product.imageUrl, alt: product.name })
+  }
+
+  const allergenItems = product.allergens?.map((a: string) => ({
+    key: a,
+    label: allergenLabels[a] || a,
+  })) ?? null
+
+  const dietaryItems = product.dietary?.map((d: string) => {
+    const info = dietaryLabels[d]
+    return {
+      key: d,
+      label: info?.label || d,
+      color: info?.color || 'bg-forest-700 text-forest-200',
+    }
+  }) ?? null
+
+  const breadcrumbItems = [
+    { label: 'Sklep', href: '/sklep' },
+    ...(categoryName ? [{ label: categoryName }] : []),
+    { label: product.name },
+  ]
 
   return (
     <div className="min-h-screen bg-forest-900 pt-24 pb-20">
       <div className="mx-auto max-w-7xl px-4">
         {/* Breadcrumb */}
-        <nav className="mb-8 flex items-center gap-2 text-sm text-forest-400">
-          <Link href="/sklep" className="transition hover:text-accent">Sklep</Link>
-          <span>›</span>
-          {categoryName && (
-            <>
-              <span className="text-forest-400">{categoryName}</span>
-              <span>›</span>
-            </>
-          )}
-          <span className="text-forest-200">{product.name}</span>
-        </nav>
+        <Breadcrumbs items={breadcrumbItems} />
 
         {/* Product detail */}
         <div className="grid gap-10 lg:grid-cols-2">
-          {/* Left — Image */}
+          {/* Left — Image Gallery */}
           <AnimatedSection>
-            <div className="overflow-hidden rounded-xl bg-gradient-to-br from-forest-700 to-forest-800">
-              {imageUrl ? (
-                <div className="relative aspect-square">
-                  <Image
-                    src={imageUrl}
-                    alt={imageAlt}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    priority
-                  />
-                </div>
-              ) : (
-                <div className="flex aspect-square items-center justify-center text-6xl">
-                  🍽️
-                </div>
-              )}
-            </div>
+            <ProductImageGallery images={allImages} productName={product.name} />
           </AnimatedSection>
 
           {/* Right — Info */}
@@ -135,7 +138,7 @@ export default async function ProductDetailPage({ params }: Props) {
               <h1 className="text-3xl font-bold text-cream">{product.name}</h1>
 
               <div className="mt-4 flex items-center gap-3">
-                <span className="text-2xl font-bold text-accent">{formatPrice(product.price)}</span>
+                <span className="text-2xl font-bold text-accent-warm">{formatPrice(product.price)}</span>
                 {product.compareAtPrice && (
                   <span className="text-lg text-forest-400 line-through">{formatPrice(product.compareAtPrice)}</span>
                 )}
@@ -147,49 +150,19 @@ export default async function ProductDetailPage({ params }: Props) {
 
               <div className="my-6 border-t border-forest-700" />
 
-              {/* Allergens */}
-              {product.allergens && product.allergens.length > 0 && (
-                <div className="mb-4">
-                  <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-cream">Alergeny</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.allergens.map((a: string) => (
-                      <span key={a} className="rounded-full border border-forest-600 bg-forest-700 px-3 py-1 text-sm text-forest-200">
-                        {allergenLabels[a] || a}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Dietary */}
-              {product.dietary && product.dietary.length > 0 && (
-                <div className="mb-4">
-                  <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-cream">Dieta</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {product.dietary.map((d: string) => {
-                      const info = dietaryLabels[d]
-                      return (
-                        <span key={d} className={`rounded-full px-3 py-1 text-sm font-medium ${info?.color || 'bg-forest-700 text-forest-200'}`}>
-                          {info?.label || d}
-                        </span>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Weight / Servings */}
-              {(product.weight || product.servings) && (
-                <div className="mb-4 flex gap-6 text-sm text-forest-300">
-                  {product.weight && <span>📦 Waga: {product.weight}</span>}
-                  {product.servings && <span>👥 Porcje: {product.servings}</span>}
-                </div>
-              )}
+              {/* Add to cart */}
+              <AddToCartButton product={{ id: product.id, name: product.name, slug: product.slug, price: product.price }} imageUrl={allImages[0]?.url} />
 
               <div className="my-6 border-t border-forest-700" />
 
-              {/* Add to cart */}
-              <AddToCartButton product={{ id: product.id, name: product.name, slug: product.slug, price: product.price }} imageUrl={imageUrl} />
+              {/* Tabs */}
+              <ProductTabs
+                description={product.shortDescription}
+                allergens={allergenItems}
+                dietary={dietaryItems}
+                weight={product.weight}
+                servings={product.servings}
+              />
             </div>
           </AnimatedSection>
         </div>
@@ -200,15 +173,13 @@ export default async function ProductDetailPage({ params }: Props) {
             <AnimatedSection>
               <h2 className="text-2xl font-bold text-cream">Powiązane produkty</h2>
             </AnimatedSection>
-            <AnimatedSection stagger>
-              <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {relatedProducts.map((p) => (
-                  <AnimatedItem key={p.id}>
-                    <ProductCard product={p} />
-                  </AnimatedItem>
-                ))}
-              </div>
-            </AnimatedSection>
+            <div className="product-scroll mt-8">
+              {relatedProducts.map((p) => (
+                <div key={p.id} className="w-[280px] shrink-0 sm:w-[320px]">
+                  <ProductCard product={p} />
+                </div>
+              ))}
+            </div>
           </section>
         )}
       </div>

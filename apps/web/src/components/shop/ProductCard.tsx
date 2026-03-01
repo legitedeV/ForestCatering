@@ -46,7 +46,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <motion.div
-      className="group flex h-full flex-col overflow-hidden rounded-xl border border-forest-700 bg-forest-800 transition hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-lg"
+      className="warm-glow group flex h-full flex-col overflow-hidden rounded-xl border border-forest-700 bg-forest-800 transition hover:-translate-y-0.5 hover:border-accent-warm/30 hover:shadow-lg"
       whileHover={{ y: -2 }}
     >
       <Link href={`/sklep/${product.slug}`} className="block">
@@ -64,27 +64,24 @@ export function ProductCard({ product }: ProductCardProps) {
               🍽️
             </div>
           )}
+          {/* Quick-view overlay */}
+          <div className="absolute inset-0 flex items-center justify-center bg-forest-950/60 opacity-0 transition group-hover:opacity-100">
+            <span className="rounded-lg bg-accent-warm px-4 py-2 text-sm font-semibold text-forest-950">
+              Szybki podgląd
+            </span>
+          </div>
         </div>
       </Link>
 
       <div className="flex flex-1 flex-col p-5">
         <Link href={`/sklep/${product.slug}`}>
-          <h3 className="font-semibold text-cream transition group-hover:text-accent">{product.name}</h3>
+          <h3 className="font-semibold text-cream transition group-hover:text-accent-warm">{product.name}</h3>
           {product.shortDescription && (
             <p className="mt-1 text-sm text-forest-300 line-clamp-2">{product.shortDescription}</p>
           )}
         </Link>
 
-        {/* Allergens */}
-        {product.allergens && product.allergens.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1">
-            {product.allergens.map((a) => (
-              <span key={a} className="text-sm" title={a}>{allergenEmoji[a] || '⚠️'}</span>
-            ))}
-          </div>
-        )}
-
-        {/* Dietary badges */}
+        {/* Dietary badges (moved above price) */}
         {product.dietary && product.dietary.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {product.dietary.map((d) => {
@@ -98,9 +95,18 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         )}
 
+        {/* Allergens */}
+        {product.allergens && product.allergens.length > 0 && (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {product.allergens.map((a) => (
+              <span key={a} className="text-sm" title={a}>{allergenEmoji[a] || '⚠️'}</span>
+            ))}
+          </div>
+        )}
+
         <div className="mt-auto pt-4">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-accent">{formatPrice(product.price)}</span>
+            <span className="text-lg font-bold text-accent-warm">{formatPrice(product.price)}</span>
             {product.compareAtPrice && (
               <span className="text-sm text-forest-400 line-through">{formatPrice(product.compareAtPrice)}</span>
             )}
@@ -116,7 +122,7 @@ export function ProductCard({ product }: ProductCardProps) {
               })
               show('Dodano do koszyka ✓', 'success')
             }}
-            className="mt-3 w-full rounded-lg bg-accent py-2.5 text-sm font-semibold text-forest-950 transition hover:bg-accent-light"
+            className="mt-3 w-full rounded-lg bg-accent-warm py-2.5 text-sm font-semibold text-forest-950 transition hover:bg-accent-warm-light"
           >
             Dodaj do koszyka
           </button>

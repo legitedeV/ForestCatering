@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Navigation, SiteSetting } from '@/payload-types'
+import { ScrollToTop } from '@/components/ui/ScrollToTop'
 
 interface FooterProps {
   navigation: Navigation | null
@@ -61,6 +62,7 @@ export function Footer({ navigation, settings }: FooterProps) {
       <div className="border-t border-forest-900 bg-forest-950 py-6">
         <p className="text-center text-sm text-forest-400">© {companyName}. Wszelkie prawa zastrzeżone.</p>
       </div>
+      <ScrollToTop />
     </footer>
   )
 }
