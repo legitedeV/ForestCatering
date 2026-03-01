@@ -16,20 +16,48 @@
 - [x] Live preview iframe z postMessage sync
 - [x] Przycisk „Otwórz edytor wizualny" w Payload admin
 
-### Visual Page Editor v2 (backlog)
-- [ ] Inline text editing (edycja tekstu bezpośrednio na canvas klikając w treść)
-- [ ] Visual resize handles na blokach (zmiana wysokości/padding)
+### Visual Page Editor v2 (roadmap)
+
+#### Phase 1 — Editing depth (next)
+- [ ] Inline array items editing w sidebar (FAQ/Steps/Pricing/Services/Testimonials/OfferCards/Stats/Team)
+- [ ] Nested array editing (np. pricing package → features[])
+- [ ] Media picker inline w sidebar (wybór obrazu z kolekcji Media bez wychodzenia do Payload)
+- [ ] Edycja `blockName` per-block w sidebar
+- [ ] Keyboard shortcuts: Ctrl+S (save), Delete (remove block), Ctrl+D (duplicate)
+
+#### Phase 2 — Visual precision
+- [ ] Grid system overlay (konfigurowalne: 12/16 kolumn, snap-to-grid)
+- [ ] Auto-alignment guides (smart guides jak w Figma/Sketch)
+- [ ] Pixel-perfect positioning: absolute/relative per-element z drag handles
+- [ ] Visual resize handles na blokach (padding/margin adjustment via drag)
+- [ ] Spacing inspector (wizualizacja marginów/paddingów on hover)
+
+#### Phase 3 — Styling control
+- [ ] Color picker per-element (text, background, border, accent)
 - [ ] Custom CSS per-block z panelu bocznego
-- [ ] Undo/Redo stack (Ctrl+Z / Ctrl+Shift+Z)
-- [ ] Version history diff viewer (porównanie wersji obok siebie)
-- [ ] Multi-device preview toggle z synchronizowanym scrollem
-- [ ] Batch operations (zaznacz wiele bloków → przenieś/usuń/duplikuj)
+- [ ] Typography controls (font-size, weight, line-height, letter-spacing)
+- [ ] Background: solid/gradient/image per-block
+- [ ] Border radius / shadow controls per-block
+
+#### Phase 4 — Layout management
+- [ ] Layout templates (save/load presetów całych stron)
 - [ ] Block templates / snippets (zapisywanie ulubionych konfiguracji bloków)
-- [ ] Collaborative editing (WebSocket real-time sync)
-- [ ] AI assistant do generowania treści bloków
 - [ ] Export/Import layout JSON
-- [ ] Keyboard shortcuts panel (? key)
-- [ ] Edycja array items (items/packages/steps) bezpośrednio w sidebar
+- [ ] Multi-page template apply (zastosuj template do wielu stron)
+
+#### Phase 5 — Workflow & collaboration
+- [ ] Undo/Redo stack (Ctrl+Z / Ctrl+Shift+Z) z historią akcji
+- [ ] Version history diff viewer (porównanie wersji obok siebie)
+- [ ] Collaborative editing (WebSocket real-time sync)
+- [ ] Comments/annotations na blokach
+
+#### Phase 6 — Advanced
+- [ ] Inline text editing (contentEditable bezpośrednio na canvas/preview)
+- [ ] Multi-device preview z synchronizowanym scrollem
+- [ ] Batch operations (zaznacz wiele bloków → przenieś/usuń/duplikuj)
+- [ ] AI assistant do generowania treści bloków
+- [ ] Keyboard shortcuts panel (? key — modal z listą skrótów)
+- [ ] Accessibility audit per-page (automated checks)
 
 ## Part 2 (planned)
 - [ ] Full page content (sklep, koszyk, checkout, eventy, galeria, blog, kontakt)
