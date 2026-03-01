@@ -1,8 +1,6 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { getPayload } from '@/lib/payload-client'
-import { formatPrice } from '@/lib/format'
 import { getMediaUrl } from '@/lib/media'
 import type { PageSection } from '../types'
 import { FeaturedProductsScroll } from './FeaturedProductsScroll'
