@@ -307,6 +307,19 @@ export function PreviewClient({ initialSections }: Props) {
           setTimeout(() => { isSyncingRef.current = false }, 50)
         }
       }
+
+      // CSS overlays injection
+      if (data.type === 'editor:css-overlays-updated') {
+        let el = document.getElementById('editor-css-overlays')
+        if (!el) {
+          el = document.createElement('style')
+          el.id = 'editor-css-overlays'
+          document.head.appendChild(el)
+        }
+        const global = (data.globalCssOverlay as string) || ''
+        const layout = (data.layoutCssOverlay as string) || ''
+        el.textContent = sanitizeCss(`/* Global overlay */\n${global}\n/* Layout overlay */\n${layout}`)
+      }
     }
 
     window.addEventListener('message', handler)

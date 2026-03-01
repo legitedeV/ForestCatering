@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BlockRenderer } from '@/components/cms/BlockRenderer'
 import { BlockRendererClient } from '@/components/cms/BlockRendererClient'
+import { PageCssOverlay } from '@/components/cms/PageCssOverlay'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import { getMediaUrl } from '@/lib/media'
 import { getPayload } from '@/lib/payload-client'
@@ -72,6 +73,10 @@ export default async function CMSPage({ params }: Props) {
       <div className="mx-auto max-w-7xl px-4">
         <Breadcrumbs items={breadcrumbItems} />
       </div>
+      <PageCssOverlay
+        globalCssOverlay={(page as unknown as Record<string, unknown>).globalCssOverlay as string | undefined}
+        layoutCssOverlay={(page as unknown as Record<string, unknown>).layoutCssOverlay as string | undefined}
+      />
       <BlockRendererClient>
         <BlockRenderer sections={page.sections} />
       </BlockRendererClient>

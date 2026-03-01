@@ -143,6 +143,32 @@ export const Pages: CollectionConfig = {
       ],
     },
     {
+      name: 'pageTemplate',
+      type: 'select',
+      label: 'Template strony',
+      options: [
+        { label: 'Domyślny', value: 'default' },
+        { label: 'A — Organic Warmth', value: 'template-a' },
+        { label: 'B — Glass Forest', value: 'template-b' },
+        { label: 'C — Modern Editorial', value: 'template-c' },
+        { label: 'D — Product Showcase', value: 'template-d' },
+      ],
+      defaultValue: 'default',
+      admin: { position: 'sidebar' },
+    },
+    {
+      name: 'globalCssOverlay',
+      type: 'textarea',
+      label: 'Global CSS Overlay',
+      admin: { condition: () => false },
+    },
+    {
+      name: 'layoutCssOverlay',
+      type: 'textarea',
+      label: 'Layout CSS Overlay',
+      admin: { condition: () => false },
+    },
+    {
       name: 'seo',
       type: 'group',
       label: 'SEO',

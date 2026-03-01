@@ -219,6 +219,11 @@ interface EditorState {
   cssOverrides: Record<string, string>
   customCss: string
 
+  // CSS Overlays (persisted in Payload)
+  globalCssOverlay: string
+  layoutCssOverlay: string
+  selectedCssLayer: 'globals' | 'layout'
+
   // Undo/Redo
   undoStack: EditorCommand[]
   redoStack: EditorCommand[]
@@ -310,6 +315,11 @@ interface EditorState {
   resetCssOverrides: () => void
   setCustomCss: (css: string) => void
 
+  // Akcje — CSS Overlays
+  setGlobalCssOverlay: (css: string) => void
+  setLayoutCssOverlay: (css: string) => void
+  setSelectedCssLayer: (layer: 'globals' | 'layout') => void
+
   // Akcje — Shortcuts
   toggleShortcuts: () => void
 
@@ -352,6 +362,9 @@ const initialState = {
   pageTemplate: null as string | null,
   cssOverrides: {} as Record<string, string>,
   customCss: '',
+  globalCssOverlay: '',
+  layoutCssOverlay: '',
+  selectedCssLayer: 'globals' as const,
   undoStack: [] as EditorCommand[],
   redoStack: [] as EditorCommand[],
   canUndo: false,
@@ -392,6 +405,9 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
         path: string
         sections: PageSection[]
         updatedAt?: string
+        pageTemplate?: string
+        globalCssOverlay?: string
+        layoutCssOverlay?: string
       }
       const sectionsSnapshot = JSON.parse(JSON.stringify(data.sections)) as PageSection[]
       set({
@@ -411,6 +427,9 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
         conflictDetected: false,
         serverUpdatedAt: null,
         blockComments: loadComments(data.id),
+        pageTemplate: data.pageTemplate ?? null,
+        globalCssOverlay: data.globalCssOverlay ?? '',
+        layoutCssOverlay: data.layoutCssOverlay ?? '',
       })
     } catch (err) {
       set({
@@ -446,7 +465,12 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
           'Content-Type': 'application/json',
           'x-editor-secret': process.env.NEXT_PUBLIC_EDITOR_SECRET ?? '',
         },
-        body: JSON.stringify({ sections }),
+        body: JSON.stringify({
+          sections,
+          pageTemplate: get().pageTemplate,
+          globalCssOverlay: get().globalCssOverlay,
+          layoutCssOverlay: get().layoutCssOverlay,
+        }),
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
@@ -855,6 +879,11 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
 
   // Ustaw niestandardowy CSS
   setCustomCss: (css) => set({ customCss: css, isDirty: true }),
+
+  // CSS Overlays
+  setGlobalCssOverlay: (css) => set({ globalCssOverlay: css, isDirty: true }),
+  setLayoutCssOverlay: (css) => set({ layoutCssOverlay: css, isDirty: true }),
+  setSelectedCssLayer: (layer) => set({ selectedCssLayer: layer }),
 
   // Shortcuts panel
   toggleShortcuts: () => set((s) => ({ shortcutsOpen: !s.shortcutsOpen })),

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { usePageEditor } from '@/lib/page-editor-store'
 import { TEMPLATES, DEFAULT_CSS_VARIABLES } from '@/lib/template-definitions'
 
@@ -233,6 +233,114 @@ function AdvancedCssEditor() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  CSS Overlay Editor (persisted in Payload)                           */
+/* ------------------------------------------------------------------ */
+function CssOverlayEditor() {
+  const globalCssOverlay = usePageEditor((s) => s.globalCssOverlay)
+  const layoutCssOverlay = usePageEditor((s) => s.layoutCssOverlay)
+  const selectedCssLayer = usePageEditor((s) => s.selectedCssLayer)
+  const setGlobalCssOverlay = usePageEditor((s) => s.setGlobalCssOverlay)
+  const setLayoutCssOverlay = usePageEditor((s) => s.setLayoutCssOverlay)
+  const setSelectedCssLayer = usePageEditor((s) => s.setSelectedCssLayer)
+
+  const currentOverlay = selectedCssLayer === 'globals' ? globalCssOverlay : layoutCssOverlay
+  const setCurrentOverlay = selectedCssLayer === 'globals' ? setGlobalCssOverlay : setLayoutCssOverlay
+
+  const [localValue, setLocalValue] = useState(currentOverlay)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Sync local value when store changes externally (e.g. page load, layer switch)
+  useEffect(() => {
+    setLocalValue(currentOverlay)
+  }, [currentOverlay])
+
+  const handleChange = (value: string) => {
+    setLocalValue(value)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      setCurrentOverlay(value)
+    }, 500)
+  }
+
+  const handleReset = () => {
+    setCurrentOverlay('')
+  }
+
+  const handleExport = () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(currentOverlay)
+    }
+  }
+
+  return (
+    <Accordion title="📝 CSS Overlay (persist)">
+      <div className="space-y-2">
+        {/* Segmented control */}
+        <div className="flex rounded border border-forest-700 bg-forest-800">
+          <button
+            onClick={() => setSelectedCssLayer('globals')}
+            className={`flex-1 px-3 py-1.5 text-xs font-medium transition ${
+              selectedCssLayer === 'globals'
+                ? 'bg-forest-700 text-cream'
+                : 'text-forest-400 hover:text-cream'
+            }`}
+            aria-pressed={selectedCssLayer === 'globals'}
+          >
+            Globals
+          </button>
+          <button
+            onClick={() => setSelectedCssLayer('layout')}
+            className={`flex-1 px-3 py-1.5 text-xs font-medium transition ${
+              selectedCssLayer === 'layout'
+                ? 'bg-forest-700 text-cream'
+                : 'text-forest-400 hover:text-cream'
+            }`}
+            aria-pressed={selectedCssLayer === 'layout'}
+          >
+            Layout
+          </button>
+        </div>
+
+        {/* CSS Textarea */}
+        <textarea
+          value={localValue}
+          onChange={(e) => handleChange(e.target.value)}
+          placeholder={selectedCssLayer === 'globals'
+            ? `/* Global CSS overlay */\nh1 { text-shadow: 0 0 20px rgba(212,168,83,0.5); }`
+            : `/* Layout CSS overlay */\n.container { max-width: 1200px; }`}
+          rows={8}
+          className="editor-custom-css-textarea w-full rounded border border-forest-700 bg-forest-800 px-3 py-2 text-xs text-cream placeholder:text-forest-600 focus:border-accent focus:ring-accent focus:outline-none"
+          aria-label={`CSS Overlay — ${selectedCssLayer}`}
+          spellCheck={false}
+        />
+
+        {/* Action buttons */}
+        <div className="flex gap-2">
+          <button
+            onClick={handleReset}
+            className="flex-1 rounded border border-forest-700 bg-forest-800 px-2 py-1.5 text-xs text-forest-300 transition hover:bg-forest-700 hover:text-cream"
+            aria-label="Reset overlay"
+          >
+            ↩ Reset
+          </button>
+          <button
+            onClick={handleExport}
+            className="flex-1 rounded border border-forest-700 bg-forest-800 px-2 py-1.5 text-xs text-forest-300 transition hover:bg-forest-700 hover:text-cream"
+            aria-label="Kopiuj overlay do schowka"
+          >
+            📋 Export
+          </button>
+        </div>
+
+        <p className="text-xs text-forest-500">
+          Overlay CSS nadpisuje bazowe style w preview. Na produkcji wymaga włączenia flagi <code>NEXT_PUBLIC_ENABLE_CSS_OVERLAYS</code>.
+        </p>
+      </div>
+    </Accordion>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /*  Main StylePanel                                                     */
 /* ------------------------------------------------------------------ */
 export function StylePanel() {
@@ -240,6 +348,7 @@ export function StylePanel() {
     <div className="space-y-0">
       <TemplateSelector />
       <CssVariablesEditor />
+      <CssOverlayEditor />
       <AdvancedCssEditor />
     </div>
   )

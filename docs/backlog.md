@@ -72,12 +72,13 @@
 
 > **Note**: AI LLM integration optional — set `AI_API_KEY` + `AI_API_URL` in env
 
-#### Phase 7 — Style system (backlog)
-- [ ] Per-block CSS class picker (wybór klas CSS z globals.css per-block)
-- [ ] CSS variables persistence w bazie (pole `cssOverrides` na Page document)
-- [ ] Full globals.css editor strona standalone (`/page-editor/css`)
-- [ ] Template preview thumbnails (screenshot-based)
-- [ ] Template export/import (JSON z CSS overrides)
+#### Phase 7 — Style system ✅
+- [x] Template per-page selection (persisted in Payload `pageTemplate` field)
+- [x] CSS overlay editor (globals + layout, persisted in Payload)
+- [x] Production CSS overlays (feature flag: `NEXT_PUBLIC_ENABLE_CSS_OVERLAYS`)
+- [x] Theme polish: focus-visible, gradient-line var, btn-ripple focus, floating-stats transition
+
+> **Note**: CSS overlays work in editor immediately. For production, set `NEXT_PUBLIC_ENABLE_CSS_OVERLAYS=true`
 
 ## Part 2 (planned)
 - [ ] Full page content (sklep, koszyk, checkout, eventy, galeria, blog, kontakt)
