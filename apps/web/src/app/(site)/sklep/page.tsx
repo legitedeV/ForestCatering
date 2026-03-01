@@ -14,6 +14,7 @@ interface ProductDoc {
   allergens?: string[] | null
   dietary?: string[] | null
   images?: Array<{ image: { url?: string; alt?: string } | string }> | null
+  imageUrl?: string | null
 }
 
 interface Props {

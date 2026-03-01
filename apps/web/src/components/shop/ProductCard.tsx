@@ -32,6 +32,7 @@ interface ProductCardProps {
     allergens?: string[] | null
     dietary?: string[] | null
     images?: Array<{ image: { url?: string; alt?: string } | string }> | null
+    imageUrl?: string | null
   }
 }
 
@@ -40,7 +41,7 @@ export function ProductCard({ product }: ProductCardProps) {
   const { show } = useToast()
 
   const firstImage = product.images?.[0]?.image
-  const imageUrl = getMediaUrl(firstImage)
+  const imageUrl = getMediaUrl(firstImage) || product.imageUrl || undefined
   const imageAlt = getMediaAlt(firstImage, product.name)
 
   return (
