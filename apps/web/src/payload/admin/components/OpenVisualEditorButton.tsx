@@ -3,6 +3,22 @@
 import React from 'react'
 import { useDocumentInfo } from '@payloadcms/ui'
 
+const ACCENT = '#7E8896'
+const ACCENT_HOVER = '#9BA3AE'
+
+const buttonStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '12px',
+  borderRadius: '8px',
+  backgroundColor: ACCENT,
+  color: '#12161B',
+  border: 'none',
+  cursor: 'pointer',
+  fontWeight: 600,
+  fontSize: '14px',
+  transition: 'background-color 0.2s ease',
+}
+
 /** Przycisk otwierający wizualny edytor strony w nowej karcie */
 export const OpenVisualEditorButton: React.FC = () => {
   const { id } = useDocumentInfo()
@@ -17,23 +33,12 @@ export const OpenVisualEditorButton: React.FC = () => {
     <button
       onClick={handleClick}
       type="button"
-      style={{
-        width: '100%',
-        padding: '12px',
-        borderRadius: '8px',
-        backgroundColor: '#7E8896',
-        color: '#12161B',
-        border: 'none',
-        cursor: 'pointer',
-        fontWeight: 600,
-        fontSize: '14px',
-        transition: 'background-color 0.2s ease',
-      }}
+      style={buttonStyle}
       onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = '#9BA3AE'
+        e.currentTarget.style.backgroundColor = ACCENT_HOVER
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = '#7E8896'
+        e.currentTarget.style.backgroundColor = ACCENT
       }}
     >
       🎨 Otwórz edytor wizualny
