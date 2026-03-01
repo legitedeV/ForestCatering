@@ -16,6 +16,15 @@ function getBlockIndex(el: Element): number | undefined {
   return match ? parseInt(match[1]) : undefined
 }
 
+/** Safely describe an element for display (tag + attributes + text snippet) */
+function describeElement(el: Element): string {
+  const tag = el.tagName.toLowerCase()
+  const id = el.getAttribute('id') ? `#${el.getAttribute('id')}` : ''
+  const cls = el.className ? `.${String(el.className).split(' ').slice(0, 2).join('.')}` : ''
+  const text = el.textContent?.trim().slice(0, 30) ?? ''
+  return `<${tag}${id}${cls}>${text ? ` "${text}"` : ''}`.slice(0, 100)
+}
+
 export function runA11yAudit(doc: Document): A11yIssue[] {
   const issues: A11yIssue[] = []
 
@@ -25,7 +34,7 @@ export function runA11yAudit(doc: Document): A11yIssue[] {
       severity: 'error',
       rule: 'img-alt',
       message: 'Obraz bez atrybutu alt',
-      element: el.outerHTML.slice(0, 100),
+      element: describeElement(el),
       blockIndex: getBlockIndex(el),
     })
   })
@@ -37,7 +46,7 @@ export function runA11yAudit(doc: Document): A11yIssue[] {
         severity: 'error',
         rule: 'link-text',
         message: 'Link bez tekstu lub aria-label',
-        element: el.outerHTML.slice(0, 100),
+        element: describeElement(el),
         blockIndex: getBlockIndex(el),
       })
     }
@@ -50,7 +59,7 @@ export function runA11yAudit(doc: Document): A11yIssue[] {
         severity: 'error',
         rule: 'button-text',
         message: 'Przycisk bez tekstu lub aria-label',
-        element: el.outerHTML.slice(0, 100),
+        element: describeElement(el),
         blockIndex: getBlockIndex(el),
       })
     }
@@ -68,7 +77,7 @@ export function runA11yAudit(doc: Document): A11yIssue[] {
         severity: 'error',
         rule: 'input-label',
         message: 'Pole formularza bez labela',
-        element: el.outerHTML.slice(0, 80),
+        element: describeElement(el),
         blockIndex: getBlockIndex(el),
       })
     }
@@ -105,7 +114,7 @@ export function runA11yAudit(doc: Document): A11yIssue[] {
         severity: 'warning',
         rule: 'tabindex',
         message: 'tabindex > 0 nie jest zalecany',
-        element: el.outerHTML.slice(0, 80),
+        element: describeElement(el),
         blockIndex: getBlockIndex(el),
       })
     }
@@ -128,7 +137,7 @@ export function runA11yAudit(doc: Document): A11yIssue[] {
         severity: 'warning',
         rule: 'motion-duration',
         message: `Animacja szybsza niż 800ms (${cs.animationDuration}) — może być agresywna`,
-        element: el.className.slice(0, 60),
+        element: describeElement(el),
         blockIndex: getBlockIndex(el),
       })
     }
