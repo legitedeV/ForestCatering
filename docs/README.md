@@ -177,3 +177,5 @@ Renderer znajduje się w `apps/web/src/components/blog/RichTextRenderer.tsx` i o
    - "Zapisz draft" saves changes (verify updated content in Payload admin)
    - Unsaved changes warning on page leave (browser beforeunload)
    - Click block in iframe preview → selects it in sidebar
+   - Keyboard shortcuts: Ctrl+S saves, Delete removes selected block (with confirm), Ctrl+D duplicates selected block
+   - Shortcuts are suppressed when typing in input fields (except Ctrl+S)

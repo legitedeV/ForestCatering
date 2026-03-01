@@ -23,7 +23,7 @@
 - [ ] Nested array editing (np. pricing package → features[])
 - [ ] Media picker inline w sidebar (wybór obrazu z kolekcji Media bez wychodzenia do Payload)
 - [ ] Edycja `blockName` per-block w sidebar
-- [ ] Keyboard shortcuts: Ctrl+S (save), Delete (remove block), Ctrl+D (duplicate)
+- [x] Keyboard shortcuts: Ctrl+S (save), Delete (remove block), Ctrl+D (duplicate)
 
 #### Phase 2 — Visual precision
 - [ ] Grid system overlay (konfigurowalne: 12/16 kolumn, snap-to-grid)
