@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { usePageEditor } from '@/lib/page-editor-store'
 import { TEMPLATES, DEFAULT_CSS_VARIABLES } from '@/lib/template-definitions'
 
@@ -246,16 +246,20 @@ function CssOverlayEditor() {
   const currentOverlay = selectedCssLayer === 'globals' ? globalCssOverlay : layoutCssOverlay
   const setCurrentOverlay = selectedCssLayer === 'globals' ? setGlobalCssOverlay : setLayoutCssOverlay
 
-  const [debounceTimer, setDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null)
+  const [localValue, setLocalValue] = useState(currentOverlay)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Sync local value when store changes externally (e.g. page load, layer switch)
+  useEffect(() => {
+    setLocalValue(currentOverlay)
+  }, [currentOverlay])
 
   const handleChange = (value: string) => {
-    if (debounceTimer) clearTimeout(debounceTimer)
-    const timer = setTimeout(() => {
+    setLocalValue(value)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
       setCurrentOverlay(value)
     }, 500)
-    setDebounceTimer(timer)
-    // Also update immediately for display
-    setCurrentOverlay(value)
   }
 
   const handleReset = () => {
@@ -299,7 +303,7 @@ function CssOverlayEditor() {
 
         {/* CSS Textarea */}
         <textarea
-          value={currentOverlay}
+          value={localValue}
           onChange={(e) => handleChange(e.target.value)}
           placeholder={selectedCssLayer === 'globals'
             ? `/* Global CSS overlay */\nh1 { text-shadow: 0 0 20px rgba(212,168,83,0.5); }`

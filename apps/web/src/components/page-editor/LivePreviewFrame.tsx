@@ -188,8 +188,8 @@ export function LivePreviewFrame() {
     const timer = setTimeout(() => {
       postToAllIframes({
         type: 'editor:css-overlays-updated',
-        globalCssOverlay: usePageEditor.getState().globalCssOverlay,
-        layoutCssOverlay: usePageEditor.getState().layoutCssOverlay,
+        globalCssOverlay,
+        layoutCssOverlay,
       })
     }, 200)
     return () => clearTimeout(timer)

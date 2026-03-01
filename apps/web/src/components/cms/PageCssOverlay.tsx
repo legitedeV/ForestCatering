@@ -1,5 +1,14 @@
 'use client'
 
+/** Sanitize CSS to prevent script injection */
+function sanitizeCss(css: string): string {
+  return css
+    .replace(/<\/?script[^>]*>/gi, '')
+    .replace(/javascript\s*:/gi, '')
+    .replace(/expression\s*\(/gi, '')
+    .replace(/@import\s+url\s*\(\s*['"]?\s*javascript/gi, '')
+}
+
 export function PageCssOverlay({
   globalCssOverlay,
   layoutCssOverlay,
@@ -13,7 +22,7 @@ export function PageCssOverlay({
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: `${globalCssOverlay || ''}\n${layoutCssOverlay || ''}`,
+        __html: sanitizeCss(`${globalCssOverlay || ''}\n${layoutCssOverlay || ''}`),
       }}
     />
   )
