@@ -64,10 +64,8 @@ export function FieldMediaPicker({
       return
     }
     // Fetch all to find the selected one
-    fetchMedia('').then(() => {
-      // will be resolved on next render via docs state
-    })
-  }, [value, fetchMedia]) // eslint-disable-line react-hooks/exhaustive-deps
+    void fetchMedia('')
+  }, [value, docs, fetchMedia])
 
   // Resolve selected from docs when docs change
   useEffect(() => {
