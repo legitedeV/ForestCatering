@@ -1,9 +1,50 @@
 'use client'
 
-import { useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { usePageEditor } from '@/lib/page-editor-store'
 import { getBlockMeta } from '@/lib/block-metadata'
 import type { PageSection } from '@/components/cms/types'
+
+// ────────────────────────────────────────────────────────
+// Hook: optimistic local state z debounced commit
+// ────────────────────────────────────────────────────────
+
+function useLocalField<T>(storeValue: T, commitFn: (v: T) => void, delay = 400) {
+  const [localValue, setLocalValue] = useState(storeValue)
+  const commitRef = useRef(commitFn)
+  commitRef.current = commitFn
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+
+  // Sync z zewnątrz (np. undo, load)
+  useEffect(() => {
+    setLocalValue(storeValue)
+  }, [storeValue])
+
+  const handleChange = useCallback(
+    (newVal: T) => {
+      setLocalValue(newVal)
+      if (timerRef.current) clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(() => {
+        commitRef.current(newVal)
+      }, delay)
+    },
+    [delay],
+  )
+
+  const localRef = useRef(storeValue)
+  localRef.current = localValue
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+        commitRef.current(localRef.current)
+      }
+    }
+  }, [])
+
+  return [localValue, handleChange] as const
+}
 
 // ────────────────────────────────────────────────────────
 // Pomocnicze komponenty pól
@@ -16,21 +57,22 @@ const labelClasses = 'block text-xs font-medium uppercase tracking-wider text-fo
 function FieldText({
   label,
   value,
-  onChange,
+  onCommit,
   type = 'text',
 }: {
   label: string
   value: string
-  onChange: (v: string) => void
+  onCommit: (v: string) => void
   type?: string
 }) {
+  const [local, setLocal] = useLocalField(value ?? '', onCommit)
   return (
     <label className="block">
       <span className={labelClasses}>{label}</span>
       <input
         type={type}
-        value={value ?? ''}
-        onChange={(e) => onChange(e.target.value)}
+        value={local}
+        onChange={(e) => setLocal(e.target.value)}
         className={inputClasses}
       />
     </label>
@@ -40,19 +82,20 @@ function FieldText({
 function FieldTextarea({
   label,
   value,
-  onChange,
+  onCommit,
 }: {
   label: string
   value: string
-  onChange: (v: string) => void
+  onCommit: (v: string) => void
 }) {
+  const [local, setLocal] = useLocalField(value ?? '', onCommit)
   return (
     <label className="block">
       <span className={labelClasses}>{label}</span>
       <textarea
         rows={3}
-        value={value ?? ''}
-        onChange={(e) => onChange(e.target.value)}
+        value={local}
+        onChange={(e) => setLocal(e.target.value)}
         className={inputClasses + ' resize-y'}
       />
     </label>
@@ -62,19 +105,20 @@ function FieldTextarea({
 function FieldNumber({
   label,
   value,
-  onChange,
+  onCommit,
 }: {
   label: string
   value: number
-  onChange: (v: number) => void
+  onCommit: (v: number) => void
 }) {
+  const [local, setLocal] = useLocalField(value ?? 0, onCommit)
   return (
     <label className="block">
       <span className={labelClasses}>{label}</span>
       <input
         type="number"
-        value={value ?? 0}
-        onChange={(e) => onChange(Number(e.target.value))}
+        value={local}
+        onChange={(e) => setLocal(Number(e.target.value))}
         className={inputClasses}
       />
     </label>
@@ -169,29 +213,6 @@ export function BlockFieldEditor() {
   const updateBlockField = usePageEditor((s) => s.updateBlockField)
   const pageId = usePageEditor((s) => s.pageId)
 
-  // Debounce z useRef + setTimeout
-  const timersRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
-
-  // Czyszczenie timerów przy odmontowaniu
-  useEffect(() => {
-    const timers = timersRef.current
-    return () => {
-      Object.values(timers).forEach(clearTimeout)
-    }
-  }, [])
-
-  const debouncedUpdate = useCallback(
-    (index: number, fieldPath: string, value: unknown) => {
-      const key = `${index}:${fieldPath}`
-      if (timersRef.current[key]) clearTimeout(timersRef.current[key])
-      timersRef.current[key] = setTimeout(() => {
-        updateBlockField(index, fieldPath, value)
-        delete timersRef.current[key]
-      }, 300)
-    },
-    [updateBlockField],
-  )
-
   if (selectedBlockIndex === null || !sections[selectedBlockIndex]) {
     return (
       <div className="flex flex-col items-center justify-center p-8 text-center">
@@ -210,8 +231,8 @@ export function BlockFieldEditor() {
   const vNum = (field: string) => (typeof block[field] === 'number' ? (block[field] as number) : 0)
   const vBool = (field: string) => !!(block[field] as boolean)
 
-  // Skrót do tworzenia onChange z debounce
-  const onChange = (field: string) => (val: unknown) => debouncedUpdate(idx, field, val)
+  // Skrót do tworzenia commit callback
+  const onCommit = (field: string) => (val: unknown) => updateBlockField(idx, field, val)
 
   return (
     <div className="space-y-4 p-3">
@@ -228,15 +249,15 @@ export function BlockFieldEditor() {
       <div className="space-y-3">
         {block.blockType === 'hero' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
-            <FieldTextarea label="Podnagłówek" value={v('subheading')} onChange={onChange('subheading')} />
-            <FieldText label="Tekst CTA" value={v('ctaText')} onChange={onChange('ctaText')} />
-            <FieldText label="Link CTA" value={v('ctaLink')} onChange={onChange('ctaLink')} />
-            <FieldText label="Badge" value={v('badge')} onChange={onChange('badge')} />
-            <FieldText label="Drugi CTA tekst" value={v('secondaryCtaText')} onChange={onChange('secondaryCtaText')} />
-            <FieldText label="Drugi CTA link" value={v('secondaryCtaLink')} onChange={onChange('secondaryCtaLink')} />
-            <FieldToggle label="Pełna wysokość" checked={vBool('fullHeight')} onChange={onChange('fullHeight')} />
-            <FieldToggle label="Wskaźnik przewijania" checked={vBool('showScrollIndicator')} onChange={onChange('showScrollIndicator')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
+            <FieldTextarea label="Podnagłówek" value={v('subheading')} onCommit={onCommit('subheading')} />
+            <FieldText label="Tekst CTA" value={v('ctaText')} onCommit={onCommit('ctaText')} />
+            <FieldText label="Link CTA" value={v('ctaLink')} onCommit={onCommit('ctaLink')} />
+            <FieldText label="Badge" value={v('badge')} onCommit={onCommit('badge')} />
+            <FieldText label="Drugi CTA tekst" value={v('secondaryCtaText')} onCommit={onCommit('secondaryCtaText')} />
+            <FieldText label="Drugi CTA link" value={v('secondaryCtaLink')} onCommit={onCommit('secondaryCtaLink')} />
+            <FieldToggle label="Pełna wysokość" checked={vBool('fullHeight')} onChange={onCommit('fullHeight')} />
+            <FieldToggle label="Wskaźnik przewijania" checked={vBool('showScrollIndicator')} onChange={onCommit('showScrollIndicator')} />
           </>
         )}
 
@@ -250,17 +271,17 @@ export function BlockFieldEditor() {
 
         {block.blockType === 'services' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
             <PayloadAdminLink label="Edytuj usługi (items) w Payload Admin" pageId={pageId} />
           </>
         )}
 
         {block.blockType === 'cta' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
-            <FieldTextarea label="Tekst" value={v('text')} onChange={onChange('text')} />
-            <FieldText label="Tekst przycisku" value={v('buttonText')} onChange={onChange('buttonText')} />
-            <FieldText label="Link przycisku" value={v('buttonLink')} onChange={onChange('buttonLink')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
+            <FieldTextarea label="Tekst" value={v('text')} onCommit={onCommit('text')} />
+            <FieldText label="Tekst przycisku" value={v('buttonText')} onCommit={onCommit('buttonText')} />
+            <FieldText label="Link przycisku" value={v('buttonLink')} onCommit={onCommit('buttonLink')} />
           </>
         )}
 
@@ -270,43 +291,43 @@ export function BlockFieldEditor() {
 
         {block.blockType === 'testimonials' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
             <PayloadAdminLink label="Edytuj opinie (items) w Payload Admin" pageId={pageId} />
           </>
         )}
 
         {block.blockType === 'pricing' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
-            <FieldTextarea label="Podnagłówek" value={v('subheading')} onChange={onChange('subheading')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
+            <FieldTextarea label="Podnagłówek" value={v('subheading')} onCommit={onCommit('subheading')} />
             <PayloadAdminLink label="Edytuj pakiety w Payload Admin" pageId={pageId} />
           </>
         )}
 
         {block.blockType === 'steps' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
             <PayloadAdminLink label="Edytuj kroki w Payload Admin" pageId={pageId} />
           </>
         )}
 
         {block.blockType === 'contactForm' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
-            <FieldTextarea label="Podnagłówek" value={v('subheading')} onChange={onChange('subheading')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
+            <FieldTextarea label="Podnagłówek" value={v('subheading')} onCommit={onCommit('subheading')} />
           </>
         )}
 
         {block.blockType === 'legalText' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
-            <FieldText label="Data obowiązywania" value={v('effectiveDate')} onChange={onChange('effectiveDate')} type="date" />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
+            <FieldText label="Data obowiązywania" value={v('effectiveDate')} onCommit={onCommit('effectiveDate')} type="date" />
           </>
         )}
 
         {block.blockType === 'partners' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
             <FieldSelect
               label="Wariant"
               value={v('variant') || 'grid'}
@@ -314,49 +335,49 @@ export function BlockFieldEditor() {
                 { value: 'grid', label: 'Siatka' },
                 { value: 'carousel', label: 'Karuzela' },
               ]}
-              onChange={onChange('variant')}
+              onChange={onCommit('variant')}
             />
-            <FieldToggle label="Szarość (grayscale)" checked={vBool('grayscale')} onChange={onChange('grayscale')} />
+            <FieldToggle label="Szarość (grayscale)" checked={vBool('grayscale')} onChange={onCommit('grayscale')} />
           </>
         )}
 
         {block.blockType === 'team' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
           </>
         )}
 
         {block.blockType === 'mapArea' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
-            <FieldTextarea label="Opis" value={v('description')} onChange={onChange('description')} />
-            <FieldText label="URL mapy (embed)" value={v('embedUrl')} onChange={onChange('embedUrl')} />
-            <FieldText label="Notatka" value={v('note')} onChange={onChange('note')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
+            <FieldTextarea label="Opis" value={v('description')} onCommit={onCommit('description')} />
+            <FieldText label="URL mapy (embed)" value={v('embedUrl')} onCommit={onCommit('embedUrl')} />
+            <FieldText label="Notatka" value={v('note')} onCommit={onCommit('note')} />
           </>
         )}
 
         {block.blockType === 'offerCards' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
             <PayloadAdminLink label="Edytuj karty w Payload Admin" pageId={pageId} />
           </>
         )}
 
         {block.blockType === 'featuredProducts' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
-            <FieldNumber label="Limit produktów" value={vNum('limit')} onChange={onChange('limit')} />
-            <FieldText label="Tekst linku" value={v('linkText')} onChange={onChange('linkText')} />
-            <FieldText label="URL linku" value={v('linkUrl')} onChange={onChange('linkUrl')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
+            <FieldNumber label="Limit produktów" value={vNum('limit')} onCommit={onCommit('limit')} />
+            <FieldText label="Tekst linku" value={v('linkText')} onCommit={onCommit('linkText')} />
+            <FieldText label="URL linku" value={v('linkUrl')} onCommit={onCommit('linkUrl')} />
           </>
         )}
 
         {block.blockType === 'about' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
-            <FieldText label="Badge" value={v('badge')} onChange={onChange('badge')} />
-            <FieldText label="Tekst CTA" value={v('ctaText')} onChange={onChange('ctaText')} />
-            <FieldText label="Link CTA" value={v('ctaLink')} onChange={onChange('ctaLink')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
+            <FieldText label="Badge" value={v('badge')} onCommit={onCommit('badge')} />
+            <FieldText label="Tekst CTA" value={v('ctaText')} onCommit={onCommit('ctaText')} />
+            <FieldText label="Link CTA" value={v('ctaLink')} onCommit={onCommit('ctaLink')} />
           </>
         )}
 
@@ -366,7 +387,7 @@ export function BlockFieldEditor() {
 
         {block.blockType === 'galleryFull' && (
           <>
-            <FieldText label="Nagłówek" value={v('heading')} onChange={onChange('heading')} />
+            <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
             <PayloadAdminLink label="Edytuj pozycje galerii w Payload Admin" pageId={pageId} />
           </>
         )}
