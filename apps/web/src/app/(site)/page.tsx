@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import { BlockRenderer } from '@/components/cms/BlockRenderer'
 import type { SiteSetting } from '@/payload-types'
 import { getMediaUrl } from '@/lib/media'
@@ -38,7 +39,7 @@ export default async function HomePage() {
   const page = await getPageByPath(HOME_PATH)
 
   if (!page?.sections || page.sections.length === 0) {
-    return null
+    notFound()
   }
 
   return <BlockRenderer sections={page.sections} />
