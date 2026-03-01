@@ -1,10 +1,9 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { getPayload } from '@/lib/payload-client'
-import { formatPrice } from '@/lib/format'
 import { getMediaUrl } from '@/lib/media'
 import type { PageSection } from '../types'
+import { FeaturedProductsScroll } from './FeaturedProductsScroll'
 
 type FeaturedProductsProps = Extract<PageSection, { blockType: 'featuredProducts' }>
 
@@ -37,6 +36,12 @@ export async function FeaturedProductsBlock({ heading, limit, linkText, linkUrl 
 
   if (featuredProducts.length === 0) return null
 
+  const cards = featuredProducts.map((product) => {
+    const firstImg = product.images?.[0]?.image
+    const imgUrl = getMediaUrl(firstImg) || product.imageUrl || undefined
+    return { id: product.id, name: product.name, slug: product.slug, price: product.price, compareAtPrice: product.compareAtPrice, shortDescription: product.shortDescription, imgUrl }
+  })
+
   return (
     <section className="bg-forest-900 py-20">
       <div className="mx-auto max-w-7xl px-4">
@@ -47,54 +52,18 @@ export async function FeaturedProductsBlock({ heading, limit, linkText, linkUrl 
             </h2>
           </AnimatedSection>
         )}
-        <div className="mt-12 grid grid-flow-col auto-cols-[280px] gap-6 overflow-x-auto pb-4 snap-x">
-          {featuredProducts.map((product) => (
-            <Link
-              key={product.id}
-              href={`/sklep/${product.slug}`}
-              className="group flex h-full w-[280px] flex-col snap-start overflow-hidden rounded-xl border border-forest-700 bg-forest-800 transition hover:-translate-y-0.5 hover:border-accent/30 hover:shadow-lg"
-            >
-              {(() => {
-                const firstImg = product.images?.[0]?.image
-                const imgUrl = getMediaUrl(firstImg) || product.imageUrl || undefined
-                return imgUrl ? (
-                  <div className="relative aspect-[5/4] overflow-hidden">
-                    <Image
-                      src={imgUrl}
-                      alt={product.name}
-                      fill
-                      className="object-cover transition group-hover:scale-105"
-                      sizes="280px"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex aspect-[5/4] items-center justify-center bg-gradient-to-br from-forest-700 to-forest-800 text-4xl">
-                    🍽️
-                  </div>
-                )
-              })()}
-              <div className="flex h-full flex-col p-4">
-                <h3 className="font-semibold text-cream">{product.name}</h3>
-                {product.shortDescription && (
-                  <p className="mt-1 text-sm text-forest-300 line-clamp-1">{product.shortDescription}</p>
-                )}
-                <div className="mt-auto flex items-center gap-2 pt-3">
-                  <span className="text-lg font-bold text-accent">{formatPrice(product.price)}</span>
-                  {product.compareAtPrice && (
-                    <span className="text-sm text-forest-400 line-through">{formatPrice(product.compareAtPrice)}</span>
-                  )}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-        {linkText && linkUrl && (
-          <div className="mt-8 text-center">
+        <FeaturedProductsScroll cards={cards} />
+        <div className="mt-8 text-center">
+          {linkText && linkUrl ? (
             <Link href={linkUrl} className="text-sm font-medium text-accent transition hover:text-accent-light">
               {linkText}
             </Link>
-          </div>
-        )}
+          ) : (
+            <Link href="/sklep" className="text-sm font-medium text-accent-warm transition hover:text-accent-warm-light">
+              Zobacz wszystkie →
+            </Link>
+          )}
+        </div>
       </div>
     </section>
   )

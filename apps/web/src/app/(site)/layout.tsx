@@ -38,6 +38,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         links={mapHeaderLinks(navigation)}
         companyName={resolveCompanyName(settings)}
         contactPhone={settings?.phone}
+        email={settings?.email}
+        socialFacebook={settings?.socialLinks?.facebook}
+        socialInstagram={settings?.socialLinks?.instagram}
       />
       <CartDrawer />
       <main className="min-h-screen">{children}</main>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { motion, useScroll, useTransform } from 'framer-motion'
@@ -12,15 +12,19 @@ interface NavbarProps {
   links: NavLinkItem[]
   companyName: string
   contactPhone?: string | null
+  email?: string | null
+  socialFacebook?: string | null
+  socialInstagram?: string | null
 }
 
-export function Navbar({ links, companyName, contactPhone }: NavbarProps) {
+export function Navbar({ links, companyName, contactPhone, email, socialFacebook, socialInstagram }: NavbarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const isHome = pathname === '/'
   const { toggleDrawer } = useCart()
   const itemCount = useCartItemCount()
+  const prevItemCount = useRef(itemCount)
   const { scrollY } = useScroll()
   const bgOpacity = useTransform(scrollY, [0, 100], [isHome ? 0 : 1, 1])
   const borderOpacity = useTransform(scrollY, [0, 100], [isHome ? 0 : 0.3, 0.3])
@@ -32,13 +36,17 @@ export function Navbar({ links, companyName, contactPhone }: NavbarProps) {
     setMounted(true)
   }, [])
 
+  useEffect(() => {
+    prevItemCount.current = itemCount
+  }, [itemCount])
+
   return (
     <motion.header
       className="fixed top-0 right-0 left-0 z-50 border-b border-transparent bg-forest-950/95 backdrop-blur-md"
       style={mounted ? { backgroundColor, borderBottomColor, backdropFilter } : undefined}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-        <Link href="/" className="text-xl font-bold text-cream">
+        <Link href="/" className="text-xl font-bold text-cream transition hover:text-accent-warm">
           🌲 {companyName}
         </Link>
 
@@ -47,13 +55,13 @@ export function Navbar({ links, companyName, contactPhone }: NavbarProps) {
             <Link
               key={link.href}
               href={link.href}
-              className="relative text-sm font-medium text-cream/80 transition hover:text-accent"
+              className="relative text-sm font-medium text-cream/80 transition hover:text-accent-warm"
             >
               {link.label}
               {pathname.startsWith(link.href) && (
                 <motion.span
                   layoutId="nav-underline"
-                  className="absolute -bottom-1 left-0 h-0.5 w-full bg-accent"
+                  className="absolute -bottom-1 left-0 h-[2px] w-full bg-accent-warm"
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                 />
               )}
@@ -62,6 +70,14 @@ export function Navbar({ links, companyName, contactPhone }: NavbarProps) {
         </nav>
 
         <div className="flex items-center gap-4">
+          {contactPhone && (
+            <a
+              href={`tel:${contactPhone.replace(/\s+/g, '')}`}
+              className="hidden items-center gap-1 text-sm text-forest-300 transition hover:text-accent-warm xl:flex"
+            >
+              📞 {contactPhone}
+            </a>
+          )}
           <button
             onClick={toggleDrawer}
             className="relative text-cream/80 transition hover:text-cream"
@@ -71,9 +87,14 @@ export function Navbar({ links, companyName, contactPhone }: NavbarProps) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
             </svg>
             {mounted && itemCount > 0 && (
-              <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-xs font-bold text-forest-950">
+              <motion.span
+                key={itemCount}
+                className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-accent-warm text-xs font-bold text-forest-950"
+                animate={itemCount > prevItemCount.current ? { scale: [1, 1.3, 1] } : undefined}
+                transition={{ duration: 0.3 }}
+              >
                 {itemCount}
-              </span>
+              </motion.span>
             )}
           </button>
           <button
@@ -88,7 +109,15 @@ export function Navbar({ links, companyName, contactPhone }: NavbarProps) {
         </div>
       </div>
 
-      <MobileMenu open={mobileOpen} onClose={() => setMobileOpen(false)} links={links} contactPhone={contactPhone} />
+      <MobileMenu
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        links={links}
+        contactPhone={contactPhone}
+        email={email}
+        socialFacebook={socialFacebook}
+        socialInstagram={socialInstagram}
+      />
     </motion.header>
   )
 }

@@ -8,7 +8,7 @@ export function ServicesBlock({ heading, items }: ServicesProps) {
   if (!items || items.length === 0) return null
 
   return (
-    <section className="bg-forest-950 py-20">
+    <section className="bg-orbs bg-forest-950 py-20">
       <div className="mx-auto max-w-7xl px-4">
         {heading && (
           <AnimatedSection>
@@ -19,10 +19,10 @@ export function ServicesBlock({ heading, items }: ServicesProps) {
           </AnimatedSection>
         )}
         <AnimatedSection stagger>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className={`mt-12 ${items.length === 3 ? 'bento-grid' : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4'}`}>
             {items.map((svc, i) => (
               <AnimatedItem key={svc.id ?? i}>
-                <div className="group rounded-xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-xl transition hover:-translate-y-1 hover:border-accent hover:shadow-lg hover:shadow-accent/10">
+                <div className="warm-glow group rounded-xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-xl transition hover:-translate-y-1 hover:border-accent hover:shadow-lg hover:shadow-accent/10">
                   <span className="text-5xl">{svc.emoji}</span>
                   <h3 className="mt-4 text-lg font-semibold text-cream">{svc.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-forest-200">{svc.description}</p>
