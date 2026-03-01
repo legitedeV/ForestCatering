@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BlockRenderer } from '@/components/cms/BlockRenderer'
+import { BlockRendererClient } from '@/components/cms/BlockRendererClient'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import { getMediaUrl } from '@/lib/media'
 import { getPayload } from '@/lib/payload-client'
@@ -71,7 +72,9 @@ export default async function CMSPage({ params }: Props) {
       <div className="mx-auto max-w-7xl px-4">
         <Breadcrumbs items={breadcrumbItems} />
       </div>
-      <BlockRenderer sections={page.sections} />
+      <BlockRendererClient>
+        <BlockRenderer sections={page.sections} />
+      </BlockRendererClient>
     </div>
   )
 }

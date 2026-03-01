@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 export const StatsBlock: Block = {
   slug: 'stats',
@@ -16,6 +17,6 @@ export const StatsBlock: Block = {
         { name: 'label', type: 'text', required: true, label: 'Opis' },
       ],
     },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

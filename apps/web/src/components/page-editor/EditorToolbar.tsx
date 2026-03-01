@@ -2,6 +2,7 @@
 
 import { usePageEditor } from '@/lib/page-editor-store'
 import { HistoryPanel } from './HistoryPanel'
+import { ShortcutsPanel } from './ShortcutsPanel'
 
 // Ikony SVG breakpointów
 function MonitorIcon({ className }: { className?: string }) {
@@ -126,6 +127,8 @@ export function EditorToolbar() {
   const toggleComments = usePageEditor((s) => s.toggleComments)
   const blockComments = usePageEditor((s) => s.blockComments)
   const unresolvedCount = blockComments.filter((c) => !c.resolved).length
+  const shortcutsOpen = usePageEditor((s) => s.shortcutsOpen)
+  const toggleShortcuts = usePageEditor((s) => s.toggleShortcuts)
 
   return (
     <header
@@ -300,6 +303,19 @@ export function EditorToolbar() {
             Niezapisane zmiany
           </span>
         )}
+        {/* Shortcuts button */}
+        <button
+          onClick={toggleShortcuts}
+          className={`rounded-md px-2 py-1.5 text-xs transition ${
+            shortcutsOpen
+              ? 'bg-accent/20 text-accent'
+              : 'bg-forest-900 text-forest-400 hover:text-cream'
+          }`}
+          aria-label="Skróty klawiszowe (?)"
+          title="Skróty klawiszowe (?)"
+        >
+          ⌨️
+        </button>
         <button
           onClick={() => void savePage()}
           disabled={isSaving || !isDirty}
@@ -320,6 +336,7 @@ export function EditorToolbar() {
           Podgląd
         </a>
       </div>
+      <ShortcutsPanel />
     </header>
   )
 }

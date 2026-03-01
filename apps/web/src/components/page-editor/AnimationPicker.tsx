@@ -40,6 +40,8 @@ export function AnimationPicker({ blockIndex }: AnimationPickerProps) {
   const currentAnimation = (block?.animation as string) ?? ''
   const currentDelay = (block?.animationDelay as number) ?? 0
   const currentDuration = (block?.animationDuration as number) ?? 0
+  const currentEasing = (block?.animationEasing as string) ?? ''
+  const currentIterations = (block?.animationIterations as string) ?? ''
 
   const [filterCategory, setFilterCategory] = useState<string>('all')
 
@@ -60,6 +62,20 @@ export function AnimationPicker({ blockIndex }: AnimationPickerProps) {
   const handleDuration = useCallback(
     (val: number) => {
       updateBlockField(blockIndex, 'animationDuration', val)
+    },
+    [blockIndex, updateBlockField],
+  )
+
+  const handleEasing = useCallback(
+    (val: string) => {
+      updateBlockField(blockIndex, 'animationEasing', val)
+    },
+    [blockIndex, updateBlockField],
+  )
+
+  const handleIterations = useCallback(
+    (val: string) => {
+      updateBlockField(blockIndex, 'animationIterations', val)
     },
     [blockIndex, updateBlockField],
   )
@@ -148,33 +164,69 @@ export function AnimationPicker({ blockIndex }: AnimationPickerProps) {
 
       {/* Delay & Duration */}
       {currentAnimation && (
-        <div className="flex gap-3">
-          <label className="flex-1">
-            <span className="mb-0.5 block text-[10px] text-forest-400">Opóźnienie (ms)</span>
-            <input
-              type="number"
-              min={0}
-              max={1000}
-              step={50}
-              value={currentDelay}
-              onChange={(e) => handleDelay(Number(e.target.value))}
-              className="w-full rounded-md border border-forest-700 bg-forest-900 px-2 py-1 text-xs text-cream focus:border-accent-warm focus:outline-none"
-              aria-label="Opóźnienie animacji w milisekundach"
-            />
-          </label>
-          <label className="flex-1">
-            <span className="mb-0.5 block text-[10px] text-forest-400">Czas trwania (ms)</span>
-            <input
-              type="number"
-              min={300}
-              max={2000}
-              step={100}
-              value={currentDuration}
-              onChange={(e) => handleDuration(Number(e.target.value))}
-              className="w-full rounded-md border border-forest-700 bg-forest-900 px-2 py-1 text-xs text-cream focus:border-accent-warm focus:outline-none"
-              aria-label="Czas trwania animacji w milisekundach"
-            />
-          </label>
+        <div className="space-y-2">
+          <div className="flex gap-3">
+            <label className="flex-1">
+              <span className="mb-0.5 block text-[10px] text-forest-400">Opóźnienie (ms)</span>
+              <input
+                type="number"
+                min={0}
+                max={5000}
+                step={50}
+                value={currentDelay}
+                onChange={(e) => handleDelay(Number(e.target.value))}
+                className="w-full rounded-md border border-forest-700 bg-forest-900 px-2 py-1 text-xs text-cream focus:border-accent-warm focus:outline-none"
+                aria-label="Opóźnienie animacji w milisekundach"
+              />
+            </label>
+            <label className="flex-1">
+              <span className="mb-0.5 block text-[10px] text-forest-400">Czas trwania (ms)</span>
+              <input
+                type="number"
+                min={200}
+                max={30000}
+                step={100}
+                value={currentDuration}
+                onChange={(e) => handleDuration(Number(e.target.value))}
+                className="w-full rounded-md border border-forest-700 bg-forest-900 px-2 py-1 text-xs text-cream focus:border-accent-warm focus:outline-none"
+                aria-label="Czas trwania animacji w milisekundach"
+              />
+            </label>
+          </div>
+          <div className="flex gap-3">
+            <label className="flex-1">
+              <span className="mb-0.5 block text-[10px] text-forest-400">Easing</span>
+              <select
+                value={currentEasing}
+                onChange={(e) => handleEasing(e.target.value)}
+                className="w-full rounded-md border border-forest-700 bg-forest-900 px-2 py-1 text-xs text-cream focus:border-accent-warm focus:outline-none"
+                aria-label="Typ easing animacji"
+              >
+                <option value="">Domyślny</option>
+                <option value="ease-in-out">ease-in-out</option>
+                <option value="linear">linear</option>
+                <option value="ease-in">ease-in</option>
+                <option value="ease-out">ease-out</option>
+                <option value="cubic-bezier(0.34,1.56,0.64,1)">spring (bounce)</option>
+              </select>
+            </label>
+            <label className="flex-1">
+              <span className="mb-0.5 block text-[10px] text-forest-400">Iteracje</span>
+              <select
+                value={currentIterations}
+                onChange={(e) => handleIterations(e.target.value)}
+                className="w-full rounded-md border border-forest-700 bg-forest-900 px-2 py-1 text-xs text-cream focus:border-accent-warm focus:outline-none"
+                aria-label="Liczba iteracji animacji"
+              >
+                <option value="">Domyślne</option>
+                <option value="infinite">infinite</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+              </select>
+            </label>
+          </div>
         </div>
       )}
     </div>

@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 export const StepsBlock: Block = {
   slug: 'steps',
@@ -18,6 +19,6 @@ export const StepsBlock: Block = {
         { name: 'description', type: 'textarea', required: true, label: 'Opis kroku' },
       ],
     },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

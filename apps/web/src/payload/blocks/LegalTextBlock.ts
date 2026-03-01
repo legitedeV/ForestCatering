@@ -1,5 +1,6 @@
 import type { Block } from 'payload'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 export const LegalTextBlock: Block = {
   slug: 'legalText',
@@ -8,6 +9,6 @@ export const LegalTextBlock: Block = {
     { name: 'heading', type: 'text', label: 'Nagłówek' },
     { name: 'effectiveDate', type: 'date', label: 'Data obowiązywania' },
     { name: 'content', type: 'richText', required: true, editor: lexicalEditor({}) },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

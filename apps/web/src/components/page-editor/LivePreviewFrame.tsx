@@ -26,6 +26,7 @@ export function LivePreviewFrame() {
   const spacingInspectorEnabled = usePageEditor((s) => s.spacingInspectorEnabled)
   const blockComments = usePageEditor((s) => s.blockComments)
   const showComments = usePageEditor((s) => s.showComments)
+  const inlineEditEnabled = usePageEditor((s) => s.inlineEditEnabled)
 
   const [isLoaded, setIsLoaded] = useState(false)
   const [scale, setScale] = useState(1)
@@ -136,13 +137,31 @@ export function LivePreviewFrame() {
     )
   }, [showComments, isLoaded])
 
-  // Odbieraj zdarzenia z iframe (kliknięcie bloku)
+  // Wyślij stan inline edit do iframe
+  useEffect(() => {
+    if (!isLoaded) return
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: 'editor:enable-inline-edit', enabled: inlineEditEnabled },
+      '*',
+    )
+  }, [inlineEditEnabled, isLoaded])
+
+  // Odbieraj zdarzenia z iframe (kliknięcie bloku + inline edit)
   useEffect(() => {
     const handler = (event: MessageEvent) => {
       if (event.data?.type === 'preview:block-clicked') {
         const index = event.data.index as number
         selectBlock(index)
         setSidebarTab('settings')
+      }
+
+      if (event.data?.type === 'preview:inline-edit') {
+        const { blockIndex, fieldPath, value } = event.data as {
+          blockIndex: number
+          fieldPath: string
+          value: unknown
+        }
+        usePageEditor.getState().updateBlockField(blockIndex, fieldPath, value)
       }
     }
     window.addEventListener('message', handler)

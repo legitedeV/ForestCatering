@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 export const HeroBlock: Block = {
   slug: 'hero',
@@ -14,6 +15,6 @@ export const HeroBlock: Block = {
     { name: 'secondaryCtaLink', type: 'text', label: 'Link drugiego przycisku' },
     { name: 'showScrollIndicator', type: 'checkbox', defaultValue: true, label: 'Pokaż wskaźnik przewijania' },
     { name: 'fullHeight', type: 'checkbox', defaultValue: false, label: 'Pełna wysokość ekranu' },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

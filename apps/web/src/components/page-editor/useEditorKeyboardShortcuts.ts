@@ -15,6 +15,9 @@ export function useEditorKeyboardShortcuts() {
   const redo = usePageEditor((s) => s.redo)
   const canUndo = usePageEditor((s) => s.canUndo)
   const canRedo = usePageEditor((s) => s.canRedo)
+  const shortcutsOpen = usePageEditor((s) => s.shortcutsOpen)
+  const toggleShortcuts = usePageEditor((s) => s.toggleShortcuts)
+  const selectBlock = usePageEditor((s) => s.selectBlock)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -52,6 +55,25 @@ export function useEditorKeyboardShortcuts() {
       // Shortcuts below only work when not focused in an input
       if (isInputFocused) return
 
+      // ? — otwórz panel skrótów
+      if (e.key === '?') {
+        e.preventDefault()
+        toggleShortcuts()
+        return
+      }
+
+      // Escape — zamknij panel skrótów lub odznacz blok
+      if (e.key === 'Escape') {
+        if (shortcutsOpen) {
+          toggleShortcuts()
+          return
+        }
+        if (selectedBlockIndex !== null) {
+          selectBlock(null)
+        }
+        return
+      }
+
       // Delete — remove selected block (with confirm)
       if (e.key === 'Delete' && selectedBlockIndex !== null) {
         e.preventDefault()
@@ -78,5 +100,5 @@ export function useEditorKeyboardShortcuts() {
 
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [savePage, isDirty, isSaving, selectedBlockIndex, duplicateBlock, removeBlock, toggleGrid, undo, redo, canUndo, canRedo])
+  }, [savePage, isDirty, isSaving, selectedBlockIndex, duplicateBlock, removeBlock, toggleGrid, undo, redo, canUndo, canRedo, shortcutsOpen, toggleShortcuts, selectBlock])
 }

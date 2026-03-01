@@ -237,6 +237,15 @@ interface EditorState {
   conflictDetected: boolean
   serverUpdatedAt: string | null
 
+  // Shortcuts Panel
+  shortcutsOpen: boolean
+
+  // Inline Edit
+  inlineEditEnabled: boolean
+
+  // Batch Selection
+  selectedBlockIndices: number[]
+
   // Akcje — strona
   loadPage: (pageId: number) => Promise<void>
   savePage: () => Promise<void>
@@ -291,6 +300,18 @@ interface EditorState {
   setCssOverride: (variable: string, value: string) => void
   resetCssOverrides: () => void
   setCustomCss: (css: string) => void
+
+  // Akcje — Shortcuts
+  toggleShortcuts: () => void
+
+  // Akcje — Inline Edit
+  toggleInlineEdit: () => void
+
+  // Akcje — Batch selection
+  toggleBlockSelection: (index: number) => void
+  clearBlockSelection: () => void
+  batchDeleteBlocks: () => void
+  batchDuplicateBlocks: () => void
 }
 
 const initialState = {
@@ -325,6 +346,9 @@ const initialState = {
   lastKnownUpdatedAt: null as string | null,
   conflictDetected: false,
   serverUpdatedAt: null as string | null,
+  shortcutsOpen: false,
+  inlineEditEnabled: false,
+  selectedBlockIndices: [] as number[],
 }
 
 export const usePageEditor = create<EditorState>()((set, get) => ({
@@ -810,4 +834,51 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
 
   // Ustaw niestandardowy CSS
   setCustomCss: (css) => set({ customCss: css, isDirty: true }),
+
+  // Shortcuts panel
+  toggleShortcuts: () => set((s) => ({ shortcutsOpen: !s.shortcutsOpen })),
+
+  // Inline edit
+  toggleInlineEdit: () => set((s) => ({ inlineEditEnabled: !s.inlineEditEnabled })),
+
+  // Batch selection
+  toggleBlockSelection: (index) => set((s) => ({
+    selectedBlockIndices: s.selectedBlockIndices.includes(index)
+      ? s.selectedBlockIndices.filter((i) => i !== index)
+      : [...s.selectedBlockIndices, index],
+  })),
+
+  clearBlockSelection: () => set({ selectedBlockIndices: [] }),
+
+  batchDeleteBlocks: () => set((s) => {
+    const sorted = [...s.selectedBlockIndices].sort((a, b) => b - a)
+    const newSections = [...s.sections]
+    for (const idx of sorted) {
+      newSections.splice(idx, 1)
+    }
+    return {
+      sections: newSections,
+      selectedBlockIndices: [],
+      selectedBlockIndex: null,
+      isDirty: true,
+    }
+  }),
+
+  batchDuplicateBlocks: () => set((s) => {
+    const sorted = [...s.selectedBlockIndices].sort((a, b) => a - b)
+    const newSections = [...s.sections]
+    let offset = 0
+    for (const idx of sorted) {
+      const block = newSections[idx + offset]
+      if (!block) continue
+      const copy = { ...JSON.parse(JSON.stringify(block)) as typeof block, id: crypto.randomUUID() }
+      newSections.splice(idx + offset + 1, 0, copy)
+      offset++
+    }
+    return {
+      sections: newSections,
+      selectedBlockIndices: [],
+      isDirty: true,
+    }
+  }),
 }))

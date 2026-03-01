@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 const validateCtaLink = (value: unknown) => {
   if (!value) return true
@@ -44,6 +45,6 @@ export const OfferCardsBlock: Block = {
         { name: 'ctaLink', type: 'text', label: 'Link CTA', validate: validateCtaLink },
       ],
     },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

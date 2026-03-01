@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 export const TestimonialsBlock: Block = {
   slug: 'testimonials',
@@ -18,6 +19,6 @@ export const TestimonialsBlock: Block = {
         { name: 'rating', type: 'number', defaultValue: 5, min: 1, max: 5, label: 'Ocena' },
       ],
     },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BlockRenderer } from '@/components/cms/BlockRenderer'
+import { BlockRendererClient } from '@/components/cms/BlockRendererClient'
 import type { SiteSetting } from '@/payload-types'
 import { getMediaUrl } from '@/lib/media'
 import { getPayload } from '@/lib/payload-client'
@@ -42,5 +43,9 @@ export default async function HomePage() {
     notFound()
   }
 
-  return <BlockRenderer sections={page.sections} />
+  return (
+    <BlockRendererClient>
+      <BlockRenderer sections={page.sections} />
+    </BlockRendererClient>
+  )
 }

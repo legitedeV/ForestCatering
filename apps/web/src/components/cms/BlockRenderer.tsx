@@ -18,6 +18,9 @@ import { PartnersBlock } from './blocks/PartnersBlock'
 import { TeamBlock } from './blocks/TeamBlock'
 import { MapAreaBlock } from './blocks/MapAreaBlock'
 import { OfferCardsBlock } from './blocks/OfferCardsBlock'
+import { ANIMATION_CATALOG } from '@/lib/animation-catalog'
+
+const ANIMATION_MAP = new Map(ANIMATION_CATALOG.map((a) => [a.key, a]))
 
 interface Props {
   sections: PageSection[]
@@ -28,48 +31,79 @@ export function BlockRenderer({ sections }: Props) {
     <>
       {sections.map((block, index) => {
         const key = block.id ?? `block-${index}`
-        switch (block.blockType) {
-          case 'hero':
-            return <HeroBlock key={key} {...block} />
-          case 'stats':
-            return <StatsBlock key={key} {...block} />
-          case 'services':
-            return <ServicesBlock key={key} {...block} />
-          case 'featuredProducts':
-            return <FeaturedProductsBlock key={key} {...block} />
-          case 'about':
-            return <AboutBlock key={key} {...block} />
-          case 'richText':
-            return <RichTextBlock key={key} {...block} />
-          case 'gallery':
-            return <GalleryBlock key={key} {...block} />
-          case 'galleryFull':
-            return <GalleryFullBlock key={key} {...block} />
-          case 'testimonials':
-            return <TestimonialsBlock key={key} {...block} />
-          case 'cta':
-            return <CTABlock key={key} {...block} />
-          case 'faq':
-            return <FAQBlock key={key} {...block} />
-          case 'pricing':
-            return <PricingBlock key={key} {...block} />
-          case 'steps':
-            return <StepsBlock key={key} {...block} />
-          case 'contactForm':
-            return <ContactFormBlock key={key} {...block} />
-          case 'legalText':
-            return <LegalTextBlock key={key} {...block} />
-          case 'partners':
-            return <PartnersBlock key={key} {...block} />
-          case 'team':
-            return <TeamBlock key={key} {...block} />
-          case 'mapArea':
-            return <MapAreaBlock key={key} {...block} />
-          case 'offerCards':
-            return <OfferCardsBlock key={key} {...block} />
-          default:
-            return null
+        const blockData = block as Record<string, unknown>
+        const animKey = (blockData.animation as string) ?? ''
+        const animDef = animKey ? ANIMATION_MAP.get(animKey) : undefined
+        const animClass = animDef?.className ?? ''
+        const duration = (blockData.animationDuration as number) ?? 0
+        const delay = (blockData.animationDelay as number) ?? 0
+        const easing = (blockData.animationEasing as string) ?? ''
+        const iterations = (blockData.animationIterations as string) ?? ''
+
+        const blockEl = (() => {
+          switch (block.blockType) {
+            case 'hero':
+              return <HeroBlock {...block} />
+            case 'stats':
+              return <StatsBlock {...block} />
+            case 'services':
+              return <ServicesBlock {...block} />
+            case 'featuredProducts':
+              return <FeaturedProductsBlock {...block} />
+            case 'about':
+              return <AboutBlock {...block} />
+            case 'richText':
+              return <RichTextBlock {...block} />
+            case 'gallery':
+              return <GalleryBlock {...block} />
+            case 'galleryFull':
+              return <GalleryFullBlock {...block} />
+            case 'testimonials':
+              return <TestimonialsBlock {...block} />
+            case 'cta':
+              return <CTABlock {...block} />
+            case 'faq':
+              return <FAQBlock {...block} />
+            case 'pricing':
+              return <PricingBlock {...block} />
+            case 'steps':
+              return <StepsBlock {...block} />
+            case 'contactForm':
+              return <ContactFormBlock {...block} />
+            case 'legalText':
+              return <LegalTextBlock {...block} />
+            case 'partners':
+              return <PartnersBlock {...block} />
+            case 'team':
+              return <TeamBlock {...block} />
+            case 'mapArea':
+              return <MapAreaBlock {...block} />
+            case 'offerCards':
+              return <OfferCardsBlock {...block} />
+            default:
+              return null
+          }
+        })()
+
+        if (!animClass && !duration && !delay && !easing && !iterations) {
+          return <div key={key} data-block-id={block.id ?? `block-${index}`}>{blockEl}</div>
         }
+
+        return (
+          <div
+            key={key}
+            data-block-id={block.id ?? `block-${index}`}
+            className={animClass || undefined}
+            style={{
+              '--ve-anim-duration': duration ? `${duration}ms` : undefined,
+              '--ve-anim-delay': delay ? `${delay}ms` : undefined,
+              '--ve-anim-easing': easing || undefined,
+              '--ve-anim-iter': iterations || undefined,
+            } as React.CSSProperties}
+          >
+            {blockEl}
+          </div>
+        )
       })}
     </>
   )

@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 export const ServicesBlock: Block = {
   slug: 'services',
@@ -18,6 +19,6 @@ export const ServicesBlock: Block = {
         { name: 'link', type: 'text', label: 'Link' },
       ],
     },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }
