@@ -18,10 +18,10 @@
 
 ### Visual Page Editor v2 (roadmap)
 
-#### Phase 1 — Editing depth (next)
-- [ ] Inline array items editing w sidebar (FAQ/Steps/Pricing/Services/Testimonials/OfferCards/Stats/Team)
+#### Phase 1 — Editing depth ✅
+- [x] Inline array items editing w sidebar (FAQ/Steps/Pricing/Services/Testimonials/OfferCards/Stats/Team)
 - [x] Nested array editing (np. pricing package → features[])
-- [ ] Media picker inline w sidebar (wybór obrazu z kolekcji Media bez wychodzenia do Payload)
+- [x] Media picker inline w sidebar (wybór obrazu z kolekcji Media bez wychodzenia do Payload)
 - [x] Keyboard shortcuts: Ctrl+S (save), Delete (remove block), Ctrl+D (duplicate)
 - [x] Edycja `blockName` per-block w sidebar
 #### Phase 2 — Visual precision
@@ -74,7 +74,7 @@
 
 ## Known Issues
 
-- [ ] **FK inconsistency in `products_images` table**: The `image_id` column is `NOT NULL` but its foreign key uses `ON DELETE set null`. If a Media record is deleted, Postgres will attempt to SET NULL on a NOT NULL column, causing a constraint violation. Fix options: change FK to `ON DELETE cascade` (remove the product_image row when media is deleted) or make `image_id` nullable. This requires a new Payload migration.
+- [x] **FK inconsistency in `products_images` table**: Fixed in migration `20260301_200000` — changed FK to `ON DELETE cascade`.
 
 ## Future
 - [ ] Online payments integration

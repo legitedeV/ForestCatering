@@ -7,6 +7,7 @@ import * as migration_20260225_163138 from './20260225_163138';
 import * as migration_20260226_000001_add_media_image_slug from './20260226_000001_add_media_image_slug';
 import * as migration_20260227_000001_add_payment_integration_fields from './20260227_000001_add_payment_integration_fields';
 import * as migration_20260301_121555 from './20260301_121555';
+import * as migration_20260301_200000 from './20260301_200000';
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20260301_121555.up,
     down: migration_20260301_121555.down,
     name: '20260301_121555'
+  },
+  {
+    up: migration_20260301_200000.up,
+    down: migration_20260301_200000.down,
+    name: '20260301_200000',
   },
 ];

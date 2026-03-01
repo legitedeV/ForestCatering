@@ -49,7 +49,7 @@ const BLOCK_DEFAULTS: Record<string, Partial<PageSection>> = {
   } as Partial<PageSection>,
   partners: { blockType: 'partners', heading: 'Partnerzy', items: [] },
   team: { blockType: 'team', heading: 'Zespół', people: [] },
-  mapArea: { blockType: 'mapArea', heading: 'Obszar dostawy', embedUrl: '' },
+  mapArea: { blockType: 'mapArea', heading: 'Obszar dostawy', embedUrl: '', cities: [] },
   offerCards: { blockType: 'offerCards', heading: 'Oferta', cards: [] },
 }
 
