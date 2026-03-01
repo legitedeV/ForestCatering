@@ -83,7 +83,7 @@ function BlockCard({
       tabIndex={0}
       role="button"
       aria-label={`Blok ${meta?.label ?? block.blockType} #${index + 1}`}
-      aria-selected={isSelected}
+      aria-pressed={isSelected}
     >
       {/* Drag handle */}
       <button
@@ -161,8 +161,6 @@ export function EditorCanvas() {
   const setSidebarTab = usePageEditor((s) => s.setSidebarTab)
   const loadPage = usePageEditor((s) => s.loadPage)
   const pageId = usePageEditor((s) => s.pageId)
-  const selectBlock = usePageEditor((s) => s.selectBlock)
-  const addBlock = usePageEditor((s) => s.addBlock)
 
   // Ref przechowujący indeks do wstawienia nowego bloku
   const insertAtIndexRef = useRef<number>(sections.length)
@@ -177,19 +175,21 @@ export function EditorCanvas() {
 
   // Obsługa reorder — aktualizacja store
   const handleReorder = useCallback((newOrder: PageSection[]) => {
-    // Znajdujemy nowe pozycje i aktualizujemy sekcje w store
     const store = usePageEditor.getState()
-    // Zamiast moveBlock (jeden element), ustawiamy cały nowy układ
-    // Symulujemy przez znalezienie co się przesunęło
     const oldSections = store.sections
     if (oldSections.length !== newOrder.length) return
 
-    // Znajdź element który zmienił pozycję
+    // Budujemy mapę id→oldIndex w O(n)
+    const idToOldIndex = new Map<string | null | undefined, number>()
     for (let i = 0; i < oldSections.length; i++) {
+      idToOldIndex.set(oldSections[i].id, i)
+    }
+
+    // Znajdź pierwszy zmieniony element w O(n)
+    for (let i = 0; i < newOrder.length; i++) {
       if (oldSections[i] !== newOrder[i]) {
-        const movedItem = newOrder[i]
-        const oldIndex = oldSections.indexOf(movedItem)
-        if (oldIndex !== -1 && oldIndex !== i) {
+        const oldIndex = idToOldIndex.get(newOrder[i].id)
+        if (oldIndex !== undefined && oldIndex !== i) {
           store.moveBlock(oldIndex, i)
           return
         }

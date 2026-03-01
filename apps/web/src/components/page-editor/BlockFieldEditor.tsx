@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import { usePageEditor } from '@/lib/page-editor-store'
 import { getBlockMeta } from '@/lib/block-metadata'
 import type { PageSection } from '@/components/cms/types'
@@ -171,6 +171,14 @@ export function BlockFieldEditor() {
 
   // Debounce z useRef + setTimeout
   const timersRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({})
+
+  // Czyszczenie timerów przy odmontowaniu
+  useEffect(() => {
+    const timers = timersRef.current
+    return () => {
+      Object.values(timers).forEach(clearTimeout)
+    }
+  }, [])
 
   const debouncedUpdate = useCallback(
     (index: number, fieldPath: string, value: unknown) => {
