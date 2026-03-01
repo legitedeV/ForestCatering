@@ -5,6 +5,7 @@ import './globals.css'
 const NO_INDEX = process.env.NO_INDEX === 'true'
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   title: 'Forest Catering — Profesjonalny catering w Szczecinie',
   description:
     'Forest Catering to profesjonalna firma cateringowa ze Szczecina. Oferujemy catering firmowy, weselny, eventowy i usługi barowe.',
