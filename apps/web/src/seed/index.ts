@@ -69,6 +69,10 @@ const CATEGORIES = [
   { name: 'Catering weselny', slug: 'catering-weselny', description: 'Kompleksowe menu weselne — od przystawek po tort.' },
   { name: 'Bar mobilny', slug: 'bar-mobilny', description: 'Koktajle autorskie, drinki klasyczne i pokazy barmańskie.' },
   { name: 'Desery i dodatki', slug: 'desery-i-dodatki', description: 'Słodkie akcenty, stacje deserowe i candy bary.' },
+  { name: 'Wypożyczalnia', slug: 'wypozyczalnia', description: 'Wypożyczalnia zastawy, sztućców i szkła na eventy i wesela.' },
+  { name: 'Zastawa porcelanowa', slug: 'zastawa-porcelanowa', description: 'Porcelana do wypożyczenia: bulionówki, filiżanki, talerze, spodki.' },
+  { name: 'Sztućce', slug: 'sztucce', description: 'Sztućce do wypożyczenia: łyżki, noże, widelce w różnych rozmiarach.' },
+  { name: 'Kieliszki i szklanki', slug: 'kieliszki-i-szklanki', description: 'Szkło do wypożyczenia: szklanki, kieliszki do wina, szampana i wódki.' },
 ] as const
 
 const PRODUCTS: Array<{
@@ -77,7 +81,7 @@ const PRODUCTS: Array<{
   shortDescription: string
   price: number
   compareAtPrice?: number
-  productType: 'catering' | 'event' | 'bar'
+  productType: 'catering' | 'event' | 'bar' | 'rental'
   category: string
   color: string
   isFeatured: boolean
@@ -288,6 +292,163 @@ const PRODUCTS: Array<{
     imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop',
     allergens: ['dairy'],
   },
+  // ── Zastawa porcelanowa ──
+  {
+    name: 'Bulionówka',
+    slug: 'bulionowka',
+    shortDescription: 'Elegancka bulionówka porcelanowa do wypożyczenia na eventy i wesela.',
+    price: 100,
+    productType: 'rental',
+    category: 'zastawa-porcelanowa',
+    color: '#8B7355',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Spodek pod filiżankę',
+    slug: 'spodek-pod-filizanke',
+    shortDescription: 'Porcelanowy spodek pod filiżankę do wypożyczenia.',
+    price: 90,
+    productType: 'rental',
+    category: 'zastawa-porcelanowa',
+    color: '#8B7355',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Filiżanka',
+    slug: 'filizanka',
+    shortDescription: 'Porcelanowa filiżanka do kawy lub herbaty do wypożyczenia.',
+    price: 100,
+    productType: 'rental',
+    category: 'zastawa-porcelanowa',
+    color: '#8B7355',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Talerz deserowy',
+    slug: 'talerz-deserowy',
+    shortDescription: 'Porcelanowy talerz deserowy do wypożyczenia na eventy.',
+    price: 80,
+    productType: 'rental',
+    category: 'zastawa-porcelanowa',
+    color: '#8B7355',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  // ── Sztućce ──
+  {
+    name: 'Łyżeczka',
+    slug: 'lyzeczka',
+    shortDescription: 'Elegancka łyżeczka do kawy lub herbaty do wypożyczenia.',
+    price: 49,
+    productType: 'rental',
+    category: 'sztucce',
+    color: '#C0C0C0',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Łyżka',
+    slug: 'lyzka',
+    shortDescription: 'Klasyczna łyżka stołowa do wypożyczenia na eventy i wesela.',
+    price: 59,
+    productType: 'rental',
+    category: 'sztucce',
+    color: '#C0C0C0',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Nóż',
+    slug: 'noz',
+    shortDescription: 'Elegancki nóż stołowy do wypożyczenia na eventy i wesela.',
+    price: 59,
+    productType: 'rental',
+    category: 'sztucce',
+    color: '#C0C0C0',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Widelec',
+    slug: 'widelec',
+    shortDescription: 'Klasyczny widelec stołowy do wypożyczenia na eventy i wesela.',
+    price: 59,
+    productType: 'rental',
+    category: 'sztucce',
+    color: '#C0C0C0',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Widelec przystawkowy',
+    slug: 'widelec-przystawkowy',
+    shortDescription: 'Widelec przystawkowy do wypożyczenia na eventy.',
+    price: 49,
+    productType: 'rental',
+    category: 'sztucce',
+    color: '#C0C0C0',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Widelec deserowy',
+    slug: 'widelec-deserowy',
+    shortDescription: 'Widelec deserowy do wypożyczenia na eventy i wesela.',
+    price: 39,
+    productType: 'rental',
+    category: 'sztucce',
+    color: '#C0C0C0',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  // ── Kieliszki i szklanki ──
+  {
+    name: 'Szklanka',
+    slug: 'szklanka',
+    shortDescription: 'Elegancka szklanka do wypożyczenia na eventy i wesela.',
+    price: 75,
+    productType: 'rental',
+    category: 'kieliszki-i-szklanki',
+    color: '#B8860B',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Kieliszek do wódki',
+    slug: 'kieliszek-do-wodki',
+    shortDescription: 'Kieliszek do wódki do wypożyczenia na eventy i wesela.',
+    price: 75,
+    productType: 'rental',
+    category: 'kieliszki-i-szklanki',
+    color: '#B8860B',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Kieliszek do szampana',
+    slug: 'kieliszek-do-szampana',
+    shortDescription: 'Kieliszek do szampana do wypożyczenia na eventy i wesela.',
+    price: 120,
+    productType: 'rental',
+    category: 'kieliszki-i-szklanki',
+    color: '#B8860B',
+    isFeatured: true,
+    imageUrl: '',
+  },
+  {
+    name: 'Kieliszek do wina',
+    slug: 'kieliszek-do-wina',
+    shortDescription: 'Kieliszek do wina do wypożyczenia na eventy i wesela.',
+    price: 120,
+    productType: 'rental',
+    category: 'kieliszki-i-szklanki',
+    color: '#B8860B',
+    isFeatured: true,
+    imageUrl: '',
+  },
 ]
 
 const POSTS = [
@@ -397,6 +558,7 @@ async function seed() {
             { label: 'Catering dzienny', url: '/sklep?category=catering-dzienny' },
             { label: 'Catering eventowy', url: '/sklep?category=catering-eventowy' },
             { label: 'Bar mobilny', url: '/sklep?category=bar-mobilny' },
+            { label: 'Wypożyczalnia', url: '/sklep?category=wypozyczalnia' },
             { label: 'Pakiety', url: '/oferta' },
           ],
         },
@@ -458,6 +620,21 @@ async function seed() {
       ? await payload.update({ collection: 'categories', id: existing.docs[0].id, data: category })
       : await payload.create({ collection: 'categories', data: category })
     categoryMap[category.slug] = Number(doc.id)
+  }
+
+  // Set parent for rental subcategories
+  const rentalParentId = categoryMap['wypozyczalnia']
+  if (rentalParentId) {
+    for (const subSlug of ['zastawa-porcelanowa', 'sztucce', 'kieliszki-i-szklanki']) {
+      const subId = categoryMap[subSlug]
+      if (subId) {
+        await payload.update({
+          collection: 'categories',
+          id: subId,
+          data: { parent: rentalParentId },
+        })
+      }
+    }
   }
 
   // ─── Products ───────────────────────────────────────────────
@@ -1075,6 +1252,52 @@ async function seed() {
             { name: 'Bar Classic', price: '45 zł/os.', features: [{ text: '5 koktajli' }, { text: '1 barman' }, { text: 'Barówka mobilna' }], ctaText: 'Zapytaj', ctaLink: '/kontakt?event=bar' },
             { name: 'Bar Premium', price: '85 zł/os.', featured: true, features: [{ text: '10 koktajli' }, { text: '2 barmanów' }, { text: 'Pokaz flair + LED' }], ctaText: 'Zapytaj', ctaLink: '/kontakt?event=bar' },
             { name: 'Lemonade bar', price: '25 zł/os.', features: [{ text: '4 smaki' }, { text: 'Świeże owoce' }, { text: 'Dystrybutor z lodem' }], ctaText: 'Zapytaj', ctaLink: '/kontakt?event=bar' },
+          ],
+        },
+        {
+          blockType: 'pricing',
+          heading: 'Wypożyczalnia',
+          subheading: 'Zastawa, sztućce i szkło do wypożyczenia na Twoje wydarzenie.',
+          packages: [
+            {
+              name: 'Zastawa porcelanowa',
+              price: 'od 0,80 zł/szt.',
+              features: [
+                { text: 'Bulionówka — 1,00 zł' },
+                { text: 'Spodek pod filiżankę — 0,90 zł' },
+                { text: 'Filiżanka — 1,00 zł' },
+                { text: 'Talerz deserowy — 0,80 zł' },
+              ],
+              ctaText: 'Zobacz w sklepie',
+              ctaLink: '/sklep?category=zastawa-porcelanowa',
+            },
+            {
+              name: 'Sztućce',
+              price: 'od 0,39 zł/szt.',
+              featured: true,
+              features: [
+                { text: 'Łyżeczka — 0,49 zł' },
+                { text: 'Łyżka — 0,59 zł' },
+                { text: 'Nóż — 0,59 zł' },
+                { text: 'Widelec — 0,59 zł' },
+                { text: 'Widelec przystawkowy — 0,49 zł' },
+                { text: 'Widelec deserowy — 0,39 zł' },
+              ],
+              ctaText: 'Zobacz w sklepie',
+              ctaLink: '/sklep?category=sztucce',
+            },
+            {
+              name: 'Kieliszki i szklanki',
+              price: 'od 0,75 zł/szt.',
+              features: [
+                { text: 'Szklanka — 0,75 zł' },
+                { text: 'Kieliszek do wódki — 0,75 zł' },
+                { text: 'Kieliszek do szampana — 1,20 zł' },
+                { text: 'Kieliszek do wina — 1,20 zł' },
+              ],
+              ctaText: 'Zobacz w sklepie',
+              ctaLink: '/sklep?category=kieliszki-i-szklanki',
+            },
           ],
         },
         {
