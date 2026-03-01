@@ -4,6 +4,9 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import type { PageSection } from '@/components/cms/types'
 import { ANIMATION_CATALOG } from '@/lib/animation-catalog'
 
+// Build a Map for O(1) animation lookups
+const ANIMATION_MAP = new Map(ANIMATION_CATALOG.map((a) => [a.key, a]))
+
 // Importy bloków bezpośrednio — pomijamy BlockRenderer, bo FeaturedProductsBlock
 // jest server component (importuje getPayload) i nie działa w kontekście 'use client'
 import { HeroBlock } from '@/components/cms/blocks/HeroBlock'
@@ -215,7 +218,7 @@ export function PreviewClient({ initialSections }: Props) {
       {sections.map((block, index) => {
         const blockData = block as Record<string, unknown>
         const animKey = (blockData.animation as string) ?? ''
-        const animDef = animKey ? ANIMATION_CATALOG.find((a) => a.key === animKey) : undefined
+        const animDef = animKey ? ANIMATION_MAP.get(animKey) : undefined
         const animClass = animDef?.className ?? ''
         const delay = (blockData.animationDelay as number) ?? 0
         const duration = (blockData.animationDuration as number) ?? 0

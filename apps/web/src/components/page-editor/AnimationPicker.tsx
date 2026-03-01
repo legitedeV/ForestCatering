@@ -37,9 +37,9 @@ export function AnimationPicker({ blockIndex }: AnimationPickerProps) {
 
   const block = sections[blockIndex] as Record<string, unknown> | undefined
 
-  const currentAnimation = ((block?.animation as string) ?? '')
-  const currentDelay = ((block?.animationDelay as number) ?? 0)
-  const currentDuration = ((block?.animationDuration as number) ?? 0)
+  const currentAnimation = (block?.animation as string) ?? ''
+  const currentDelay = (block?.animationDelay as number) ?? 0
+  const currentDuration = (block?.animationDuration as number) ?? 0
 
   const [filterCategory, setFilterCategory] = useState<string>('all')
 

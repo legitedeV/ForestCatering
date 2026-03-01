@@ -168,7 +168,7 @@ const initialState = {
   error: null,
   previewBreakpoint: 'desktop' as const,
   sidebarTab: 'blocks' as const,
-  gridColumns: 12 as 12 | 16 | 24,
+  gridColumns: 12 as const,
   gridVisible: false,
   gridShowRulers: false,
   gridSnapEnabled: false,

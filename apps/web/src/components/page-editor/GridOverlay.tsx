@@ -3,12 +3,15 @@
 import { useMemo } from 'react'
 import { usePageEditor } from '@/lib/page-editor-store'
 
-function RulerH({ width }: { width: number }) {
+const GRID_MAX_WIDTH = 1280
+const RULER_SIZE = 20
+
+function RulerH() {
   const ticks = useMemo(() => {
     const arr: number[] = []
-    for (let i = 0; i <= width; i += 100) arr.push(i)
+    for (let i = 0; i <= GRID_MAX_WIDTH; i += 100) arr.push(i)
     return arr
-  }, [width])
+  }, [])
 
   return (
     <div className="editor-ruler editor-ruler-h flex items-end overflow-hidden text-[8px] text-forest-500">
@@ -60,13 +63,13 @@ export function GridOverlay() {
     <div className="editor-grid-overlay" aria-hidden="true">
       {gridShowRulers && (
         <>
-          <RulerH width={1280} />
+          <RulerH />
           <RulerV />
         </>
       )}
       <div
         className="absolute inset-0 mx-auto flex"
-        style={{ maxWidth: 1280, paddingLeft: gridShowRulers ? 20 : 0, paddingTop: gridShowRulers ? 20 : 0 }}
+        style={{ maxWidth: GRID_MAX_WIDTH, paddingLeft: gridShowRulers ? RULER_SIZE : 0, paddingTop: gridShowRulers ? RULER_SIZE : 0 }}
       >
         {cols.map((i) => (
           <div key={i} className="editor-grid-col h-full flex-1" />
