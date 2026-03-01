@@ -55,7 +55,7 @@
 - [x] Comments/annotations na blokach (localStorage + piny preview) — PR #5B
 - [ ] Collaborative editing (WebSocket real-time sync) → **wymaga infra, osobny PR**
 
-#### Phase 6 — Advanced (Phase 6A ✅)
+#### Phase 6 — Advanced (Phase 6A ✅, Phase 6B ✅)
 - [x] **Style override fix**: Scoped CSS injector (`block-style-injector.ts`) overcomes Tailwind utility specificity — PR #6A
 - [x] **accentColor support**: CSS injection targets `[class*="bg-accent"]`, `[class*="text-accent"]` etc. — PR #6A
 - [x] **CSS animation var-based control**: `--ve-anim-duration/delay/easing/iter` custom properties on wrapper propagate to `::after` (shimmer) — PR #6A
@@ -66,9 +66,11 @@
 - [x] **Keyboard shortcuts panel**: `?` key opens modal, `Escape` closes — PR #6A
 - [x] **AnimationPicker**: Easing select + Iterations select + extended duration range (200–30000ms) — PR #6A
 - [x] **E2E unit tests**: `e2e/visual-editor.spec.ts` tests `generateBlockScopedCss` / `generateAllBlocksCss` — PR #6A
-- [ ] Multi-device preview z synchronizowanym scrollem
-- [ ] AI assistant do generowania treści bloków
-- [ ] Accessibility audit per-page (automated checks)
+- [x] **AI assistant (offline-first)**: Template-based content generation per block/field/tone, optional LLM fallback — PR #6B
+- [x] **Multi-device split preview**: 2-3 iframes (desktop/tablet/mobile) with sync scroll — PR #6B
+- [x] **Accessibility audit**: DOM-based checks in preview iframe, motion checks, panel with severity grouping — PR #6B
+
+> **Note**: AI LLM integration optional — set `AI_API_KEY` + `AI_API_URL` in env
 
 #### Phase 7 — Style system (backlog)
 - [ ] Per-block CSS class picker (wybór klas CSS z globals.css per-block)

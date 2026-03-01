@@ -129,6 +129,10 @@ export function EditorToolbar() {
   const unresolvedCount = blockComments.filter((c) => !c.resolved).length
   const shortcutsOpen = usePageEditor((s) => s.shortcutsOpen)
   const toggleShortcuts = usePageEditor((s) => s.toggleShortcuts)
+  const splitPreviewEnabled = usePageEditor((s) => s.splitPreviewEnabled)
+  const toggleSplitPreview = usePageEditor((s) => s.toggleSplitPreview)
+  const a11yPanelOpen = usePageEditor((s) => s.a11yPanelOpen)
+  const toggleA11yPanel = usePageEditor((s) => s.toggleA11yPanel)
 
   return (
     <header
@@ -293,6 +297,34 @@ export function EditorToolbar() {
           aria-pressed={spacingInspectorEnabled}
         >
           📐
+        </button>
+
+        {/* Split preview toggle */}
+        <button
+          onClick={toggleSplitPreview}
+          className={`rounded-md px-2 py-1.5 text-xs font-medium transition ${
+            splitPreviewEnabled ? 'bg-accent-warm text-forest-950' : 'bg-forest-900 text-forest-400 hover:text-cream'
+          }`}
+          title="Podgląd wielourządzeniowy"
+          aria-label="Przełącz podgląd wielourządzeniowy"
+          aria-pressed={splitPreviewEnabled}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="inline-block">
+            <rect x="1" y="3" width="6" height="18" rx="1" /><rect x="9" y="3" width="6" height="18" rx="1" /><rect x="17" y="3" width="6" height="18" rx="1" />
+          </svg>
+        </button>
+
+        {/* A11y audit button */}
+        <button
+          onClick={toggleA11yPanel}
+          className={`rounded-md px-2 py-1.5 text-xs font-medium transition ${
+            a11yPanelOpen ? 'bg-accent-warm text-forest-950' : 'bg-forest-900 text-forest-400 hover:text-cream'
+          }`}
+          title="Audyt dostępności"
+          aria-label="Audyt dostępności"
+          aria-pressed={a11yPanelOpen}
+        >
+          ♿
         </button>
       </div>
 

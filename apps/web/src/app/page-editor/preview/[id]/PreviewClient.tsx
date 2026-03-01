@@ -188,6 +188,21 @@ export function PreviewClient({ initialSections }: Props) {
   const [inlineEditEnabled, setInlineEditEnabled] = useState(false)
   const [activeEditLabel, setActiveEditLabel] = useState<string | null>(null)
   const blockRefs = useRef<Map<number, HTMLDivElement>>(new Map())
+  const isSyncingRef = useRef(false)
+
+  // Scroll sync: send scroll position to parent
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isSyncingRef.current) return
+      const maxScroll = document.body.scrollHeight - window.innerHeight
+      if (maxScroll <= 0) return
+      const scrollPercent = window.scrollY / maxScroll
+      const bp = new URLSearchParams(window.location.search).get('bp') ?? 'desktop'
+      window.parent.postMessage({ type: 'preview:scroll', scrollPercent, sourceBreakpoint: bp }, '*')
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // IntersectionObserver do triggerowania .visible na entrance animations
   useEffect(() => {
@@ -272,6 +287,25 @@ export function PreviewClient({ initialSections }: Props) {
 
       if (data.type === 'editor:enable-inline-edit') {
         setInlineEditEnabled(!!data.enabled)
+      }
+
+      // A11y audit
+      if (data.type === 'editor:run-a11y-audit') {
+        import('@/lib/a11y-checks').then(({ runA11yAudit }) => {
+          const issues = runA11yAudit(document)
+          window.parent.postMessage({ type: 'preview:a11y-results', issues }, '*')
+        })
+      }
+
+      // Scroll sync from parent
+      if (data.type === 'editor:sync-scroll') {
+        const scrollPercent = data.scrollPercent as number
+        const maxScroll = document.body.scrollHeight - window.innerHeight
+        if (maxScroll > 0) {
+          isSyncingRef.current = true
+          window.scrollTo({ top: scrollPercent * maxScroll, behavior: 'instant' as ScrollBehavior })
+          setTimeout(() => { isSyncingRef.current = false }, 50)
+        }
       }
     }
 

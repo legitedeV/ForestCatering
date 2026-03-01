@@ -8,6 +8,7 @@ import { LivePreviewFrame } from '@/components/page-editor/LivePreviewFrame'
 import { useEditorKeyboardShortcuts } from '@/components/page-editor/useEditorKeyboardShortcuts'
 import { ConflictDialog } from '@/components/page-editor/ConflictDialog'
 import { VersionHistoryModal } from '@/components/page-editor/VersionHistoryModal'
+import { A11yAuditPanel } from '@/components/page-editor/A11yAuditPanel'
 
 type ViewMode = 'structure' | 'preview'
 
@@ -87,6 +88,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
       {/* Modals */}
       {conflictDetected && <ConflictDialog />}
       {versionHistoryOpen && <VersionHistoryModal />}
+      <A11yAuditPanel />
 
       <div className="flex flex-1 overflow-hidden">
         {/* Główny obszar */}
