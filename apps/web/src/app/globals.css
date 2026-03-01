@@ -672,3 +672,43 @@ html {
   border-left: 2px solid var(--color-accent-warm);
 }
 .history-item-redo { opacity: 0.4; }
+
+/* === VERSION DIFF COLORS === */
+.diff-added { background: rgba(74, 124, 89, 0.12); border-left: 3px solid var(--color-forest-green); }
+.diff-removed { background: rgba(180, 60, 60, 0.12); border-left: 3px solid #b43c3c; }
+.diff-modified { background: rgba(212, 168, 83, 0.10); border-left: 3px solid var(--color-accent-warm); }
+.diff-moved { background: rgba(126, 136, 150, 0.10); border-left: 3px solid var(--color-accent); }
+.diff-unchanged { opacity: 0.5; }
+.diff-field-old { color: #b43c3c; text-decoration: line-through; }
+.diff-field-new { color: var(--color-forest-green); font-weight: 600; }
+
+/* === COMMENT ANNOTATIONS === */
+.comment-pin {
+  position: absolute;
+  z-index: 200;
+  width: 24px;
+  height: 24px;
+  border-radius: 50% 50% 50% 0;
+  background: var(--color-accent-warm);
+  transform: rotate(-45deg) translate(-50%, -50%);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.comment-pin:hover {
+  transform: rotate(-45deg) translate(-50%, -50%) scale(1.15);
+  box-shadow: 0 4px 16px rgba(212, 168, 83, 0.3);
+}
+.comment-pin-resolved { background: var(--color-forest-500); opacity: 0.5; }
+
+/* === CONFLICT DIALOG === */
+.conflict-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(18, 22, 27, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

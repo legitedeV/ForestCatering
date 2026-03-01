@@ -6,6 +6,8 @@ import { usePageEditor } from '@/lib/page-editor-store'
 import { EditorToolbar, EditorCanvas, EditorSidebar } from '@/components/page-editor'
 import { LivePreviewFrame } from '@/components/page-editor/LivePreviewFrame'
 import { useEditorKeyboardShortcuts } from '@/components/page-editor/useEditorKeyboardShortcuts'
+import { ConflictDialog } from '@/components/page-editor/ConflictDialog'
+import { VersionHistoryModal } from '@/components/page-editor/VersionHistoryModal'
 
 type ViewMode = 'structure' | 'preview'
 
@@ -18,6 +20,8 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
   const isLoading = usePageEditor((s) => s.isLoading)
   const isDirty = usePageEditor((s) => s.isDirty)
   const error = usePageEditor((s) => s.error)
+  const conflictDetected = usePageEditor((s) => s.conflictDetected)
+  const versionHistoryOpen = usePageEditor((s) => s.versionHistoryOpen)
 
   const [viewMode, setViewMode] = useState<ViewMode>('structure')
 
@@ -79,6 +83,10 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
     <div className="flex h-screen flex-col overflow-hidden">
       {/* Górny pasek narzędzi */}
       <EditorToolbar />
+
+      {/* Modals */}
+      {conflictDetected && <ConflictDialog />}
+      {versionHistoryOpen && <VersionHistoryModal />}
 
       <div className="flex flex-1 overflow-hidden">
         {/* Główny obszar */}

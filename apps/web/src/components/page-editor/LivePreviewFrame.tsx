@@ -24,6 +24,8 @@ export function LivePreviewFrame() {
   const cssOverrides = usePageEditor((s) => s.cssOverrides)
   const customCss = usePageEditor((s) => s.customCss)
   const spacingInspectorEnabled = usePageEditor((s) => s.spacingInspectorEnabled)
+  const blockComments = usePageEditor((s) => s.blockComments)
+  const showComments = usePageEditor((s) => s.showComments)
 
   const [isLoaded, setIsLoaded] = useState(false)
   const [scale, setScale] = useState(1)
@@ -115,6 +117,24 @@ export function LivePreviewFrame() {
       '*',
     )
   }, [previewBreakpoint, isLoaded])
+
+  // Wyślij komentarze do iframe
+  useEffect(() => {
+    if (!isLoaded) return
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: 'editor:comments-updated', comments: blockComments },
+      '*',
+    )
+  }, [blockComments, isLoaded])
+
+  // Wyślij stan komentarzy do iframe
+  useEffect(() => {
+    if (!isLoaded) return
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: 'editor:show-comments', enabled: showComments },
+      '*',
+    )
+  }, [showComments, isLoaded])
 
   // Odbieraj zdarzenia z iframe (kliknięcie bloku)
   useEffect(() => {

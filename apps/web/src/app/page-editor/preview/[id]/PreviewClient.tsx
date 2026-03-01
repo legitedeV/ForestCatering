@@ -5,6 +5,7 @@ import type { PageSection } from '@/components/cms/types'
 import { ANIMATION_CATALOG } from '@/lib/animation-catalog'
 import { resolveBoxShadow } from '@/lib/style-presets'
 import type { BlockStyleOverrides } from '@/lib/page-editor-store'
+import type { BlockComment } from '@/lib/block-comments'
 
 // Build a Map for O(1) animation lookups
 const ANIMATION_MAP = new Map(ANIMATION_CATALOG.map((a) => [a.key, a]))
@@ -194,6 +195,8 @@ export function PreviewClient({ initialSections }: Props) {
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
   const [spacingInspectorEnabled, setSpacingInspectorEnabled] = useState(false)
   const [currentBreakpoint, setCurrentBreakpoint] = useState<string>('desktop')
+  const [comments, setComments] = useState<BlockComment[]>([])
+  const [showComments, setShowComments] = useState(false)
   const blockRefs = useRef<Map<number, HTMLDivElement>>(new Map())
 
   // IntersectionObserver do triggerowania .visible na entrance animations
@@ -267,6 +270,14 @@ export function PreviewClient({ initialSections }: Props) {
 
       if (data.type === 'editor:set-breakpoint') {
         setCurrentBreakpoint((data.breakpoint as string) ?? 'desktop')
+      }
+
+      if (data.type === 'editor:comments-updated') {
+        setComments((data.comments as BlockComment[]) ?? [])
+      }
+
+      if (data.type === 'editor:show-comments') {
+        setShowComments(!!data.enabled)
       }
     }
 
@@ -370,6 +381,20 @@ export function PreviewClient({ initialSections }: Props) {
             }}
           >
             {renderBlock(block)}
+            {/* Comment pins */}
+            {showComments && comments
+              .filter((c) => c.blockIndex === index && c.position && !c.resolved)
+              .map((comment) => (
+                <div
+                  key={comment.id}
+                  className="comment-pin"
+                  style={{
+                    left: `${comment.position!.xPercent}%`,
+                    top: `${comment.position!.yPercent}%`,
+                  }}
+                  title={comment.text}
+                />
+              ))}
           </div>
         )
       })}
