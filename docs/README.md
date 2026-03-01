@@ -148,3 +148,29 @@ npm run lint
    - payloady `<script>` i atrybuty `on*` są usuwane.
 
 Renderer znajduje się w `apps/web/src/components/blog/RichTextRenderer.tsx` i obsługuje zarówno Lexical JSON z Payload, jak i bezpieczny fallback dla HTML string.
+
+### Testing visual page editor
+
+1. Ensure database is running and seeded:
+   ```bash
+   cd apps/web && npm run seed
+   ```
+2. Add `NEXT_PUBLIC_EDITOR_SECRET` to your `.env` (same value as `PAYLOAD_PREVIEW_SECRET`):
+   ```bash
+   NEXT_PUBLIC_EDITOR_SECRET=your-preview-secret-here
+   ```
+3. Start dev server:
+   ```bash
+   cd apps/web && npm run dev
+   ```
+4. Open Payload admin → Strony (Pages) → select any page → click "🎨 Otwórz edytor wizualny"
+5. Verify:
+   - Block list loads with drag handles
+   - Drag & drop reorders blocks (Framer Motion animation)
+   - Click block → sidebar shows field editor
+   - Click "Dodaj sekcję" → block palette opens with categories and search
+   - Breakpoint switcher changes canvas width (desktop/tablet/mobile)
+   - "Podgląd na żywo" toggle shows iframe with live page rendering
+   - "Zapisz draft" saves changes (verify updated content in Payload admin)
+   - Unsaved changes warning on page leave (browser beforeunload)
+   - Click block in iframe preview → selects it in sidebar
