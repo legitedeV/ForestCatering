@@ -267,7 +267,7 @@ const PRODUCTS: Array<{
     name: 'Tort okolicznościowy',
     slug: 'tort-okolicznosciowy',
     shortDescription: 'Tort na zamówienie: 3 piętra, krem maślany, dekoracja z żywych kwiatów.',
-    price: 45000,
+    price: 85000,
     productType: 'catering',
     category: 'desery-i-dodatki',
     color: '#C71585',
@@ -507,9 +507,9 @@ async function seed() {
     }
 
     if (existing.docs[0]) {
-      await payload.update({ collection: 'products', id: existing.docs[0].id, data })
+      await payload.update({ collection: 'products', id: existing.docs[0].id, data: data as never })
     } else {
-      await payload.create({ collection: 'products', data })
+      await payload.create({ collection: 'products', data: data as never })
     }
   }
 
@@ -857,7 +857,7 @@ async function seed() {
           heading: 'Nasza historia',
           content: richText([
             'Forest Catering powstał w 2014 roku jako mały rodzinny biznes cateringowy w Szczecinie. Od początku stawialiśmy na jakość — świeże, lokalne składniki i ręczne przygotowanie każdego dania.',
-            'Dziś obsługujemy ponad 100 wydarzeń rocznie — od kameralnych spotkań po wielkie gale na 500 osób. Nasz zespół to 15 doświadczonych kucharzy, kelnerów i barmanów, którzy kochają to, co robią.',
+            'Dziś obsługujemy ponad 50 wydarzeń rocznie — od kameralnych spotkań po wielkie gale na 500 osób. Nasz zespół to 15 doświadczonych kucharzy, kelnerów i barmanów, którzy kochają to, co robią.',
             'Nazwa „Forest" nie jest przypadkowa — inspirujemy się naturalnością, sezonowością i lokalnym terroir. Współpracujemy z farmami z okolic Szczecina, pieczemy własne pieczywo i przygotowujemy desery od zera.',
           ]),
           highlights: [
