@@ -1,189 +1,17 @@
 'use client'
 
-import { useState, useRef, useCallback, useEffect } from 'react'
 import { usePageEditor } from '@/lib/page-editor-store'
 import { getBlockMeta } from '@/lib/block-metadata'
 import type { PageSection } from '@/components/cms/types'
-
-// ────────────────────────────────────────────────────────
-// Hook: optimistic local state z debounced commit
-// ────────────────────────────────────────────────────────
-
-function useLocalField<T>(storeValue: T, commitFn: (v: T) => void, delay = 400) {
-  const [localValue, setLocalValue] = useState(storeValue)
-  const commitRef = useRef(commitFn)
-  commitRef.current = commitFn
-  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
-
-  // Sync z zewnątrz (np. undo, load)
-  useEffect(() => {
-    setLocalValue(storeValue)
-  }, [storeValue])
-
-  const handleChange = useCallback(
-    (newVal: T) => {
-      setLocalValue(newVal)
-      if (timerRef.current) clearTimeout(timerRef.current)
-      timerRef.current = setTimeout(() => {
-        commitRef.current(newVal)
-      }, delay)
-    },
-    [delay],
-  )
-
-  const localRef = useRef(storeValue)
-  localRef.current = localValue
-
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current)
-        commitRef.current(localRef.current)
-      }
-    }
-  }, [])
-
-  return [localValue, handleChange] as const
-}
-
-// ────────────────────────────────────────────────────────
-// Pomocnicze komponenty pól
-// ────────────────────────────────────────────────────────
-
-const inputClasses =
-  'w-full rounded-lg bg-forest-800 border border-forest-700 px-3 py-2 text-sm text-cream placeholder:text-forest-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent'
-const labelClasses = 'block text-xs font-medium uppercase tracking-wider text-forest-400 mb-1'
-
-function FieldText({
-  label,
-  value,
-  onCommit,
-  type = 'text',
-}: {
-  label: string
-  value: string
-  onCommit: (v: string) => void
-  type?: string
-}) {
-  const [local, setLocal] = useLocalField(value ?? '', onCommit)
-  return (
-    <label className="block">
-      <span className={labelClasses}>{label}</span>
-      <input
-        type={type}
-        value={local}
-        onChange={(e) => setLocal(e.target.value)}
-        className={inputClasses}
-      />
-    </label>
-  )
-}
-
-function FieldTextarea({
-  label,
-  value,
-  onCommit,
-}: {
-  label: string
-  value: string
-  onCommit: (v: string) => void
-}) {
-  const [local, setLocal] = useLocalField(value ?? '', onCommit)
-  return (
-    <label className="block">
-      <span className={labelClasses}>{label}</span>
-      <textarea
-        rows={3}
-        value={local}
-        onChange={(e) => setLocal(e.target.value)}
-        className={inputClasses + ' resize-y'}
-      />
-    </label>
-  )
-}
-
-function FieldNumber({
-  label,
-  value,
-  onCommit,
-}: {
-  label: string
-  value: number
-  onCommit: (v: number) => void
-}) {
-  const [local, setLocal] = useLocalField(value ?? 0, onCommit)
-  return (
-    <label className="block">
-      <span className={labelClasses}>{label}</span>
-      <input
-        type="number"
-        value={local}
-        onChange={(e) => setLocal(Number(e.target.value))}
-        className={inputClasses}
-      />
-    </label>
-  )
-}
-
-function FieldToggle({
-  label,
-  checked,
-  onChange,
-}: {
-  label: string
-  checked: boolean
-  onChange: (v: boolean) => void
-}) {
-  return (
-    <label className="flex items-center justify-between gap-2">
-      <span className={labelClasses + ' mb-0'}>{label}</span>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={checked}
-        onClick={() => onChange(!checked)}
-        className={`relative h-5 w-9 shrink-0 rounded-full transition ${
-          checked ? 'bg-accent' : 'bg-forest-700'
-        }`}
-      >
-        <span
-          className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-cream transition-transform ${
-            checked ? 'translate-x-4' : 'translate-x-0'
-          }`}
-        />
-      </button>
-    </label>
-  )
-}
-
-function FieldSelect({
-  label,
-  value,
-  options,
-  onChange,
-}: {
-  label: string
-  value: string
-  options: Array<{ value: string; label: string }>
-  onChange: (v: string) => void
-}) {
-  return (
-    <label className="block">
-      <span className={labelClasses}>{label}</span>
-      <select
-        value={value ?? ''}
-        onChange={(e) => onChange(e.target.value)}
-        className={inputClasses}
-      >
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-    </label>
-  )
-}
+import {
+  FieldText,
+  FieldTextarea,
+  FieldNumber,
+  FieldToggle,
+  FieldSelect,
+} from './field-primitives'
+import { FieldArrayEditor } from './FieldArrayEditor'
+import type { ArrayFieldConfig } from './FieldArrayEditor'
 
 function PayloadAdminLink({ label, pageId }: { label: string; pageId: number | null }) {
   return (
@@ -201,6 +29,103 @@ function PayloadAdminLink({ label, pageId }: { label: string; pageId: number | n
       )}
     </div>
   )
+}
+
+// ────────────────────────────────────────────────────────
+// Array field configs per block type
+// ────────────────────────────────────────────────────────
+
+const ARRAY_CONFIGS: Record<string, ArrayFieldConfig> = {
+  faq: {
+    name: 'items',
+    label: 'Pytania FAQ',
+    itemLabel: 'Pytanie',
+    maxItems: 12,
+    fields: [
+      { key: 'question', label: 'Pytanie', type: 'text' },
+      { key: 'answer', label: 'Odpowiedź', type: 'textarea' },
+    ],
+  },
+  steps: {
+    name: 'steps',
+    label: 'Kroki',
+    itemLabel: 'Krok',
+    maxItems: 10,
+    fields: [
+      { key: 'emoji', label: 'Emoji', type: 'text' },
+      { key: 'title', label: 'Tytuł', type: 'text' },
+      { key: 'description', label: 'Opis', type: 'textarea' },
+    ],
+  },
+  pricing: {
+    name: 'packages',
+    label: 'Pakiety',
+    itemLabel: 'Pakiet',
+    maxItems: 12,
+    fields: [
+      { key: 'name', label: 'Nazwa', type: 'text' },
+      { key: 'price', label: 'Cena', type: 'text' },
+      { key: 'ctaText', label: 'Tekst CTA', type: 'text' },
+      { key: 'ctaLink', label: 'Link CTA', type: 'text' },
+      { key: 'featured', label: 'Wyróżniony', type: 'toggle' },
+    ],
+  },
+  services: {
+    name: 'items',
+    label: 'Usługi',
+    itemLabel: 'Usługa',
+    maxItems: 8,
+    fields: [
+      { key: 'emoji', label: 'Emoji', type: 'text' },
+      { key: 'title', label: 'Tytuł', type: 'text' },
+      { key: 'description', label: 'Opis', type: 'textarea' },
+      { key: 'link', label: 'Link', type: 'text' },
+    ],
+  },
+  testimonials: {
+    name: 'items',
+    label: 'Opinie',
+    itemLabel: 'Opinia',
+    fields: [
+      { key: 'quote', label: 'Cytat', type: 'textarea' },
+      { key: 'author', label: 'Autor', type: 'text' },
+      { key: 'event', label: 'Wydarzenie', type: 'text' },
+      { key: 'rating', label: 'Ocena (1-5)', type: 'number' },
+    ],
+  },
+  offerCards: {
+    name: 'cards',
+    label: 'Karty ofertowe',
+    itemLabel: 'Karta',
+    fields: [
+      { key: 'title', label: 'Tytuł', type: 'text' },
+      { key: 'priceFrom', label: 'Cena od', type: 'text' },
+      { key: 'badge', label: 'Badge', type: 'text' },
+      { key: 'featured', label: 'Wyróżniona', type: 'toggle' },
+      { key: 'ctaText', label: 'Tekst CTA', type: 'text' },
+      { key: 'ctaLink', label: 'Link CTA', type: 'text' },
+    ],
+  },
+  stats: {
+    name: 'items',
+    label: 'Statystyki',
+    itemLabel: 'Statystyka',
+    fields: [
+      { key: 'value', label: 'Wartość', type: 'number' },
+      { key: 'suffix', label: 'Sufiks', type: 'text' },
+      { key: 'label', label: 'Etykieta', type: 'text' },
+    ],
+  },
+  team: {
+    name: 'people',
+    label: 'Członkowie zespołu',
+    itemLabel: 'Osoba',
+    fields: [
+      { key: 'name', label: 'Imię i nazwisko', type: 'text' },
+      { key: 'role', label: 'Stanowisko', type: 'text' },
+      { key: 'bio', label: 'Bio', type: 'textarea' },
+    ],
+  },
 }
 
 // ────────────────────────────────────────────────────────
@@ -266,13 +191,13 @@ export function BlockFieldEditor() {
         )}
 
         {block.blockType === 'stats' && (
-          <PayloadAdminLink label="Edytuj items w Payload Admin" pageId={pageId} />
+          <FieldArrayEditor config={ARRAY_CONFIGS.stats} blockIndex={idx} />
         )}
 
         {block.blockType === 'services' && (
           <>
             <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
-            <PayloadAdminLink label="Edytuj usługi (items) w Payload Admin" pageId={pageId} />
+            <FieldArrayEditor config={ARRAY_CONFIGS.services} blockIndex={idx} />
           </>
         )}
 
@@ -286,13 +211,13 @@ export function BlockFieldEditor() {
         )}
 
         {block.blockType === 'faq' && (
-          <PayloadAdminLink label="Edytuj pytania w Payload Admin" pageId={pageId} />
+          <FieldArrayEditor config={ARRAY_CONFIGS.faq} blockIndex={idx} />
         )}
 
         {block.blockType === 'testimonials' && (
           <>
             <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
-            <PayloadAdminLink label="Edytuj opinie (items) w Payload Admin" pageId={pageId} />
+            <FieldArrayEditor config={ARRAY_CONFIGS.testimonials} blockIndex={idx} />
           </>
         )}
 
@@ -300,14 +225,14 @@ export function BlockFieldEditor() {
           <>
             <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
             <FieldTextarea label="Podnagłówek" value={v('subheading')} onCommit={onCommit('subheading')} />
-            <PayloadAdminLink label="Edytuj pakiety w Payload Admin" pageId={pageId} />
+            <FieldArrayEditor config={ARRAY_CONFIGS.pricing} blockIndex={idx} />
           </>
         )}
 
         {block.blockType === 'steps' && (
           <>
             <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
-            <PayloadAdminLink label="Edytuj kroki w Payload Admin" pageId={pageId} />
+            <FieldArrayEditor config={ARRAY_CONFIGS.steps} blockIndex={idx} />
           </>
         )}
 
@@ -344,6 +269,7 @@ export function BlockFieldEditor() {
         {block.blockType === 'team' && (
           <>
             <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
+            <FieldArrayEditor config={ARRAY_CONFIGS.team} blockIndex={idx} />
           </>
         )}
 
@@ -359,7 +285,7 @@ export function BlockFieldEditor() {
         {block.blockType === 'offerCards' && (
           <>
             <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
-            <PayloadAdminLink label="Edytuj karty w Payload Admin" pageId={pageId} />
+            <FieldArrayEditor config={ARRAY_CONFIGS.offerCards} blockIndex={idx} />
           </>
         )}
 
