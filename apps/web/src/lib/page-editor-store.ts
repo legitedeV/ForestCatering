@@ -149,7 +149,7 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
     set({ isLoading: true, error: null })
     try {
       const res = await fetch(`/api/page-editor/${pageId}`, {
-        headers: { 'x-editor-secret': process.env.NEXT_PUBLIC_PAYLOAD_PREVIEW_SECRET ?? '' },
+        headers: { 'x-editor-secret': process.env.NEXT_PUBLIC_EDITOR_SECRET ?? '' },
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
@@ -191,7 +191,7 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'x-editor-secret': process.env.NEXT_PUBLIC_PAYLOAD_PREVIEW_SECRET ?? '',
+          'x-editor-secret': process.env.NEXT_PUBLIC_EDITOR_SECRET ?? '',
         },
         body: JSON.stringify({ sections }),
       })

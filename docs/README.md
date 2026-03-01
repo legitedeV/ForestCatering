@@ -155,8 +155,11 @@ Renderer znajduje się w `apps/web/src/components/blog/RichTextRenderer.tsx` i o
    ```bash
    cd apps/web && npm run seed
    ```
-2. Add `NEXT_PUBLIC_EDITOR_SECRET` to your `.env` (same value as `PAYLOAD_PREVIEW_SECRET`):
+2. Add `NEXT_PUBLIC_EDITOR_SECRET` to your `.env` (must have the same value as `PAYLOAD_PREVIEW_SECRET`):
    ```bash
+   # Both vars must have the same value:
+   # PAYLOAD_PREVIEW_SECRET is used server-side by the API route
+   # NEXT_PUBLIC_EDITOR_SECRET is the client-side counterpart exposed to the browser
    NEXT_PUBLIC_EDITOR_SECRET=your-preview-secret-here
    ```
 3. Start dev server:
