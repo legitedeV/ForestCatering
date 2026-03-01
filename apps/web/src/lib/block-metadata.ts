@@ -29,3 +29,17 @@ export const BLOCK_CATALOG: BlockMeta[] = [
   { type: 'mapArea', label: 'Obszar dostawy', icon: '🗺️', description: 'Mapa z osadzoną mapą Google', category: 'layout' },
   { type: 'offerCards', label: 'Karty ofert', icon: '🃏', description: 'Karty ofertowe z cenami i funkcjami', category: 'commerce' },
 ]
+
+// Kategorie bloków do UI palety
+export const BLOCK_CATEGORIES: Array<{ key: string; label: string }> = [
+  { key: 'layout', label: 'Układ' },
+  { key: 'content', label: 'Treść' },
+  { key: 'media', label: 'Media' },
+  { key: 'commerce', label: 'Sklep' },
+  { key: 'form', label: 'Formularze' },
+]
+
+// Pomocnik — znajdź metadane bloku po typie
+export function getBlockMeta(blockType: string): BlockMeta | undefined {
+  return BLOCK_CATALOG.find((b) => b.type === blockType)
+}
