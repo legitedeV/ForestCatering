@@ -2,6 +2,9 @@ import Link from 'next/link'
 import { getPayload } from '@/lib/payload-client'
 import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 interface Post {
   id: string
   title: string
