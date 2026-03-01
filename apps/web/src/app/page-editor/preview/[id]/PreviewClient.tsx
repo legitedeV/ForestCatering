@@ -107,6 +107,25 @@ function buildCustomCssTag(blockId: string, customCss: string | undefined): stri
   return safeCss.replace(/\.this/g, `[data-block-id="${safeId}"]`)
 }
 
+/** Build the full injected CSS for all blocks (scoped overrides + custom CSS) */
+function buildAllInjectedCss(sections: PageSection[]): string {
+  const scopedCss = generateAllBlocksCss(
+    sections.map((block, index) => {
+      const blockData = block as Record<string, unknown>
+      return {
+        id: (block.id as string) ?? `block-${index}`,
+        styleOverrides: blockData.styleOverrides as BlockStyleOverrides | undefined,
+        animation: (blockData.animation as string) ?? '',
+      }
+    }),
+  )
+  const customCss = sections.map((block, index) => {
+    const so = (block as Record<string, unknown>).styleOverrides as BlockStyleOverrides | undefined
+    return so?.customCss ? buildCustomCssTag((block.id as string) ?? `block-${index}`, so.customCss) : ''
+  }).join('\n')
+  return scopedCss + customCss
+}
+
 /** Renderuj pojedynczy blok — ten sam switch co BlockRenderer, bez FeaturedProducts (server-only) */
 function renderBlock(block: PageSection) {
   switch (block.blockType) {
@@ -308,21 +327,7 @@ export function PreviewClient({ initialSections }: Props) {
       {/* Inject scoped style overrides for ALL blocks */}
       <style
         id="editor-block-overrides"
-        dangerouslySetInnerHTML={{
-          __html: generateAllBlocksCss(
-            sections.map((block, index) => {
-              const blockData = block as Record<string, unknown>
-              return {
-                id: (block.id as string) ?? `block-${index}`,
-                styleOverrides: blockData.styleOverrides as BlockStyleOverrides | undefined,
-                animation: (blockData.animation as string) ?? '',
-              }
-            }),
-          ) + sections.map((block, index) => {
-            const so = (block as Record<string, unknown>).styleOverrides as BlockStyleOverrides | undefined
-            return so?.customCss ? buildCustomCssTag((block.id as string) ?? `block-${index}`, so.customCss) : ''
-          }).join('\n'),
-        }}
+        dangerouslySetInnerHTML={{ __html: buildAllInjectedCss(sections) }}
       />
 
       {sections.map((block, index) => {
