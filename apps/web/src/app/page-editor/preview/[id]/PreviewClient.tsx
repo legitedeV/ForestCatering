@@ -94,6 +94,26 @@ export function PreviewClient({ initialSections }: Props) {
         setSections(data.sections as PageSection[])
       }
 
+      if (data.type === 'editor:css-overrides') {
+        const overrides = data.overrides as Record<string, string> | undefined
+        const customCss = data.customCss as string | undefined
+        let styleEl = document.getElementById('editor-overrides')
+        if (!styleEl) {
+          styleEl = document.createElement('style')
+          styleEl.id = 'editor-overrides'
+          document.head.appendChild(styleEl)
+        }
+        let css = ':root {\n'
+        if (overrides) {
+          for (const [key, value] of Object.entries(overrides)) {
+            css += `  ${key}: ${value};\n`
+          }
+        }
+        css += '}\n'
+        if (customCss) css += customCss
+        styleEl.textContent = css
+      }
+
       if (data.type === 'editor:select-block') {
         const index = data.index as number | null
         setHighlightedIndex(index)
