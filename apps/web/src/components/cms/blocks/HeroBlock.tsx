@@ -10,7 +10,7 @@ export function HeroBlock({ heading, subheading, backgroundImage, ctaText, ctaLi
   const bgUrl = getMediaUrl(backgroundImage)
 
   return (
-    <section className={`relative flex items-center justify-center bg-gradient-to-br from-forest-950 via-forest-900 to-forest-800 ${fullHeight ? 'min-h-screen' : 'min-h-[60vh]'}`}>
+    <section className={`noise-overlay relative flex items-center justify-center bg-gradient-to-br from-forest-950 via-forest-900 to-forest-800 ${fullHeight ? 'min-h-screen' : 'min-h-[60vh]'}`}>
       {bgUrl && (
         <Image
           src={bgUrl}
@@ -23,7 +23,7 @@ export function HeroBlock({ heading, subheading, backgroundImage, ctaText, ctaLi
       <div className="relative mx-auto max-w-5xl px-4 text-center">
         {badge && (
           <AnimatedSection>
-            <span className="mb-6 inline-block rounded-full border border-accent/30 bg-forest-700/50 px-4 py-1.5 text-sm text-accent">
+            <span className="mb-6 inline-block rounded-full border border-accent-warm/30 bg-accent-warm/10 px-4 py-1.5 text-sm text-accent-warm">
               {badge}
             </span>
           </AnimatedSection>
@@ -32,6 +32,7 @@ export function HeroBlock({ heading, subheading, backgroundImage, ctaText, ctaLi
           <h1 className="text-4xl font-bold leading-tight tracking-tight text-cream sm:text-5xl md:text-7xl">
             {heading}
           </h1>
+          <div className="mx-auto mt-4 h-[3px] w-32 gradient-line" />
         </AnimatedSection>
         {subheading && (
           <AnimatedSection>
@@ -46,7 +47,7 @@ export function HeroBlock({ heading, subheading, backgroundImage, ctaText, ctaLi
               {ctaText && ctaLink && (
                 <Link
                   href={ctaLink}
-                  className="inline-flex items-center rounded-lg bg-accent px-8 py-3.5 text-base font-semibold text-forest-950 transition hover:scale-105 hover:bg-accent-light"
+                  className="inline-flex items-center rounded-lg bg-accent-warm px-8 py-3.5 text-base font-semibold text-forest-950 transition hover:scale-105 hover:bg-accent-warm-light"
                 >
                   {ctaText}
                 </Link>
