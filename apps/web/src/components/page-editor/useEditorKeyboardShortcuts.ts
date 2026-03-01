@@ -14,7 +14,7 @@ export function useEditorKeyboardShortcuts() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
-      const isInputFocused = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+      const isInputFocused = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) || target.isContentEditable
 
       // Ctrl+S / Cmd+S — save
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
