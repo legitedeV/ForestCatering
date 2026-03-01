@@ -31,9 +31,15 @@ function useLocalField<T>(storeValue: T, commitFn: (v: T) => void, delay = 400) 
     [delay],
   )
 
+  const localRef = useRef(storeValue)
+  localRef.current = localValue
+
   useEffect(() => {
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+        commitRef.current(localRef.current)
+      }
     }
   }, [])
 
