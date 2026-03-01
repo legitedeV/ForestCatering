@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { generateOrderNumber } from '../hooks/generateOrderNumber'
+import { populateOrderItems } from '../hooks/populateOrderItems'
 import { sendOrderConfirmationEmail } from '../hooks/sendOrderEmail'
 
 export const Orders: CollectionConfig = {
@@ -18,7 +19,7 @@ export const Orders: CollectionConfig = {
     delete: isAdmin,
   },
   hooks: {
-    beforeChange: [generateOrderNumber],
+    beforeChange: [populateOrderItems, generateOrderNumber],
     afterChange: [sendOrderConfirmationEmail],
   },
   fields: [
@@ -87,15 +88,15 @@ export const Orders: CollectionConfig = {
       labels: { singular: 'Pozycja', plural: 'Pozycje' },
       fields: [
         { name: 'product', type: 'relationship', relationTo: 'products', label: 'Produkt' },
-        { name: 'productName', type: 'text', required: true, label: 'Nazwa produktu' },
+        { name: 'productName', type: 'text', required: true, label: 'Nazwa produktu', admin: { description: 'Wypełniane automatycznie z wybranego produktu' } },
         { name: 'quantity', type: 'number', required: true, min: 1, label: 'Ilość' },
-        { name: 'unitPrice', type: 'number', required: true, label: 'Cena jednostkowa' },
-        { name: 'lineTotal', type: 'number', required: true, label: 'Suma pozycji' },
+        { name: 'unitPrice', type: 'number', required: true, label: 'Cena jednostkowa', admin: { description: 'Wypełniane automatycznie z ceny produktu (w groszach)' } },
+        { name: 'lineTotal', type: 'number', required: true, label: 'Suma pozycji', admin: { readOnly: true, description: 'Obliczane automatycznie: ilość × cena' } },
       ],
     },
-    { name: 'subtotal', type: 'number', required: true, label: 'Kwota netto' },
+    { name: 'subtotal', type: 'number', required: true, label: 'Kwota netto', admin: { readOnly: true, description: 'Obliczane automatycznie z pozycji' } },
     { name: 'deliveryFee', type: 'number', defaultValue: 0, label: 'Koszt dostawy' },
-    { name: 'total', type: 'number', required: true, label: 'Suma' },
+    { name: 'total', type: 'number', required: true, label: 'Suma', admin: { readOnly: true, description: 'Obliczane automatycznie: kwota netto + koszt dostawy' } },
     {
       name: 'paymentMethod',
       type: 'select',
