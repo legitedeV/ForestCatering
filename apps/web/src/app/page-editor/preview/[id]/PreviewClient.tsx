@@ -1,7 +1,11 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import type { PageSection } from '@/components/cms/types'
+import { ANIMATION_CATALOG } from '@/lib/animation-catalog'
+
+// Build a Map for O(1) animation lookups
+const ANIMATION_MAP = new Map(ANIMATION_CATALOG.map((a) => [a.key, a]))
 
 // Importy bloków bezpośrednio — pomijamy BlockRenderer, bo FeaturedProductsBlock
 // jest server component (importuje getPayload) i nie działa w kontekście 'use client'
@@ -83,6 +87,28 @@ function renderBlock(block: PageSection) {
 export function PreviewClient({ initialSections }: Props) {
   const [sections, setSections] = useState<PageSection[]>(initialSections)
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
+  const [spacingInspectorEnabled, setSpacingInspectorEnabled] = useState(false)
+  const blockRefs = useRef<Map<number, HTMLDivElement>>(new Map())
+
+  // IntersectionObserver do triggerowania .visible na entrance animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible')
+          }
+        })
+      },
+      { threshold: 0.1 },
+    )
+
+    blockRefs.current.forEach((el) => {
+      if (el) observer.observe(el)
+    })
+
+    return () => observer.disconnect()
+  }, [sections])
 
   // Nasłuchuj wiadomości od parent window (edytor)
   useEffect(() => {
@@ -128,6 +154,10 @@ export function PreviewClient({ initialSections }: Props) {
           return () => clearTimeout(timer)
         }
       }
+
+      if (data.type === 'editor:enable-spacing-inspector') {
+        setSpacingInspectorEnabled(!!data.enabled)
+      }
     }
 
     window.addEventListener('message', handler)
@@ -139,22 +169,83 @@ export function PreviewClient({ initialSections }: Props) {
     window.parent.postMessage({ type: 'preview:block-clicked', index }, '*')
   }, [])
 
+  // Hover na bloku → wyślij dane spacingów
+  const handleBlockHover = useCallback(
+    (index: number) => {
+      if (!spacingInspectorEnabled) return
+      const el = blockRefs.current.get(index)
+      if (!el) return
+
+      const style = window.getComputedStyle(el)
+      window.parent.postMessage(
+        {
+          type: 'preview:block-spacing',
+          index,
+          margin: {
+            top: parseFloat(style.marginTop) || 0,
+            right: parseFloat(style.marginRight) || 0,
+            bottom: parseFloat(style.marginBottom) || 0,
+            left: parseFloat(style.marginLeft) || 0,
+          },
+          padding: {
+            top: parseFloat(style.paddingTop) || 0,
+            right: parseFloat(style.paddingRight) || 0,
+            bottom: parseFloat(style.paddingBottom) || 0,
+            left: parseFloat(style.paddingLeft) || 0,
+          },
+          width: el.offsetWidth,
+          height: el.offsetHeight,
+          offsetTop: el.offsetTop,
+          offsetLeft: el.offsetLeft,
+        },
+        '*',
+      )
+    },
+    [spacingInspectorEnabled],
+  )
+
+  // Helper to set block ref
+  const setBlockRef = useCallback(
+    (index: number) => (el: HTMLDivElement | null) => {
+      if (el) blockRefs.current.set(index, el)
+      else blockRefs.current.delete(index)
+    },
+    [],
+  )
+
   return (
     <>
-      {sections.map((block, index) => (
-        <div
-          key={block.id ?? `block-${index}`}
-          id={`editor-block-${index}`}
-          onClick={() => handleBlockClick(index)}
-          className={`relative cursor-pointer transition-all duration-300 ${
-            highlightedIndex === index
-              ? 'ring-2 ring-accent ring-offset-2 ring-offset-forest-900'
-              : ''
-          }`}
-        >
-          {renderBlock(block)}
-        </div>
-      ))}
+      {sections.map((block, index) => {
+        const blockData = block as Record<string, unknown>
+        const animKey = (blockData.animation as string) ?? ''
+        const animDef = animKey ? ANIMATION_MAP.get(animKey) : undefined
+        const animClass = animDef?.className ?? ''
+        const delay = (blockData.animationDelay as number) ?? 0
+        const duration = (blockData.animationDuration as number) ?? 0
+
+        return (
+          <div
+            key={block.id ?? `block-${index}`}
+            id={`editor-block-${index}`}
+            ref={setBlockRef(index)}
+            onClick={() => handleBlockClick(index)}
+            onMouseEnter={() => handleBlockHover(index)}
+            className={`relative cursor-pointer transition-all duration-300 ${animClass} ${
+              highlightedIndex === index
+                ? 'ring-2 ring-accent ring-offset-2 ring-offset-forest-900'
+                : ''
+            }`}
+            style={{
+              transitionDelay: delay ? `${delay}ms` : undefined,
+              transitionDuration: duration ? `${duration}ms` : undefined,
+              animationDelay: delay ? `${delay}ms` : undefined,
+              animationDuration: duration ? `${duration}ms` : undefined,
+            }}
+          >
+            {renderBlock(block)}
+          </div>
+        )
+      })}
     </>
   )
 }

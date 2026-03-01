@@ -25,15 +25,16 @@
 - [x] Keyboard shortcuts: Ctrl+S (save), Delete (remove block), Ctrl+D (duplicate)
 - [x] Edycja `blockName` per-block w sidebar
 #### Phase 2 — Visual precision
-- [ ] Grid system overlay (konfigurowalne: 12/16 kolumn, snap-to-grid)
-- [ ] Auto-alignment guides (smart guides jak w Figma/Sketch)
-- [ ] Pixel-perfect positioning: absolute/relative per-element z drag handles
-- [ ] Visual resize handles na blokach (padding/margin adjustment via drag)
-- [ ] Spacing inspector (wizualizacja marginów/paddingów on hover)
+- [x] Grid system overlay (konfigurowalne: 12/16/24 kolumn, rulers, snap-to-grid)
+- [ ] Auto-alignment guides (smart guides jak w Figma/Sketch) → **Phase 3 PR**
+- [ ] Pixel-perfect positioning: absolute/relative per-element z drag handles → **Phase 3 PR**
+- [ ] Visual resize handles na blokach (padding/margin adjustment via drag) → **Phase 3 PR**
+- [x] Spacing inspector (wizualizacja marginów/paddingów on hover)
 
 #### Phase 3 — Styling control
 - [x] Color picker per-element (text, background, border, accent) — CSS variables override w panelu Styl
-- [ ] Custom CSS per-block z panelu bocznego
+- [x] Animation picker per-block (30+ animacji CSS/Framer Motion z preview)
+- [x] Custom CSS per-block z panelu bocznego (animation classes)
 - [x] Custom CSS per-page (advanced editor w panelu Styl)
 - [ ] Typography controls (font-size, weight, line-height, letter-spacing)
 - [ ] Background: solid/gradient/image per-block

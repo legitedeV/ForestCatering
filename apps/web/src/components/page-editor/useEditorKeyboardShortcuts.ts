@@ -10,6 +10,7 @@ export function useEditorKeyboardShortcuts() {
   const selectedBlockIndex = usePageEditor((s) => s.selectedBlockIndex)
   const duplicateBlock = usePageEditor((s) => s.duplicateBlock)
   const removeBlock = usePageEditor((s) => s.removeBlock)
+  const toggleGrid = usePageEditor((s) => s.toggleGrid)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -41,9 +42,16 @@ export function useEditorKeyboardShortcuts() {
         duplicateBlock(selectedBlockIndex)
         return
       }
+
+      // Ctrl+G / Cmd+G — toggle grid
+      if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
+        e.preventDefault()
+        toggleGrid()
+        return
+      }
     }
 
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [savePage, isDirty, isSaving, selectedBlockIndex, duplicateBlock, removeBlock])
+  }, [savePage, isDirty, isSaving, selectedBlockIndex, duplicateBlock, removeBlock, toggleGrid])
 }

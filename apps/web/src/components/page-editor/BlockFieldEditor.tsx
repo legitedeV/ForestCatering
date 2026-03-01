@@ -13,6 +13,7 @@ import {
 import { FieldArrayEditor } from './FieldArrayEditor'
 import type { ArrayFieldConfig } from './FieldArrayEditor'
 import { FieldMediaPicker } from './FieldMediaPicker'
+import { AnimationPicker } from './AnimationPicker'
 
 function PayloadAdminLink({ label, pageId }: { label: string; pageId: number | null }) {
   return (
@@ -218,6 +219,11 @@ export function BlockFieldEditor() {
           <p className="text-sm font-semibold text-cream">{meta?.label ?? block.blockType}</p>
           <p className="text-xs text-forest-500">Sekcja #{idx + 1}</p>
         </div>
+      </div>
+
+      {/* Animacja bloku */}
+      <div className="border-b border-forest-800 pb-3 mb-3">
+        <AnimationPicker blockIndex={idx} />
       </div>
 
       {/* Pola wg blockType */}

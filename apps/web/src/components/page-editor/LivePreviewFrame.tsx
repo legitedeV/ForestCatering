@@ -23,6 +23,7 @@ export function LivePreviewFrame() {
   const pageTemplate = usePageEditor((s) => s.pageTemplate)
   const cssOverrides = usePageEditor((s) => s.cssOverrides)
   const customCss = usePageEditor((s) => s.customCss)
+  const spacingInspectorEnabled = usePageEditor((s) => s.spacingInspectorEnabled)
 
   const [isLoaded, setIsLoaded] = useState(false)
   const [scale, setScale] = useState(1)
@@ -96,6 +97,15 @@ export function LivePreviewFrame() {
     }, 150)
     return () => clearTimeout(timer)
   }, [cssOverrides, pageTemplate, customCss, isLoaded])
+
+  // Wyślij spacing inspector state do iframe
+  useEffect(() => {
+    if (!isLoaded) return
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: 'editor:enable-spacing-inspector', enabled: spacingInspectorEnabled },
+      '*',
+    )
+  }, [spacingInspectorEnabled, isLoaded])
 
   // Odbieraj zdarzenia z iframe (kliknięcie bloku)
   useEffect(() => {

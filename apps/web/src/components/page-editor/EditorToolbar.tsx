@@ -30,6 +30,15 @@ function PhoneIcon({ className }: { className?: string }) {
   )
 }
 
+function GridIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <path d="M3 9h18M3 15h18M9 3v18M15 3v18" />
+    </svg>
+  )
+}
+
 // Spinner do stanu ładowania
 function Spinner() {
   return (
@@ -55,6 +64,14 @@ export function EditorToolbar() {
   const previewBreakpoint = usePageEditor((s) => s.previewBreakpoint)
   const setPreviewBreakpoint = usePageEditor((s) => s.setPreviewBreakpoint)
   const savePage = usePageEditor((s) => s.savePage)
+  const gridVisible = usePageEditor((s) => s.gridVisible)
+  const gridColumns = usePageEditor((s) => s.gridColumns)
+  const gridShowRulers = usePageEditor((s) => s.gridShowRulers)
+  const toggleGrid = usePageEditor((s) => s.toggleGrid)
+  const setGridColumns = usePageEditor((s) => s.setGridColumns)
+  const toggleRulers = usePageEditor((s) => s.toggleRulers)
+  const spacingInspectorEnabled = usePageEditor((s) => s.spacingInspectorEnabled)
+  const toggleSpacingInspector = usePageEditor((s) => s.toggleSpacingInspector)
 
   return (
     <header
@@ -81,24 +98,81 @@ export function EditorToolbar() {
         )}
       </div>
 
-      {/* Środek — breakpoint selector */}
-      <div className="flex items-center gap-1 rounded-lg bg-forest-900 p-1" role="radiogroup" aria-label="Breakpoint podglądu">
-        {BREAKPOINTS.map(({ key, label, Icon }) => (
-          <button
-            key={key}
-            role="radio"
-            aria-checked={previewBreakpoint === key}
-            aria-label={label}
-            onClick={() => setPreviewBreakpoint(key)}
-            className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition ${
-              previewBreakpoint === key
-                ? 'bg-accent text-forest-950'
-                : 'text-forest-400 hover:text-cream'
-            }`}
-          >
-            <Icon className="inline-block" />
-          </button>
-        ))}
+      {/* Środek — breakpoint selector + grid/inspector toggles */}
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 rounded-lg bg-forest-900 p-1" role="radiogroup" aria-label="Breakpoint podglądu">
+          {BREAKPOINTS.map(({ key, label, Icon }) => (
+            <button
+              key={key}
+              role="radio"
+              aria-checked={previewBreakpoint === key}
+              aria-label={label}
+              onClick={() => setPreviewBreakpoint(key)}
+              className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition ${
+                previewBreakpoint === key
+                  ? 'bg-accent text-forest-950'
+                  : 'text-forest-400 hover:text-cream'
+              }`}
+            >
+              <Icon className="inline-block" />
+            </button>
+          ))}
+        </div>
+
+        {/* Grid toggle */}
+        <button
+          onClick={toggleGrid}
+          className={`rounded-md px-2 py-1.5 text-xs font-medium transition ${
+            gridVisible ? 'bg-accent-warm text-forest-950' : 'bg-forest-900 text-forest-400 hover:text-cream'
+          }`}
+          title="Siatka (Ctrl+G)"
+          aria-label="Przełącz siatkę"
+          aria-pressed={gridVisible}
+        >
+          <GridIcon className="inline-block" />
+        </button>
+
+        {/* Grid config dropdown */}
+        {gridVisible && (
+          <div className="flex items-center gap-1 rounded-lg bg-forest-900 p-1">
+            {([12, 16, 24] as const).map((cols) => (
+              <button
+                key={cols}
+                onClick={() => setGridColumns(cols)}
+                className={`rounded px-1.5 py-0.5 text-[10px] font-medium transition ${
+                  gridColumns === cols ? 'bg-accent-warm text-forest-950' : 'text-forest-500 hover:text-cream'
+                }`}
+                aria-label={`${cols} kolumn`}
+              >
+                {cols}
+              </button>
+            ))}
+            <button
+              onClick={toggleRulers}
+              className={`rounded px-1.5 py-0.5 text-[10px] font-medium transition ${
+                gridShowRulers ? 'bg-accent-warm/30 text-accent-warm' : 'text-forest-500 hover:text-cream'
+              }`}
+              title="Linijki"
+              aria-label="Przełącz linijki"
+              aria-pressed={gridShowRulers}
+            >
+              📏
+            </button>
+          </div>
+        )}
+
+        {/* Spacing inspector toggle */}
+        <button
+          onClick={toggleSpacingInspector}
+          className={`rounded-md px-2 py-1.5 text-xs font-medium transition ${
+            spacingInspectorEnabled ? 'bg-accent-warm text-forest-950' : 'bg-forest-900 text-forest-400 hover:text-cream'
+          }`}
+          title="Inspektor odstępów"
+          aria-label="Przełącz inspektor odstępów"
+          aria-pressed={spacingInspectorEnabled}
+        >
+          📐
+        </button>
       </div>
 
       {/* Prawo — dirty badge, save, preview */}

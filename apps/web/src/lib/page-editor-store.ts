@@ -108,6 +108,15 @@ interface EditorState {
   // Stan sidebara
   sidebarTab: 'blocks' | 'settings' | 'add' | 'style'
 
+  // Grid overlay
+  gridColumns: 12 | 16 | 24
+  gridVisible: boolean
+  gridShowRulers: boolean
+  gridSnapEnabled: boolean
+
+  // Spacing inspector
+  spacingInspectorEnabled: boolean
+
   // Styl / Template
   pageTemplate: string | null
   cssOverrides: Record<string, string>
@@ -130,6 +139,15 @@ interface EditorState {
   setSidebarTab: (tab: 'blocks' | 'settings' | 'add' | 'style') => void
   resetEditor: () => void
 
+  // Akcje — Grid
+  setGridColumns: (cols: 12 | 16 | 24) => void
+  toggleGrid: () => void
+  toggleRulers: () => void
+  toggleSnap: () => void
+
+  // Akcje — Spacing inspector
+  toggleSpacingInspector: () => void
+
   // Akcje — Styl
   setPageTemplate: (template: string | null) => void
   setCssOverride: (variable: string, value: string) => void
@@ -150,6 +168,11 @@ const initialState = {
   error: null,
   previewBreakpoint: 'desktop' as const,
   sidebarTab: 'blocks' as const,
+  gridColumns: 12 as const,
+  gridVisible: false,
+  gridShowRulers: false,
+  gridSnapEnabled: false,
+  spacingInspectorEnabled: false,
   pageTemplate: null as string | null,
   cssOverrides: {} as Record<string, string>,
   customCss: '',
@@ -290,6 +313,15 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
 
   // Resetuj stan edytora
   resetEditor: () => set(initialState),
+
+  // Grid overlay
+  setGridColumns: (cols) => set({ gridColumns: cols }),
+  toggleGrid: () => set((s) => ({ gridVisible: !s.gridVisible })),
+  toggleRulers: () => set((s) => ({ gridShowRulers: !s.gridShowRulers })),
+  toggleSnap: () => set((s) => ({ gridSnapEnabled: !s.gridSnapEnabled })),
+
+  // Spacing inspector
+  toggleSpacingInspector: () => set((s) => ({ spacingInspectorEnabled: !s.spacingInspectorEnabled })),
 
   // Ustaw template strony
   setPageTemplate: (template) => set({ pageTemplate: template, isDirty: true }),
