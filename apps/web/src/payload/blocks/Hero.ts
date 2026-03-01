@@ -14,5 +14,6 @@ export const HeroBlock: Block = {
     { name: 'secondaryCtaLink', type: 'text', label: 'Link drugiego przycisku' },
     { name: 'showScrollIndicator', type: 'checkbox', defaultValue: true, label: 'Pokaż wskaźnik przewijania' },
     { name: 'fullHeight', type: 'checkbox', defaultValue: false, label: 'Pełna wysokość ekranu' },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

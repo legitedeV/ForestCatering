@@ -18,5 +18,6 @@ export const StepsBlock: Block = {
         { name: 'description', type: 'textarea', required: true, label: 'Opis kroku' },
       ],
     },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

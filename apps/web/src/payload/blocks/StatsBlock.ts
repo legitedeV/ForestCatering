@@ -16,5 +16,6 @@ export const StatsBlock: Block = {
         { name: 'label', type: 'text', required: true, label: 'Opis' },
       ],
     },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

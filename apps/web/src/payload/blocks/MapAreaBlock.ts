@@ -27,5 +27,6 @@ export const MapAreaBlock: Block = {
       fields: [{ name: 'name', type: 'text', required: true, label: 'Nazwa miasta' }],
     },
     { name: 'note', type: 'text', label: 'Notatka' },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

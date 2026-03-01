@@ -20,5 +20,6 @@ export const AboutBlock: Block = {
     { name: 'image', type: 'upload', relationTo: 'media', label: 'Zdjęcie' },
     { name: 'ctaText', type: 'text', label: 'Tekst przycisku' },
     { name: 'ctaLink', type: 'text', label: 'Link przycisku' },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

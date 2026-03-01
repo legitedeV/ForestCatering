@@ -8,5 +8,6 @@ export const LegalTextBlock: Block = {
     { name: 'heading', type: 'text', label: 'Nagłówek' },
     { name: 'effectiveDate', type: 'date', label: 'Data obowiązywania' },
     { name: 'content', type: 'richText', required: true, editor: lexicalEditor({}) },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

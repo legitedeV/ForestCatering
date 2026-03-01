@@ -8,5 +8,6 @@ export const FeaturedProductsBlock: Block = {
     { name: 'limit', type: 'number', defaultValue: 6, label: 'Limit produktów' },
     { name: 'linkText', type: 'text', label: 'Tekst linku' },
     { name: 'linkUrl', type: 'text', label: 'URL linku' },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

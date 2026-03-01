@@ -44,5 +44,6 @@ export const OfferCardsBlock: Block = {
         { name: 'ctaLink', type: 'text', label: 'Link CTA', validate: validateCtaLink },
       ],
     },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

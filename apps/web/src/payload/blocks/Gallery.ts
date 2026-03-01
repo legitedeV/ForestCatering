@@ -14,5 +14,6 @@ export const GalleryBlock: Block = {
         { name: 'image', type: 'upload', relationTo: 'media', required: true, label: 'Zdjęcie' },
       ],
     },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

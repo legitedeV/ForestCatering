@@ -18,5 +18,6 @@ export const ServicesBlock: Block = {
         { name: 'link', type: 'text', label: 'Link' },
       ],
     },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }
