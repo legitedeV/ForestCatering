@@ -31,3 +31,168 @@ header {
 }
 
 /* Payload admin custom styles */
+/* Payload Admin Contrast Overrides */
+[class*='payload'],
+[data-theme],
+[data-theme='dark'] {
+  color: var(--theme-text);
+}
+
+[class*='payload'] p,
+[class*='payload'] span,
+[class*='payload'] li,
+[class*='payload'] td,
+[class*='payload'] th,
+[class*='payload'] small,
+[class*='payload'] [class*='text'],
+[class*='payload'] [class*='Text'] {
+  color: var(--theme-text);
+  opacity: 1;
+}
+
+[class*='payload'] [class*='muted'],
+[class*='payload'] [class*='Muted'],
+[class*='payload'] [class*='secondary'],
+[class*='payload'] [class*='Secondary'],
+[class*='payload'] [class*='meta'],
+[class*='payload'] [class*='Meta'] {
+  color: var(--theme-elevation-400);
+  opacity: 0.85;
+}
+
+[class*='payload'] label,
+[class*='payload'] [for],
+[class*='payload'] [class*='label'],
+[class*='payload'] [class*='Label'],
+[class*='payload'] [class*='fieldLabel'] {
+  color: var(--theme-text) !important;
+  opacity: 1 !important;
+  font-weight: 600;
+}
+
+[class*='payload'] h1,
+[class*='payload'] h2,
+[class*='payload'] h3,
+[class*='payload'] [class*='heading'],
+[class*='payload'] [class*='Heading'] {
+  color: var(--theme-text) !important;
+  opacity: 1;
+  font-weight: 700;
+}
+
+[class*='payload'] [class*='description'],
+[class*='payload'] [class*='Description'],
+[class*='payload'] [class*='helper'],
+[class*='payload'] [class*='Helper'],
+[class*='payload'] [class*='hint'],
+[class*='payload'] [class*='Hint'] {
+  color: var(--theme-elevation-300) !important;
+  opacity: 1 !important;
+}
+
+[class*='payload'] input,
+[class*='payload'] textarea,
+[class*='payload'] select,
+[class*='payload'] [class*='input'] input,
+[class*='payload'] [class*='Input'] input,
+[class*='payload'] [class*='textarea'] textarea,
+[class*='payload'] [class*='Textarea'] textarea,
+[class*='payload'] [class*='select'] select,
+[class*='payload'] [class*='Select'] select {
+  color: var(--theme-text);
+  border-color: rgba(189, 197, 205, 0.28);
+}
+
+[class*='payload'] input::placeholder,
+[class*='payload'] textarea::placeholder,
+[class*='payload'] [class*='input'] input::placeholder,
+[class*='payload'] [class*='Input'] input::placeholder,
+[class*='payload'] [class*='textarea'] textarea::placeholder,
+[class*='payload'] [class*='Textarea'] textarea::placeholder {
+  color: var(--theme-elevation-400);
+  opacity: 0.6;
+}
+
+[class*='payload'] input:focus,
+[class*='payload'] textarea:focus,
+[class*='payload'] select:focus,
+[class*='payload'] [class*='input'] input:focus,
+[class*='payload'] [class*='Input'] input:focus,
+[class*='payload'] [class*='textarea'] textarea:focus,
+[class*='payload'] [class*='Textarea'] textarea:focus,
+[class*='payload'] [class*='select'] select:focus,
+[class*='payload'] [class*='Select'] select:focus {
+  border-color: var(--theme-elevation-400);
+  box-shadow: 0 0 0 2px rgba(189, 197, 205, 0.22);
+  outline: none;
+}
+
+[class*='payload'] a,
+[class*='payload'] [class*='link'],
+[class*='payload'] [class*='Link'] {
+  color: var(--theme-elevation-400);
+  text-decoration-color: transparent;
+  text-underline-offset: 0.12em;
+}
+
+[class*='payload'] a:hover,
+[class*='payload'] a:focus-visible,
+[class*='payload'] [class*='link']:hover,
+[class*='payload'] [class*='link']:focus-visible,
+[class*='payload'] [class*='Link']:hover,
+[class*='payload'] [class*='Link']:focus-visible {
+  color: var(--theme-text);
+  text-decoration: underline;
+  text-decoration-color: currentcolor;
+}
+
+[class*='payload'] button,
+[class*='payload'] [class*='button'],
+[class*='payload'] [class*='Button'] {
+  color: var(--theme-text) !important;
+}
+
+[class*='payload'] button[disabled],
+[class*='payload'] button[aria-disabled='true'],
+[class*='payload'] [class*='button'][disabled],
+[class*='payload'] [class*='button'][aria-disabled='true'],
+[class*='payload'] [class*='Button'][disabled],
+[class*='payload'] [class*='Button'][aria-disabled='true'] {
+  color: var(--theme-elevation-400) !important;
+  opacity: 0.72 !important;
+  border-color: rgba(189, 197, 205, 0.24);
+}
+
+[class*='payload'] button:focus-visible,
+[class*='payload'] [class*='button']:focus-visible,
+[class*='payload'] [class*='Button']:focus-visible {
+  outline: 2px solid var(--theme-elevation-400);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  [class*='payload'] label,
+  [class*='payload'] [for],
+  [class*='payload'] [class*='label'],
+  [class*='payload'] [class*='Label'],
+  [class*='payload'] [class*='fieldLabel'] {
+    font-weight: 650;
+    opacity: 1 !important;
+  }
+
+  [class*='payload'] h1,
+  [class*='payload'] h2,
+  [class*='payload'] h3,
+  [class*='payload'] [class*='heading'],
+  [class*='payload'] [class*='Heading'] {
+    font-weight: 750;
+    opacity: 1;
+  }
+
+  [class*='payload'] [class*='description'],
+  [class*='payload'] [class*='Description'],
+  [class*='payload'] [class*='helper'],
+  [class*='payload'] [class*='Helper'] {
+    opacity: 0.95 !important;
+  }
+}
