@@ -77,23 +77,6 @@ OPTIONAL_CMS_PATHS=(
   "/regulamin"
 )
 
-for p in "${REQUIRED_PATHS[@]}"; do
-  check_required "http://127.0.0.1:3000${p}"
-done
-for p in "${OPTIONAL_CMS_PATHS[@]}"; do
-  check_optional "http://127.0.0.1:3000${p}"
-done
-check_homepage_static_assets "http://127.0.0.1:3000"
-
-if systemctl is-active --quiet nginx 2>/dev/null; then
-  for p in "${REQUIRED_PATHS[@]}"; do
-    check_required "http://forestbar.pl${p}"
-  done
-  for p in "${OPTIONAL_CMS_PATHS[@]}"; do
-    check_optional "http://forestbar.pl${p}"
-  done
-  check_homepage_static_assets "http://forestbar.pl"
-fi
 
 for p in "${REQUIRED_PATHS[@]}"; do
   check_required "https://forestbar.pl${p}"
