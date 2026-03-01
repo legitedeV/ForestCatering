@@ -50,7 +50,7 @@ export function ColorPickerField({
 }: ColorPickerFieldProps) {
   const [hexInput, setHexInput] = useState(colorToHex(value))
   const [opacity, setOpacity] = useState(hexToOpacity(value))
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   useEffect(() => {
     setHexInput(colorToHex(value))
@@ -98,10 +98,11 @@ export function ColorPickerField({
 
   const handleEyeDropper = useCallback(async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const dropper = new (window as any).EyeDropper()
+      if (!('EyeDropper' in window)) return
+      const EyeDropperCtor = (window as unknown as { EyeDropper: new () => { open: () => Promise<{ sRGBHex: string }> } }).EyeDropper
+      const dropper = new EyeDropperCtor()
       const result = await dropper.open()
-      const hex = result.sRGBHex as string
+      const hex = result.sRGBHex
       setHexInput(hex)
       commit(hex, opacity)
     } catch {

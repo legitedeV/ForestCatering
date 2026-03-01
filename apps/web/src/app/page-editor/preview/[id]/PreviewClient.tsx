@@ -82,7 +82,7 @@ function buildInlineStyles(overrides: BlockStyleOverrides | undefined, breakpoin
 
     // Colors
     color: overrides.textColor,
-    backgroundColor: overrides.backgroundType === 'gradient' || overrides.backgroundType === 'image' || overrides.backgroundType === 'none'
+    backgroundColor: (['gradient', 'image', 'none'] as string[]).includes(overrides.backgroundType ?? '')
       ? undefined
       : overrides.backgroundColor,
     backgroundImage: overrides.backgroundType === 'gradient'
@@ -114,10 +114,27 @@ function buildInlineStyles(overrides: BlockStyleOverrides | undefined, breakpoin
   }
 }
 
+/** Sanitize a blockId to only allow safe characters for CSS selectors */
+function sanitizeBlockId(id: string): string {
+  return id.replace(/[^a-zA-Z0-9_-]/g, '')
+}
+
+/** Sanitize custom CSS to prevent script injection via CSS */
+function sanitizeCss(css: string): string {
+  // Remove any <script> tags, url() with javascript:, expression(), and @import with javascript
+  return css
+    .replace(/<\/?script[^>]*>/gi, '')
+    .replace(/javascript\s*:/gi, '')
+    .replace(/expression\s*\(/gi, '')
+    .replace(/@import\s+url\s*\(\s*['"]?\s*javascript/gi, '')
+}
+
 /** Build scoped custom CSS for a block */
 function buildCustomCssTag(blockId: string, customCss: string | undefined): string {
   if (!customCss) return ''
-  return customCss.replace(/\.this/g, `[data-block-id="${blockId}"]`)
+  const safeId = sanitizeBlockId(blockId)
+  const safeCss = sanitizeCss(customCss)
+  return safeCss.replace(/\.this/g, `[data-block-id="${safeId}"]`)
 }
 
 /** Renderuj pojedynczy blok — ten sam switch co BlockRenderer, bez FeaturedProducts (server-only) */
