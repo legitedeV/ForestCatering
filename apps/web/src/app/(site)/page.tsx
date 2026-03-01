@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BlockRenderer } from '@/components/cms/BlockRenderer'
 import { BlockRendererClient } from '@/components/cms/BlockRendererClient'
+import { PageCssOverlay } from '@/components/cms/PageCssOverlay'
 import type { SiteSetting } from '@/payload-types'
 import { getMediaUrl } from '@/lib/media'
 import { getPayload } from '@/lib/payload-client'
@@ -44,8 +45,14 @@ export default async function HomePage() {
   }
 
   return (
-    <BlockRendererClient>
-      <BlockRenderer sections={page.sections} />
-    </BlockRendererClient>
+    <>
+      <PageCssOverlay
+        globalCssOverlay={(page as unknown as Record<string, unknown>).globalCssOverlay as string | undefined}
+        layoutCssOverlay={(page as unknown as Record<string, unknown>).layoutCssOverlay as string | undefined}
+      />
+      <BlockRendererClient>
+        <BlockRenderer sections={page.sections} />
+      </BlockRendererClient>
+    </>
   )
 }

@@ -8,6 +8,7 @@ import * as migration_20260226_000001_add_media_image_slug from './20260226_0000
 import * as migration_20260227_000001_add_payment_integration_fields from './20260227_000001_add_payment_integration_fields';
 import * as migration_20260301_121555 from './20260301_121555';
 import * as migration_20260301_200000 from './20260301_200000';
+import * as migration_20260301_220000_add_page_template_css_overlays from './20260301_220000_add_page_template_css_overlays';
 
 export const migrations = [
   {
@@ -59,5 +60,10 @@ export const migrations = [
     up: migration_20260301_200000.up,
     down: migration_20260301_200000.down,
     name: '20260301_200000',
+  },
+  {
+    up: migration_20260301_220000_add_page_template_css_overlays.up,
+    down: migration_20260301_220000_add_page_template_css_overlays.down,
+    name: '20260301_220000_add_page_template_css_overlays',
   },
 ];

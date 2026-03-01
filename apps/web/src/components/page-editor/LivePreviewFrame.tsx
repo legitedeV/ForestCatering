@@ -69,6 +69,8 @@ export function LivePreviewFrame() {
   const splitPreviewEnabled = usePageEditor((s) => s.splitPreviewEnabled)
   const splitPreviewBreakpoints = usePageEditor((s) => s.splitPreviewBreakpoints)
   const setA11yIssues = usePageEditor((s) => s.setA11yIssues)
+  const globalCssOverlay = usePageEditor((s) => s.globalCssOverlay)
+  const layoutCssOverlay = usePageEditor((s) => s.layoutCssOverlay)
 
   const [isLoaded, setIsLoaded] = useState(false)
   const [scale, setScale] = useState(1)
@@ -179,6 +181,19 @@ export function LivePreviewFrame() {
     if (!isAnyLoaded) return
     postToAllIframes({ type: 'editor:enable-inline-edit', enabled: inlineEditEnabled })
   }, [inlineEditEnabled, isAnyLoaded, postToAllIframes])
+
+  // Wyślij CSS overlays do iframe
+  useEffect(() => {
+    if (!isAnyLoaded) return
+    const timer = setTimeout(() => {
+      postToAllIframes({
+        type: 'editor:css-overlays-updated',
+        globalCssOverlay: usePageEditor.getState().globalCssOverlay,
+        layoutCssOverlay: usePageEditor.getState().layoutCssOverlay,
+      })
+    }, 200)
+    return () => clearTimeout(timer)
+  }, [globalCssOverlay, layoutCssOverlay, isAnyLoaded, postToAllIframes])
 
   // Odbieraj zdarzenia z iframe (kliknięcie bloku + inline edit + scroll sync + a11y)
   useEffect(() => {

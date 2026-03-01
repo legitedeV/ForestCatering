@@ -38,6 +38,9 @@ export async function GET(
       path: page.path,
       sections: page.sections ?? [],
       updatedAt: page.updatedAt,
+      pageTemplate: (page as unknown as Record<string, unknown>).pageTemplate ?? null,
+      globalCssOverlay: (page as unknown as Record<string, unknown>).globalCssOverlay ?? '',
+      layoutCssOverlay: (page as unknown as Record<string, unknown>).layoutCssOverlay ?? '',
     })
   } catch (error) {
     console.error('[page-editor GET] Błąd pobierania strony:', error)
@@ -80,12 +83,23 @@ export async function PUT(
     }
   }
 
+  const { pageTemplate, globalCssOverlay, layoutCssOverlay } = body as {
+    pageTemplate?: string
+    globalCssOverlay?: string
+    layoutCssOverlay?: string
+  }
+
   try {
     const payload = await getPayload()
+    const updateData: Record<string, unknown> = { sections }
+    if (pageTemplate !== undefined) updateData.pageTemplate = pageTemplate
+    if (globalCssOverlay !== undefined) updateData.globalCssOverlay = globalCssOverlay
+    if (layoutCssOverlay !== undefined) updateData.layoutCssOverlay = layoutCssOverlay
+
     const updated = await payload.update({
       collection: 'pages',
       id: Number(id),
-      data: { sections },
+      data: updateData,
       draft: true,
     })
 
