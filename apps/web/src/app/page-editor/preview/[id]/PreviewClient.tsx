@@ -6,7 +6,7 @@ import { ANIMATION_CATALOG } from '@/lib/animation-catalog'
 import type { BlockStyleOverrides } from '@/lib/page-editor-store'
 import { generateAllBlocksCss } from '@/lib/block-style-injector'
 import type { BlockComment } from '@/lib/block-comments'
-
+import { INLINE_EDITABLE_FIELDS } from '@/lib/inline-editable-fields'
 // Build a Map for O(1) animation lookups
 const ANIMATION_MAP = new Map(ANIMATION_CATALOG.map((a) => [a.key, a]))
 
@@ -185,6 +185,8 @@ export function PreviewClient({ initialSections }: Props) {
   const [currentBreakpoint, setCurrentBreakpoint] = useState<string>('desktop')
   const [comments, setComments] = useState<BlockComment[]>([])
   const [showComments, setShowComments] = useState(false)
+  const [inlineEditEnabled, setInlineEditEnabled] = useState(false)
+  const [activeEditLabel, setActiveEditLabel] = useState<string | null>(null)
   const blockRefs = useRef<Map<number, HTMLDivElement>>(new Map())
 
   // IntersectionObserver do triggerowania .visible na entrance animations
@@ -267,6 +269,10 @@ export function PreviewClient({ initialSections }: Props) {
       if (data.type === 'editor:show-comments') {
         setShowComments(!!data.enabled)
       }
+
+      if (data.type === 'editor:enable-inline-edit') {
+        setInlineEditEnabled(!!data.enabled)
+      }
     }
 
     window.addEventListener('message', handler)
@@ -277,6 +283,93 @@ export function PreviewClient({ initialSections }: Props) {
   const handleBlockClick = useCallback((index: number) => {
     window.parent.postMessage({ type: 'preview:block-clicked', index }, '*')
   }, [])
+
+  // Double-click inline edit — uruchom contentEditable na h1/h2/p
+  const handleBlockDoubleClick = useCallback(
+    (e: React.MouseEvent, blockIndex: number) => {
+      if (!inlineEditEnabled) return
+      const block = sections[blockIndex]
+      if (!block) return
+
+      const blockType = block.blockType
+      const fields = INLINE_EDITABLE_FIELDS[blockType] ?? []
+      if (fields.length === 0) return
+
+      const blockEl = blockRefs.current.get(blockIndex)
+      if (!blockEl) return
+
+      for (const field of fields) {
+        const el = blockEl.querySelector(field.selector) as HTMLElement | null
+        if (!el) continue
+
+        if (el.isContentEditable) return // already editing
+
+        const original = el.textContent ?? ''
+        el.contentEditable = 'true'
+        el.classList.add('ring-2', 'ring-accent-warm', 'outline-none', 'rounded')
+        el.focus()
+        setActiveEditLabel(field.label)
+
+        let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+        const commit = () => {
+          const newVal = el.textContent ?? ''
+          el.contentEditable = 'false'
+          el.classList.remove('ring-2', 'ring-accent-warm', 'outline-none', 'rounded')
+          setActiveEditLabel(null)
+          if (debounceTimer !== null) clearTimeout(debounceTimer)
+          window.parent.postMessage(
+            { type: 'preview:inline-edit', blockIndex, fieldPath: field.fieldPath, value: newVal },
+            '*',
+          )
+        }
+
+        const cancel = () => {
+          el.textContent = original
+          el.contentEditable = 'false'
+          el.classList.remove('ring-2', 'ring-accent-warm', 'outline-none', 'rounded')
+          setActiveEditLabel(null)
+          if (debounceTimer !== null) clearTimeout(debounceTimer)
+        }
+
+        const onInput = () => {
+          if (debounceTimer !== null) clearTimeout(debounceTimer)
+          debounceTimer = setTimeout(() => {
+            window.parent.postMessage(
+              { type: 'preview:inline-edit', blockIndex, fieldPath: field.fieldPath, value: el.textContent ?? '' },
+              '*',
+            )
+          }, 300)
+        }
+
+        const onKeyDown = (ke: KeyboardEvent) => {
+          if (!field.multiline && ke.key === 'Enter') {
+            ke.preventDefault()
+            commit()
+          } else if (ke.key === 'Escape') {
+            cancel()
+          }
+        }
+
+        const onBlur = () => {
+          commit()
+          cleanup()
+        }
+
+        const cleanup = () => {
+          el.removeEventListener('input', onInput)
+          el.removeEventListener('keydown', onKeyDown)
+          el.removeEventListener('blur', onBlur)
+        }
+
+        el.addEventListener('input', onInput)
+        el.addEventListener('keydown', onKeyDown)
+        el.addEventListener('blur', onBlur, { once: true })
+        break
+      }
+    },
+    [inlineEditEnabled, sections],
+  )
 
   // Hover na bloku → wyślij dane spacingów
   const handleBlockHover = useCallback(
@@ -330,6 +423,13 @@ export function PreviewClient({ initialSections }: Props) {
         dangerouslySetInnerHTML={{ __html: buildAllInjectedCss(sections) }}
       />
 
+      {/* Inline edit indicator */}
+      {activeEditLabel && (
+        <div className="fixed top-3 left-1/2 z-50 -translate-x-1/2 rounded-full bg-accent-warm/90 px-3 py-1 text-xs font-medium text-forest-950 shadow-lg">
+          ✏️ Edytujesz: {activeEditLabel}
+        </div>
+      )}
+
       {sections.map((block, index) => {
         const blockData = block as Record<string, unknown>
         const animKey = (blockData.animation as string) ?? ''
@@ -348,6 +448,7 @@ export function PreviewClient({ initialSections }: Props) {
             data-block-id={blockId}
             ref={setBlockRef(index)}
             onClick={() => handleBlockClick(index)}
+            onDoubleClick={(e) => handleBlockDoubleClick(e, index)}
             onMouseEnter={() => handleBlockHover(index)}
             className={`relative cursor-pointer transition-all duration-300 ${animClass} ${
               highlightedIndex === index
@@ -357,10 +458,12 @@ export function PreviewClient({ initialSections }: Props) {
             style={{
               transitionDelay: delay ? `${delay}ms` : undefined,
               transitionDuration: duration ? `${duration}ms` : undefined,
-              animationDelay: delay ? `${delay}ms` : undefined,
-              animationDuration: duration ? `${duration}ms` : undefined,
+              '--ve-anim-duration': duration ? `${duration}ms` : undefined,
+              '--ve-anim-delay': delay ? `${delay}ms` : undefined,
+              '--ve-anim-easing': (blockData.animationEasing as string) || undefined,
+              '--ve-anim-iter': (blockData.animationIterations as string) || undefined,
               ...blockStyles,
-            }}
+            } as React.CSSProperties}
           >
             {renderBlock(block)}
             {/* Comment pins */}

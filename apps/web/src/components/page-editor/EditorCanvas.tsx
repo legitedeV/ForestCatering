@@ -8,6 +8,7 @@ import type { PageSection } from '@/components/cms/types'
 import { GridOverlay } from './GridOverlay'
 import { BlockCommentIndicator } from './BlockCommentIndicator'
 import { CommentPopover } from './CommentPopover'
+import { BatchActionsBar } from './BatchActionsBar'
 
 // Pomocnik — wyciągnij subtitle z bloku (heading lub pierwszy tekst)
 function getBlockSubtitle(block: PageSection): string {
@@ -55,18 +56,25 @@ function BlockCard({
   const moveBlock = usePageEditor((s) => s.moveBlock)
   const duplicateBlock = usePageEditor((s) => s.duplicateBlock)
   const removeBlock = usePageEditor((s) => s.removeBlock)
+  const selectedBlockIndices = usePageEditor((s) => s.selectedBlockIndices)
+  const toggleBlockSelection = usePageEditor((s) => s.toggleBlockSelection)
 
   const [commentOpen, setCommentOpen] = useState(false)
 
   const meta = getBlockMeta(block.blockType)
   const isSelected = selectedBlockIndex === index
+  const isBatchSelected = selectedBlockIndices.includes(index)
   const subtitle = getBlockSubtitle(block)
   const blockName = (block as Record<string, unknown>).blockName as string | undefined
 
-  const handleSelect = useCallback(() => {
+  const handleSelect = useCallback((e?: React.MouseEvent) => {
+    if (e && (e.ctrlKey || e.metaKey)) {
+      toggleBlockSelection(index)
+      return
+    }
     selectBlock(index)
     setSidebarTab('settings')
-  }, [index, selectBlock, setSidebarTab])
+  }, [index, selectBlock, setSidebarTab, toggleBlockSelection])
 
   return (
     <Reorder.Item
@@ -76,7 +84,9 @@ function BlockCard({
       className={`group flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-2.5 transition ${
         isSelected
           ? 'border-accent ring-1 ring-accent/30 bg-forest-800/60'
-          : 'border-forest-700 hover:border-forest-600 bg-forest-900'
+          : isBatchSelected
+            ? 'border-accent-warm ring-1 ring-accent-warm/30 bg-forest-800/40'
+            : 'border-forest-700 hover:border-forest-600 bg-forest-900'
       }`}
       onClick={handleSelect}
       onKeyDown={(e: React.KeyboardEvent) => {
@@ -304,6 +314,8 @@ export function EditorCanvas() {
           ))}
         </AnimatePresence>
       </Reorder.Group>
+
+      <BatchActionsBar />
     </div>
   )
 }

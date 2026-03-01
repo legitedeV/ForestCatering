@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 const validateOptionalUrl = (value: unknown) => {
   if (!value) return true
@@ -41,6 +42,6 @@ export const TeamBlock: Block = {
         },
       ],
     },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

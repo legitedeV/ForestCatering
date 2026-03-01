@@ -55,12 +55,19 @@
 - [x] Comments/annotations na blokach (localStorage + piny preview) — PR #5B
 - [ ] Collaborative editing (WebSocket real-time sync) → **wymaga infra, osobny PR**
 
-#### Phase 6 — Advanced
-- [ ] Inline text editing (contentEditable bezpośrednio na canvas/preview)
+#### Phase 6 — Advanced (Phase 6A ✅)
+- [x] **Style override fix**: Scoped CSS injector (`block-style-injector.ts`) overcomes Tailwind utility specificity — PR #6A
+- [x] **accentColor support**: CSS injection targets `[class*="bg-accent"]`, `[class*="text-accent"]` etc. — PR #6A
+- [x] **CSS animation var-based control**: `--ve-anim-duration/delay/easing/iter` custom properties on wrapper propagate to `::after` (shimmer) — PR #6A
+- [x] **Production animations**: `BlockRendererClient` with IntersectionObserver fires `.visible` class on scroll-in for production pages — PR #6A
+- [x] **Payload schema persists animation fields**: `animation`, `animationDuration`, `animationDelay`, `animationEasing`, `animationIterations` added to all 19 blocks via `visualEditorFields()` — PR #6A
+- [x] **Inline text editing**: Double-click on `h1`/`h2`/`p` in preview activates `contentEditable`, sends `preview:inline-edit` postMessage — PR #6A
+- [x] **Batch operations**: Ctrl+click multi-select in EditorCanvas + BatchActionsBar (duplicate/delete) — PR #6A
+- [x] **Keyboard shortcuts panel**: `?` key opens modal, `Escape` closes — PR #6A
+- [x] **AnimationPicker**: Easing select + Iterations select + extended duration range (200–30000ms) — PR #6A
+- [x] **E2E unit tests**: `e2e/visual-editor.spec.ts` tests `generateBlockScopedCss` / `generateAllBlocksCss` — PR #6A
 - [ ] Multi-device preview z synchronizowanym scrollem
-- [ ] Batch operations (zaznacz wiele bloków → przenieś/usuń/duplikuj)
 - [ ] AI assistant do generowania treści bloków
-- [ ] Keyboard shortcuts panel (? key — modal z listą skrótów)
 - [ ] Accessibility audit per-page (automated checks)
 
 #### Phase 7 — Style system (backlog)

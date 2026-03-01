@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 export const PricingBlock: Block = {
   slug: 'pricing',
@@ -28,6 +29,6 @@ export const PricingBlock: Block = {
         { name: 'featured', type: 'checkbox', label: 'Wyróżniony', defaultValue: false },
       ],
     },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

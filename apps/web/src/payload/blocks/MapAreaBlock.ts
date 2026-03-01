@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 const validateHttpsUrl = (value: unknown) => {
   if (typeof value !== 'string' || !value.trim()) return 'Link mapy jest wymagany.'
@@ -27,6 +28,6 @@ export const MapAreaBlock: Block = {
       fields: [{ name: 'name', type: 'text', required: true, label: 'Nazwa miasta' }],
     },
     { name: 'note', type: 'text', label: 'Notatka' },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

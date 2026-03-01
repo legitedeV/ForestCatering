@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 export const GalleryFullBlock: Block = {
   slug: 'galleryFull',
@@ -19,6 +20,6 @@ export const GalleryFullBlock: Block = {
         { name: 'categoryLabel', type: 'text', label: 'Nazwa kategorii' },
       ],
     },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

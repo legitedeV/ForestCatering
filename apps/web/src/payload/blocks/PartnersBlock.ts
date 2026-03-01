@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 const validateOptionalUrl = (value: unknown) => {
   if (!value) return true
@@ -41,6 +42,6 @@ export const PartnersBlock: Block = {
       ],
     },
     { name: 'grayscale', type: 'checkbox', label: 'Skala szarości logo', defaultValue: true },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }

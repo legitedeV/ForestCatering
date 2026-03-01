@@ -1,4 +1,5 @@
 import type { Block } from 'payload'
+import { visualEditorFields } from '../fields/visual-editor-fields'
 
 export const FAQBlock: Block = {
   slug: 'faq',
@@ -15,6 +16,6 @@ export const FAQBlock: Block = {
         { name: 'answer', type: 'textarea', required: true, label: 'Odpowiedź' },
       ],
     },
-    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
+    ...visualEditorFields(),
   ],
 }
