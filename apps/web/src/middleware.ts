@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const EXCLUDED_PREFIXES = ['/admin', '/api', '/_next', '/access']
+const EXCLUDED_PREFIXES = ['/admin', '/api', '/_next', '/access', '/page-editor']
 const EXCLUDED_EXACT = ['/favicon.ico', '/robots.txt', '/sitemap.xml']
 
 async function sign(value: string, secret: string) {
@@ -28,6 +28,11 @@ export async function middleware(request: NextRequest) {
 
   if (EXCLUDED_PREFIXES.some((p) => pathname.startsWith(p))) return NextResponse.next()
   if (EXCLUDED_EXACT.includes(pathname)) return NextResponse.next()
+
+  const previewSecret = request.nextUrl.searchParams.get('preview_secret')
+  if (previewSecret && previewSecret === process.env.PAYLOAD_PREVIEW_SECRET) {
+    return NextResponse.next()
+  }
 
   const cookie = request.cookies.get('fc_prelaunch_access')?.value
   const expected = `ok.${await sign('ok', sitePassword)}`
