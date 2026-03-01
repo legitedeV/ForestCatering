@@ -492,6 +492,88 @@ const POSTS = [
       { heading: 'Dlaczego uruchomiliśmy blog?', paragraphs: ['Chcemy dzielić się wiedzą o organizacji eventów, podpowiadać sprawdzone rozwiązania i inspirować do tworzenia wyjątkowych wydarzeń.', 'Będziemy publikować praktyczne porady, kulisy naszych realizacji i sezonowe inspiracje menu.'] },
     ]),
   },
+  {
+    title: '5 trendów cateringowych na 2026 rok',
+    slug: '5-trendow-cateringowych-2026',
+    excerpt: 'Sprawdź jakie trendy w cateringu zdominują 2026 rok — od kuchni fusion po zero waste i menu roślinne.',
+    content: {
+      root: {
+        type: 'root', format: '', indent: 0, version: 1, direction: 'ltr', children: [
+          { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Co zmienia się w cateringu?', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Branża cateringowa nieustannie się rozwija. Oto 5 kluczowych trendów, które będą dominować w 2026 roku i które już dziś wdrażamy w Forest Catering.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '1. Kuchnia zero waste', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Minimalizacja odpadów staje się priorytetem. Używamy całych produktów, a resztki przetwarzamy na zupy i sosy.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '2. Menu roślinne jako standard', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Opcje wegańskie i wegetariańskie to już nie dodatek, ale pełnoprawna część każdego menu eventowego.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '3. Interaktywne stacje food', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Goście chcą uczestniczyć w przygotowaniu jedzenia — stacje sushi, taco bar czy grillowanie na żywo cieszą się ogromnym powodzeniem.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '4. Lokalne i sezonowe składniki', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Współpraca z lokalnymi rolnikami i wybór produktów sezonowych to nie tylko trend, ale nasza filozofia od 10 lat.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '5. Personalizacja menu', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Każdy event jest inny. Coraz więcej klientów oczekuje w pełni spersonalizowanego menu dostosowanego do diety i preferencji gości.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+        ],
+      },
+    },
+  },
+  {
+    title: 'Jak wybrać catering na wesele — kompletny poradnik',
+    slug: 'jak-wybrac-catering-na-wesele-poradnik',
+    excerpt: 'Organizujesz wesele? Sprawdź na co zwrócić uwagę wybierając firmę cateringową — od menu po obsługę.',
+    content: {
+      root: {
+        type: 'root', format: '', indent: 0, version: 1, direction: 'ltr', children: [
+          { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Catering weselny — na co zwrócić uwagę?', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Wybór cateringu to jedna z najważniejszych decyzji przy organizacji wesela. Jedzenie jest tym, co goście zapamiętują najdłużej. Oto kompletny poradnik, który pomoże Ci podjąć właściwą decyzję.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Degustacja — obowiązkowy krok', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Zawsze proś o degustację przed podpisaniem umowy. Dobra firma cateringowa chętnie zaprosi Was do spróbowania proponowanego menu.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Liczba gości a format serwisu', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Do 80 gości — serwis kelnerski sprawdza się idealnie. Powyżej 100 osób rozważ mieszany format: bufet + kelnerzy.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Zapasy na nieprzewidywalnych gości', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Zawsze planuj 10% zapas jedzenia ponad deklarowaną liczbę gości. Lepiej mieć za dużo niż za mało.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+        ],
+      },
+    },
+  },
+  {
+    title: 'Menu sezonowe: wiosna w Forest Catering',
+    slug: 'menu-sezonowe-wiosna-forest-catering',
+    excerpt: 'Wiosna w talerzu — odkryj nasze nowe sezonowe propozycje menu z lokalnych wiosennych składników.',
+    content: {
+      root: {
+        type: 'root', format: '', indent: 0, version: 1, direction: 'ltr', children: [
+          { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Wiosna na talerzu', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Wraz z wiosną wprowadzamy do naszego menu świeże, sezonowe składniki prosto od lokalnych rolników ze Szczecina i okolic. Oto nasze wiosenne propozycje.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Wiosenne przystawki', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'list', listType: 'bullet', start: 1, format: '', indent: 0, version: 1, direction: 'ltr', children: [
+            { type: 'listitem', value: 1, format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Tatar z młodych warzyw z rzodkiewką i szczypiorkiem', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+            { type: 'listitem', value: 2, format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Krem ze szparagów z krewetkami', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+            { type: 'listitem', value: 3, format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Bruschetta z ricottą i pomidorkami koktajlowymi', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          ] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Sezonowe dania główne', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Polędwica z młodymi warzywami, risotto ze szparagami i łososiem, a na deser — rabarbar z lodami waniliowymi.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+        ],
+      },
+    },
+  },
+  {
+    title: 'Organizacja eventu firmowego krok po kroku',
+    slug: 'organizacja-eventu-firmowego-krok-po-kroku',
+    excerpt: 'Planujesz event firmowy? Poznaj sprawdzony schemat organizacji imprezy, który stosujemy w Forest Catering.',
+    content: {
+      root: {
+        type: 'root', format: '', indent: 0, version: 1, direction: 'ltr', children: [
+          { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Krok po kroku do udanego eventu', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Organizacja eventu firmowego wymaga dobrego planowania i doświadczonego partnera kulinarnego. Oto jak pracujemy z klientami korporacyjnymi w Forest Catering.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Krok 1: Konsultacja i brief', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Na pierwszym spotkaniu omawiamy charakter eventu, liczbę gości, budżet i preferencje żywieniowe. Odpowiadamy na pytania w ciągu 24h.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Krok 2: Propozycja menu i degustacja', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Przygotowujemy 3 warianty menu i zapraszamy na degustację. Wspólnie wybieramy dania, które najlepiej pasują do Twojego eventu.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'heading', tag: 'h3', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Krok 3: Logistyka i realizacja', format: 1, version: 1, detail: 0, mode: 'normal', style: '' }] },
+          { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Przyjeżdżamy 2-3 godziny przed eventem, rozkładamy catering i zapewniamy obsługę przez cały czas trwania imprezy.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+        ],
+      },
+    },
+  },
 ]
 
 const EVENT_PACKAGES = [
@@ -545,6 +627,7 @@ async function seed() {
     data: {
       headerItems: [
         { label: 'Oferta', url: '/oferta' },
+        { label: 'Pakiety', url: '/pakiety' },
         { label: 'Eventy', url: '/eventy' },
         { label: 'Galeria', url: '/galeria' },
         { label: 'Sklep', url: '/sklep' },
@@ -565,10 +648,21 @@ async function seed() {
         {
           title: 'Firma',
           links: [
+            { label: 'Oferta', url: '/oferta' },
+            { label: 'Pakiety', url: '/pakiety' },
+            { label: 'Cennik', url: '/cennik' },
             { label: 'O nas', url: '/o-nas' },
-            { label: 'Realizacje', url: '/realizacje' },
+            { label: 'Regulamin', url: '/regulamin' },
+            { label: 'Polityka prywatności', url: '/polityka-prywatnosci' },
+          ],
+        },
+        {
+          title: 'Klient',
+          links: [
             { label: 'Blog', url: '/blog' },
             { label: 'FAQ', url: '/faq' },
+            { label: 'Galeria', url: '/galeria' },
+            { label: 'Realizacje', url: '/galeria' },
           ],
         },
         {
@@ -592,11 +686,8 @@ async function seed() {
       companyName: 'Forest Catering',
       phone: '+48 91 433 56 78',
       email: 'kontakt@forestcatering.pl',
-      address: {
-        street: 'ul. Leśna 12',
-        city: 'Szczecin',
-        postalCode: '71-800',
-      },
+      address: { street: 'ul. Leśna 42', city: 'Szczecin', postalCode: '70-001' },
+      businessHours: 'Pon-Pt: 8:00 - 18:00\nSob: 9:00 - 15:00\nNdz: Zamknięte',
       socialLinks: {
         facebook: 'https://facebook.com/forestcatering',
         instagram: 'https://instagram.com/forestcatering',
@@ -1316,6 +1407,116 @@ async function seed() {
         },
       ],
     },
+    {
+      title: 'Cennik',
+      slug: 'cennik',
+      sortOrder: 60,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'hero',
+          heading: 'Cennik',
+          subheading: 'Przejrzyste ceny bez ukrytych kosztów',
+          badge: 'Aktualne stawki 2026',
+        },
+        {
+          blockType: 'pricing',
+          heading: 'Nasze pakiety i ceny',
+          packages: [
+            { name: 'Pakiet Basic', price: 'od 85 zł/os.', featured: false, ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?pakiet=basic', features: [{ text: 'Dostawa na miejsce' }, { text: 'Menu do wyboru (3 warianty)' }, { text: 'Zastawa jednorazowa ekologiczna' }, { text: 'Serwetki i sztućce' }] },
+            { name: 'Pakiet Premium', price: 'od 120 zł/os.', featured: true, ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?pakiet=premium', features: [{ text: 'Dostawa + serwis kelnerski' }, { text: 'Menu degustacyjne (5+ dań)' }, { text: 'Zastawa porcelanowa' }, { text: 'Dekoracja stołów' }, { text: 'Koordynator eventu' }] },
+            { name: 'Catering + Bar', price: 'od 160 zł/os.', featured: false, ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?pakiet=bar', features: [{ text: 'Wszystko z Premium' }, { text: 'Mobilny bar z barmanem' }, { text: 'Koktajle autorskie' }, { text: 'Pokaz barmański' }, { text: 'Oświetlenie baru' }] },
+          ],
+        },
+      ],
+    },
+    {
+      title: 'O nas',
+      slug: 'o-nas',
+      sortOrder: 70,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'hero',
+          heading: 'O Forest Catering',
+          subheading: 'Gotujemy z pasją od ponad 10 lat',
+          badge: 'Nasz zespół',
+        },
+        {
+          blockType: 'about',
+          badge: 'Nasza historia',
+          heading: 'Kim jesteśmy?',
+          content: {
+            root: {
+              type: 'root', format: '', indent: 0, version: 1, direction: 'ltr', children: [
+                { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Forest Catering to zespół doświadczonych kucharzy i pasjonatów dobrego jedzenia ze Szczecina. Specjalizujemy się w cateringu eventowym, firmowym i weselnym, zawsze stawiając na najwyższą jakość składników i indywidualne podejście do każdego klienta.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+                { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Współpracujemy z lokalnymi dostawcami, korzystamy z sezonowych składników i przygotowujemy wszystko ręcznie — od pieczywa po desery. Każde zamówienie traktujemy jak wyzwanie, któremu chcemy sprostać na najwyższym poziomie.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+              ],
+            },
+          },
+          highlights: [
+            { text: 'Ponad 10 lat doświadczenia' },
+            { text: 'Świeże lokalne składniki' },
+            { text: 'Ręczne przygotowanie' },
+            { text: 'Indywidualne menu' },
+            { text: 'Doświadczony zespół' },
+            { text: 'Ponad 500 eventów' },
+          ],
+          ctaText: 'Skontaktuj się z nami',
+          ctaLink: '/kontakt',
+        },
+      ],
+    },
+    {
+      title: 'Polityka prywatności',
+      slug: 'polityka-prywatnosci',
+      sortOrder: 80,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'legalText',
+          heading: 'Polityka prywatności',
+          effectiveDate: '2026-02-19',
+          content: {
+            root: {
+              type: 'root', format: '', indent: 0, version: 1, direction: 'ltr', children: [
+                { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '1. Administrator danych', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+                { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Administratorem Twoich danych osobowych jest Forest Catering, ul. Leśna 42, 70-001 Szczecin. Dane przetwarzane są zgodnie z RODO.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+                { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '2. Cel przetwarzania', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+                { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Dane zbieramy wyłącznie w celu realizacji zamówień, odpowiedzi na zapytania oraz przesyłania informacji marketingowych (za zgodą).', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+                { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '3. Twoje prawa', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+                { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Masz prawo dostępu, sprostowania, usunięcia i ograniczenia przetwarzania danych. Skontaktuj się z nami pod adresem kontakt@forestcatering.pl.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+              ],
+            },
+          },
+        },
+      ],
+    },
+    {
+      title: 'FAQ — Często zadawane pytania',
+      slug: 'faq',
+      sortOrder: 90,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'hero',
+          heading: 'Najczęstsze pytania',
+          subheading: 'Znajdź odpowiedzi na pytania dotyczące naszych usług',
+        },
+        {
+          blockType: 'faq',
+          heading: 'FAQ',
+          items: [
+            { question: 'Jak złożyć zamówienie na catering?', answer: 'Skontaktuj się z nami przez formularz kontaktowy lub telefonicznie. Odpowiemy w ciągu 24h z propozycją menu i wyceną.' },
+            { question: 'Jaki jest minimalny czas na zamówienie cateringu?', answer: 'Standardowo potrzebujemy min. 3 dni roboczych. Na wesela i duże eventy — min. 2 tygodnie. Staramy się jednak działać elastycznie.' },
+            { question: 'Czy oferujecie degustacje?', answer: 'Tak! Dla zamówień powyżej 20 osób oferujemy bezpłatną degustację wybranego menu. Umów się telefonicznie lub przez formularz.' },
+            { question: 'Czy dostarczacie poza Szczecin?', answer: 'Tak, obsługujemy całe Pomorze Zachodnie oraz województwa sąsiednie. Koszt transportu zależy od odległości.' },
+            { question: 'Czy macie opcje wegetariańskie i wegańskie?', answer: 'Oczywiście! Przygotowujemy pełne menu wegetariańskie, wegańskie i bezglutenowe. Poinformuj nas o dietach gości przy zamówieniu.' },
+            { question: 'Co wliczone jest w cenę pakietu?', answer: 'Standardowo: przygotowanie posiłków, transport, zastawa i serwowanie. Serwis kelnerski dostępny w pakietach Premium i wyższych.' },
+          ],
+        },
+      ],
+    },
   ]
 
   for (const pageData of pagesData) {
@@ -1402,6 +1603,88 @@ async function seed() {
           ],
         } as never,
       })
+    }
+  }
+
+  // ─── Event Packages ──────────────────────────────────────────
+  for (const pkg of EVENT_PACKAGES) {
+    const imgBuffer = await generatePlaceholder(pkg.name, pkg.color)
+    const filename = `event-pkg-${pkg.slug}.png`
+    const filePath = path.join(MEDIA_DIR, filename)
+    fs.writeFileSync(filePath, imgBuffer)
+
+    const mediaExisting = await payload.find({ collection: 'media', where: { alt: { equals: pkg.name } }, limit: 1 })
+    const pkgMedia = mediaExisting.docs[0]
+      ? mediaExisting.docs[0]
+      : await payload.create({
+          collection: 'media',
+          data: {
+            alt: pkg.name,
+            imageSlug: slugifySafe(pkg.slug) || `event-pkg-${Date.now()}`,
+          },
+          draft: false,
+          file: {
+            data: imgBuffer,
+            name: filename,
+            mimetype: 'image/png',
+            size: imgBuffer.length,
+          },
+        })
+
+    const existingPkg = await payload.find({ collection: 'event-packages', where: { slug: { equals: pkg.slug } }, limit: 1 })
+    const pkgData = {
+      name: pkg.name,
+      slug: pkg.slug,
+      tier: pkg.tier,
+      priceFrom: pkg.priceFrom,
+      features: pkg.features.map((feature) => ({ feature })),
+      image: pkgMedia.id,
+      sortOrder: pkg.sortOrder,
+    }
+    if (existingPkg.docs[0]) {
+      await payload.update({ collection: 'event-packages', id: existingPkg.docs[0].id, data: pkgData })
+    } else {
+      await payload.create({ collection: 'event-packages', data: pkgData })
+    }
+  }
+
+  // ─── Gallery Items ────────────────────────────────────────────
+  for (const item of GALLERY_ITEMS) {
+    const imgBuffer = await generatePlaceholder(item.alt, item.color)
+    const slugBase = slugifySafe(item.alt) || `gallery-${item.sortOrder}`
+    const filename = `gallery-${slugBase}.png`
+    const filePath = path.join(MEDIA_DIR, filename)
+    fs.writeFileSync(filePath, imgBuffer)
+
+    const mediaExisting = await payload.find({ collection: 'media', where: { alt: { equals: item.alt } }, limit: 1 })
+    const itemMedia = mediaExisting.docs[0]
+      ? mediaExisting.docs[0]
+      : await payload.create({
+          collection: 'media',
+          data: {
+            alt: item.alt,
+            imageSlug: slugBase,
+          },
+          draft: false,
+          file: {
+            data: imgBuffer,
+            name: filename,
+            mimetype: 'image/png',
+            size: imgBuffer.length,
+          },
+        })
+
+    const existingItem = await payload.find({ collection: 'gallery-items', where: { alt: { equals: item.alt } }, limit: 1 })
+    const itemData = {
+      image: itemMedia.id,
+      alt: item.alt,
+      category: item.category,
+      sortOrder: item.sortOrder,
+    }
+    if (existingItem.docs[0]) {
+      await payload.update({ collection: 'gallery-items', id: existingItem.docs[0].id, data: itemData })
+    } else {
+      await payload.create({ collection: 'gallery-items', data: itemData })
     }
   }
 
