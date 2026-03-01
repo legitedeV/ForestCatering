@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import type { AiSuggestResponse, AiSuggestion } from '@/lib/ai-content-engine'
 
 type Tone = 'professional' | 'friendly' | 'luxury'
@@ -60,10 +60,11 @@ export function AiSuggestPopover({ blockType, fieldPath, onApply, onClose }: AiS
     void fetchSuggestions(tone)
   }
 
-  // Auto-fetch on first render
-  useState(() => {
+  // Auto-fetch on mount
+  useEffect(() => {
     void fetchSuggestions(tone)
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- one-time init
+  }, [])
 
   return (
     <div className="absolute left-0 top-full z-50 mt-1 w-80 rounded-lg border border-forest-700 bg-forest-900 p-3 shadow-xl">

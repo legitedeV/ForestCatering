@@ -287,10 +287,10 @@ export function LivePreviewFrame() {
                         if (el) splitIframeRefs.current.set(bp, el)
                         else splitIframeRefs.current.delete(bp)
                       }}
-                      src={iframeSrc}
+                      src={`${iframeSrc}&bp=${bp}`}
                       onLoad={() => setSplitLoaded((prev) => new Set([...prev, bp]))}
                       className="h-full w-full border border-forest-700 rounded-lg"
-                      title="Podgląd strony"
+                      title={`Podgląd strony — ${bp}`}
                       data-breakpoint={bp}
                     />
                   </div>
