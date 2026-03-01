@@ -792,7 +792,6 @@ async function seed() {
       },
       sections: [
         { blockType: 'hero', heading: 'Galeria realizacji', subheading: 'Zobacz nasze ostatnie realizacje eventowe i cateringowe' },
-        { blockType: 'galleryFull', heading: 'Nasze realizacje', items: [] },
         {
           blockType: 'cta',
           heading: 'Chcesz podobną realizację?',
@@ -911,7 +910,6 @@ async function seed() {
           heading: 'Nasze realizacje',
           subheading: 'Każde wydarzenie to dla nas unikalne wyzwanie. Zobacz jak je realizujemy.',
         },
-        { blockType: 'galleryFull', heading: 'Realizacje', items: [] },
         {
           blockType: 'testimonials',
           heading: 'Opinie klientów',
@@ -1109,13 +1107,20 @@ async function seed() {
     }
   }
 
-  // ─── Gallery page: fill with product images ─────────────────
+  // ─── Gallery pages: fill with product images ─────────────────
   const galleryMedia = await payload.find({ collection: 'media', limit: 12, sort: '-createdAt' })
   if (galleryMedia.docs.length && forceSeed) {
+    const cats = ['eventy-firmowe', 'catering-prywatny', 'wesela', 'bar-mobilny']
+    const catLabels = ['Eventy firmowe', 'Catering prywatny', 'Wesela', 'Bar mobilny']
+    const galleryItems = galleryMedia.docs.map((media, index) => ({
+      image: media.id,
+      alt: media.alt || `Realizacja ${index + 1}`,
+      category: cats[index % cats.length],
+      categoryLabel: catLabels[index % catLabels.length],
+    }))
+
     const galleryPage = await payload.find({ collection: 'pages', where: { slug: { equals: 'galeria' } }, limit: 1, depth: 0 })
     if (galleryPage.docs[0]) {
-      const cats = ['eventy-firmowe', 'catering-prywatny', 'wesela', 'bar-mobilny']
-      const catLabels = ['Eventy firmowe', 'Catering prywatny', 'Wesela', 'Bar mobilny']
       await payload.update({
         collection: 'pages',
         id: galleryPage.docs[0].id,
@@ -1125,18 +1130,50 @@ async function seed() {
             {
               blockType: 'galleryFull',
               heading: 'Nasze realizacje',
-              items: galleryMedia.docs.map((media, index) => ({
-                image: media.id,
-                alt: media.alt || `Realizacja ${index + 1}`,
-                category: cats[index % cats.length],
-                categoryLabel: catLabels[index % catLabels.length],
-              })),
+              items: galleryItems,
             },
             {
               blockType: 'cta',
               heading: 'Chcesz podobną realizację?',
               text: 'Skontaktuj się z nami i opowiedz o swoim wydarzeniu.',
               buttonText: 'Napisz do nas',
+              buttonLink: '/kontakt',
+            },
+          ],
+        } as never,
+      })
+    }
+
+    const realizacjePage = await payload.find({ collection: 'pages', where: { slug: { equals: 'realizacje' } }, limit: 1, depth: 0 })
+    if (realizacjePage.docs[0]) {
+      await payload.update({
+        collection: 'pages',
+        id: realizacjePage.docs[0].id,
+        data: {
+          sections: [
+            {
+              blockType: 'hero',
+              heading: 'Nasze realizacje',
+              subheading: 'Każde wydarzenie to dla nas unikalne wyzwanie. Zobacz jak je realizujemy.',
+            },
+            {
+              blockType: 'galleryFull',
+              heading: 'Realizacje',
+              items: galleryItems,
+            },
+            {
+              blockType: 'testimonials',
+              heading: 'Opinie klientów',
+              items: [
+                { quote: 'Goście byli zachwyceni jakością dań i serwisu. Polecam z czystym sumieniem!', author: 'Karolina S.', event: 'Jubileusz 25-lecia firmy', rating: 5 },
+                { quote: 'Piknik firmowy na 300 osób — organizacja bez zarzutu, jedzenie fantastyczne.', author: 'Robert P.', event: 'Piknik integracyjny', rating: 5 },
+              ],
+            },
+            {
+              blockType: 'cta',
+              heading: 'Chcesz podobną realizację?',
+              text: 'Opowiedz nam o swoim wydarzeniu, a przygotujemy indywidualną propozycję.',
+              buttonText: 'Skontaktuj się',
               buttonLink: '/kontakt',
             },
           ],
