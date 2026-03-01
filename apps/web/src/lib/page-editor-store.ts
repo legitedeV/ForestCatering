@@ -89,6 +89,72 @@ function setNestedField(obj: Record<string, unknown>, fieldPath: string, value: 
   }
 }
 
+// ── Block style overrides per-block ──────────────────────
+export interface BlockStyleOverrides {
+  // Spacing (legacy)
+  paddingTop?: number
+  paddingRight?: number
+  paddingBottom?: number
+  paddingLeft?: number
+  marginTop?: number
+  marginRight?: number
+  marginBottom?: number
+  marginLeft?: number
+  width?: string
+  maxWidth?: string
+  minHeight?: string
+  position?: 'static' | 'relative'
+  offsetX?: number
+  offsetY?: number
+  alignSelf?: string
+
+  // Typography
+  fontSize?: number
+  fontWeight?: 300 | 400 | 500 | 600 | 700 | 800 | 900
+  lineHeight?: number
+  letterSpacing?: number
+  textAlign?: 'left' | 'center' | 'right' | 'justify'
+  textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize'
+
+  // Colors
+  textColor?: string
+  backgroundColor?: string
+  borderColor?: string
+  accentColor?: string
+
+  // Background advanced
+  backgroundType?: 'solid' | 'gradient' | 'image' | 'none'
+  backgroundGradient?: string
+  backgroundImage?: string
+  backgroundOverlayOpacity?: number
+  backgroundBlur?: number
+
+  // Borders
+  borderRadius?: number
+  borderRadiusTL?: number
+  borderRadiusTR?: number
+  borderRadiusBL?: number
+  borderRadiusBR?: number
+  borderWidth?: number
+  borderStyle?: 'solid' | 'dashed' | 'dotted' | 'none'
+
+  // Shadows
+  boxShadow?: string
+  boxShadowPreset?: 'none' | 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'warm-glow' | 'inner' | 'glass'
+
+  // Visibility
+  hideOnDesktop?: boolean
+  hideOnTablet?: boolean
+  hideOnMobile?: boolean
+
+  // Opacity & effects
+  opacity?: number
+  overflow?: 'visible' | 'hidden' | 'auto'
+
+  // Custom CSS
+  customCss?: string
+}
+
 interface EditorState {
   // Dane strony
   pageId: number | null

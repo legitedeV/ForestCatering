@@ -107,6 +107,15 @@ export function LivePreviewFrame() {
     )
   }, [spacingInspectorEnabled, isLoaded])
 
+  // Wyślij breakpoint do iframe (dla visibility)
+  useEffect(() => {
+    if (!isLoaded) return
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: 'editor:set-breakpoint', breakpoint: previewBreakpoint },
+      '*',
+    )
+  }, [previewBreakpoint, isLoaded])
+
   // Odbieraj zdarzenia z iframe (kliknięcie bloku)
   useEffect(() => {
     const handler = (event: MessageEvent) => {

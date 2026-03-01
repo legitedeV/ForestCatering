@@ -31,14 +31,16 @@
 - [ ] Visual resize handles na blokach (padding/margin adjustment via drag) → **Phase 3 PR**
 - [x] Spacing inspector (wizualizacja marginów/paddingów on hover)
 
-#### Phase 3 — Styling control
+#### Phase 3 — Styling control ✅
 - [x] Color picker per-element (text, background, border, accent) — CSS variables override w panelu Styl
 - [x] Animation picker per-block (30+ animacji CSS/Framer Motion z preview)
 - [x] Custom CSS per-block z panelu bocznego (animation classes)
 - [x] Custom CSS per-page (advanced editor w panelu Styl)
-- [ ] Typography controls (font-size, weight, line-height, letter-spacing)
-- [ ] Background: solid/gradient/image per-block
-- [ ] Border radius / shadow controls per-block
+- [x] Typography controls (font-size, weight, line-height, letter-spacing)
+- [x] Background: solid/gradient/image per-block
+- [x] Border radius / shadow controls per-block
+- [x] Block visibility per-breakpoint
+- [x] Style presets (save/load per-block konfiguracji)
 
 #### Phase 4 — Layout management
 - [x] Layout templates (save/load presetów całych stron) — template selector A-E w panelu Styl

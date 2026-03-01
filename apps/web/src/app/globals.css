@@ -616,3 +616,50 @@ html {
 .editor-ruler-v {
   top: 0; left: 0; bottom: 0; width: 20px;
 }
+
+/* ── Deep Styling Studio CSS ── */
+
+/* Custom CSS per-block injection */
+.editor-custom-css-textarea {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  tab-size: 2;
+  white-space: pre;
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Gradient preview strip */
+.gradient-preview {
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid var(--color-forest-700);
+}
+
+/* Shadow preview box */
+.shadow-preview-box {
+  width: 60px;
+  height: 40px;
+  border-radius: 8px;
+  background: var(--color-forest-800);
+  border: 1px solid var(--color-forest-700);
+  transition: box-shadow 0.3s;
+}
+
+/* Color swatch grid */
+.swatch-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+.swatch {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.swatch:hover { transform: scale(1.15); }
+.swatch.active { border-color: var(--color-cream); }
