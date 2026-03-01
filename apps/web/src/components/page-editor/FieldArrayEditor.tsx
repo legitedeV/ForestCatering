@@ -9,6 +9,7 @@ import {
   FieldToggle,
   labelClasses,
 } from './field-primitives'
+import { FieldMediaPicker } from './FieldMediaPicker'
 
 // ────────────────────────────────────────────────────────
 // Typy
@@ -22,7 +23,7 @@ export interface ArrayFieldConfig {
   fields: Array<{
     key: string      // klucz w obiekcie itemu (np. "question")
     label: string    // etykieta PL
-    type: 'text' | 'textarea' | 'number' | 'toggle' | 'array'
+    type: 'text' | 'textarea' | 'number' | 'toggle' | 'array' | 'media'
     arrayConfig?: ArrayFieldConfig  // config dla zagnieżdżonej tablicy
   }>
 }
@@ -82,6 +83,7 @@ export function FieldArrayEditor({
       if (f.type === 'number') newItem[f.key] = 0
       else if (f.type === 'toggle') newItem[f.key] = false
       else if (f.type === 'array') newItem[f.key] = []
+      else if (f.type === 'media') newItem[f.key] = null
       else newItem[f.key] = ''
     }
     updateBlockField(blockIndex, fullPath, [...items, newItem])
@@ -246,6 +248,16 @@ export function FieldArrayEditor({
                         blockIndex={blockIndex}
                         fieldPrefix={`${fullPath}.${i}`}
                         nested
+                      />
+                    )
+                  }
+                  if (field.type === 'media') {
+                    return (
+                      <FieldMediaPicker
+                        key={field.key}
+                        label={field.label}
+                        value={typeof val === 'number' ? val : null}
+                        onSelect={(mediaId) => handleFieldCommit(i, field.key, mediaId)}
                       />
                     )
                   }

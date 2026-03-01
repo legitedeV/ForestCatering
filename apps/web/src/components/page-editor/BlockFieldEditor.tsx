@@ -12,6 +12,7 @@ import {
 } from './field-primitives'
 import { FieldArrayEditor } from './FieldArrayEditor'
 import type { ArrayFieldConfig } from './FieldArrayEditor'
+import { FieldMediaPicker } from './FieldMediaPicker'
 
 function PayloadAdminLink({ label, pageId }: { label: string; pageId: number | null }) {
   return (
@@ -133,6 +134,7 @@ const ARRAY_CONFIGS: Record<string, ArrayFieldConfig> = {
     label: 'Członkowie zespołu',
     itemLabel: 'Osoba',
     fields: [
+      { key: 'photo', label: 'Zdjęcie', type: 'media' },
       { key: 'name', label: 'Imię i nazwisko', type: 'text' },
       { key: 'role', label: 'Stanowisko', type: 'text' },
       { key: 'bio', label: 'Bio', type: 'textarea' },
@@ -144,6 +146,35 @@ const ARRAY_CONFIGS: Record<string, ArrayFieldConfig> = {
     itemLabel: 'Wyróżnik',
     maxItems: 8,
     fields: [{ key: 'text', label: 'Tekst', type: 'text' }],
+  },
+  mapAreaCities: {
+    name: 'cities',
+    label: 'Miasta',
+    itemLabel: 'Miasto',
+    fields: [
+      { key: 'name', label: 'Nazwa', type: 'text' },
+    ],
+  },
+  partners: {
+    name: 'items',
+    label: 'Partnerzy',
+    itemLabel: 'Partner',
+    fields: [
+      { key: 'logo', label: 'Logo', type: 'media' },
+      { key: 'name', label: 'Nazwa', type: 'text' },
+      { key: 'url', label: 'URL', type: 'text' },
+    ],
+  },
+  galleryFull: {
+    name: 'items',
+    label: 'Pozycje galerii',
+    itemLabel: 'Pozycja',
+    fields: [
+      { key: 'image', label: 'Zdjęcie', type: 'media' },
+      { key: 'alt', label: 'Opis (alt)', type: 'text' },
+      { key: 'category', label: 'Kategoria (slug)', type: 'text' },
+      { key: 'categoryLabel', label: 'Etykieta kategorii', type: 'text' },
+    ],
   },
 }
 
@@ -209,6 +240,11 @@ export function BlockFieldEditor() {
             <FieldText label="Drugi CTA link" value={v('secondaryCtaLink')} onCommit={onCommit('secondaryCtaLink')} />
             <FieldToggle label="Pełna wysokość" checked={vBool('fullHeight')} onChange={onCommit('fullHeight')} />
             <FieldToggle label="Wskaźnik przewijania" checked={vBool('showScrollIndicator')} onChange={onCommit('showScrollIndicator')} />
+            <FieldMediaPicker
+              label="Tło (backgroundImage)"
+              value={typeof block.backgroundImage === 'number' ? block.backgroundImage : null}
+              onSelect={onCommit('backgroundImage')}
+            />
           </>
         )}
 
@@ -289,6 +325,7 @@ export function BlockFieldEditor() {
               onChange={onCommit('variant')}
             />
             <FieldToggle label="Szarość (grayscale)" checked={vBool('grayscale')} onChange={onCommit('grayscale')} />
+            <FieldArrayEditor config={ARRAY_CONFIGS.partners} blockIndex={idx} />
           </>
         )}
 
@@ -305,6 +342,7 @@ export function BlockFieldEditor() {
             <FieldTextarea label="Opis" value={v('description')} onCommit={onCommit('description')} />
             <FieldText label="URL mapy (embed)" value={v('embedUrl')} onCommit={onCommit('embedUrl')} />
             <FieldText label="Notatka" value={v('note')} onCommit={onCommit('note')} />
+            <FieldArrayEditor config={ARRAY_CONFIGS.mapAreaCities} blockIndex={idx} />
           </>
         )}
 
@@ -330,6 +368,11 @@ export function BlockFieldEditor() {
             <FieldText label="Badge" value={v('badge')} onCommit={onCommit('badge')} />
             <FieldText label="Tekst CTA" value={v('ctaText')} onCommit={onCommit('ctaText')} />
             <FieldText label="Link CTA" value={v('ctaLink')} onCommit={onCommit('ctaLink')} />
+            <FieldMediaPicker
+              label="Zdjęcie"
+              value={typeof block.image === 'number' ? block.image : null}
+              onSelect={onCommit('image')}
+            />
             <FieldArrayEditor config={ARRAY_CONFIGS.about} blockIndex={idx} />
           </>
         )}
@@ -341,7 +384,7 @@ export function BlockFieldEditor() {
         {block.blockType === 'galleryFull' && (
           <>
             <FieldText label="Nagłówek" value={v('heading')} onCommit={onCommit('heading')} />
-            <PayloadAdminLink label="Edytuj pozycje galerii w Payload Admin" pageId={pageId} />
+            <FieldArrayEditor config={ARRAY_CONFIGS.galleryFull} blockIndex={idx} />
           </>
         )}
       </div>
