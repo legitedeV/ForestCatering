@@ -51,7 +51,9 @@ export const Pages: CollectionConfig = {
         const pagePath = (data?.path || data?.slug) as string
         if (!pagePath) return ''
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
-        return pagePath === 'home' ? baseUrl : `${baseUrl}/${pagePath}`
+        const secret = process.env.PAYLOAD_PREVIEW_SECRET || ''
+        const base = pagePath === 'home' ? baseUrl : `${baseUrl}/${pagePath}`
+        return secret ? `${base}?preview_secret=${secret}` : base
       },
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
