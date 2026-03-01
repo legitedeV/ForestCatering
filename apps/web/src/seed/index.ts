@@ -23,11 +23,17 @@ const PRODUCTS: Array<{
   compareAtPrice?: number
   productType: 'catering'
   category: string
-  color: string
+  imageUrl: string
   isFeatured: boolean
 }> = [
-  { name: 'Zestaw lunchowy Classic', slug: 'zestaw-lunchowy-classic', shortDescription: 'Klasyczny zestaw lunchowy z zupą dnia i daniem głównym.', price: 3599, productType: 'catering', category: 'catering', color: '#4a7c59', isFeatured: true },
-  { name: 'Zestaw lunchowy Premium', slug: 'zestaw-lunchowy-premium', shortDescription: 'Premium zestaw lunchowy z przystawką, zupą i deserem.', price: 5499, compareAtPrice: 6299, productType: 'catering', category: 'catering', color: '#2d5a3d', isFeatured: true },
+  { name: 'Zestaw lunchowy Classic', slug: 'zestaw-lunchowy-classic', shortDescription: 'Klasyczny zestaw lunchowy z zupą dnia i daniem głównym.', price: 3599, productType: 'catering', category: 'catering', imageUrl: 'https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=1600&q=80', isFeatured: true },
+  { name: 'Zestaw lunchowy Premium', slug: 'zestaw-lunchowy-premium', shortDescription: 'Premium zestaw lunchowy z przystawką, zupą i deserem.', price: 5499, compareAtPrice: 6299, productType: 'catering', category: 'catering', imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1600&q=80', isFeatured: true },
+  { name: 'Finger food biznes', slug: 'finger-food-biznes', shortDescription: 'Zestaw przekąsek koktajlowych idealny na spotkania firmowe.', price: 4299, productType: 'catering', category: 'eventy', imageUrl: 'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?auto=format&fit=crop&w=1600&q=80', isFeatured: true },
+  { name: 'Bufet weselny rustykalny', slug: 'bufet-weselny-rustykalny', shortDescription: 'Kompletny bufet weselny z opcjami wege i live cooking.', price: 11999, productType: 'catering', category: 'eventy', imageUrl: 'https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&fit=crop&w=1600&q=80', isFeatured: false },
+  { name: 'Deserowy stół premium', slug: 'deserowy-stol-premium', shortDescription: 'Autorskie desery, monoporcje i słodki stół na event.', price: 4999, productType: 'catering', category: 'eventy', imageUrl: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1600&q=80', isFeatured: false },
+  { name: 'Mobilny bar koktajlowy', slug: 'mobilny-bar-koktajlowy', shortDescription: 'Pakiet mobilnego baru z profesjonalną obsługą barmańską.', price: 6999, productType: 'catering', category: 'bar', imageUrl: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1600&q=80', isFeatured: true },
+  { name: 'Stacja lemoniad i mocktaili', slug: 'stacja-lemoniad-mocktaili', shortDescription: 'Orzeźwiająca stacja napojów bezalkoholowych na eventy plenerowe.', price: 2899, productType: 'catering', category: 'bar', imageUrl: 'https://images.unsplash.com/photo-1621263764928-df1444c5e859?auto=format&fit=crop&w=1600&q=80', isFeatured: false },
+  { name: 'Brunch weekendowy', slug: 'brunch-weekendowy', shortDescription: 'Rozbudowany brunch z pieczywem rzemieślniczym i sałatkami.', price: 4699, productType: 'catering', category: 'catering', imageUrl: 'https://images.unsplash.com/photo-1525351326368-efbb5cb6814d?auto=format&fit=crop&w=1600&q=80', isFeatured: false },
 ]
 
 const POSTS: Array<{ title: string; slug: string; excerpt: string; content: Record<string, unknown> }> = [
@@ -67,10 +73,11 @@ const POSTS: Array<{ title: string; slug: string; excerpt: string; content: Reco
   },
 ]
 
-async function generatePlaceholder(label: string, color: string): Promise<Buffer> {
-  const safeLabel = label.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'/g, '&apos;').replace(/"/g, '&quot;')
-  const svg = `<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="${color}"/><text x="50%" y="50%" font-family="sans-serif" font-size="28" fill="white" text-anchor="middle" dominant-baseline="middle">${safeLabel}</text></svg>`
-  return sharp(Buffer.from(svg)).png().toBuffer()
+async function downloadStockImage(url: string): Promise<Buffer> {
+  const response = await fetch(url, { headers: { 'User-Agent': 'ForestCateringSeed/1.0' } })
+  if (!response.ok) throw new Error(`Failed to download image from ${url}`)
+  const sourceBuffer = Buffer.from(await response.arrayBuffer())
+  return sharp(sourceBuffer).resize(1600, 1067, { fit: 'cover' }).jpeg({ quality: 82 }).toBuffer()
 }
 
 
@@ -128,8 +135,10 @@ async function seed() {
     data: {
       headerItems: [
         { label: 'Oferta', url: '/oferta' },
+        { label: 'Pakiety', url: '/pakiety' },
         { label: 'Eventy', url: '/eventy' },
         { label: 'Galeria', url: '/galeria' },
+        { label: 'FAQ', url: '/faq' },
         { label: 'Kontakt', url: '/kontakt' },
       ],
       footerColumns: [
@@ -137,6 +146,9 @@ async function seed() {
           title: 'Firma',
           links: [
             { label: 'Oferta', url: '/oferta' },
+            { label: 'Pakiety', url: '/pakiety' },
+            { label: 'Cennik', url: '/cennik' },
+            { label: 'O nas', url: '/o-nas' },
             { label: 'Regulamin', url: '/regulamin' },
           ],
         },
@@ -145,6 +157,7 @@ async function seed() {
           links: [
             { label: 'Napisz do nas', url: '/kontakt' },
             { label: 'Sklep', url: '/sklep' },
+            { label: 'Polityka prywatności', url: '/polityka-prywatnosci' },
           ],
         },
       ],
@@ -176,15 +189,36 @@ async function seed() {
     categoryMap[category.slug] = Number(doc.id)
   }
 
+  const galleryItems: Array<{ image: number; alt: string; category: string; categoryLabel: string }> = []
+  const galleryLabels: Record<string, string> = {
+    catering: 'Catering',
+    eventy: 'Eventy',
+    bar: 'Bar',
+  }
+
   for (const product of PRODUCTS) {
-    const imgBuffer = await generatePlaceholder(product.name, product.color)
-    const filename = `${product.slug}.png`
+    const mediaExisting = await payload.find({ collection: 'media', where: { alt: { equals: product.name } }, limit: 1 })
+    const imgBuffer = await downloadStockImage(product.imageUrl)
+    const filename = `${product.slug}.jpg`
     const filePath = path.join(MEDIA_DIR, filename)
     fs.writeFileSync(filePath, imgBuffer)
 
-    const mediaExisting = await payload.find({ collection: 'media', where: { alt: { equals: product.name } }, limit: 1 })
     const media = mediaExisting.docs[0]
-      ? mediaExisting.docs[0]
+      ? await payload.update({
+          collection: 'media',
+          id: mediaExisting.docs[0].id,
+          data: {
+            alt: product.name,
+            imageSlug: slugifySafe(product.slug) || `image-${Date.now()}`,
+          },
+          draft: false,
+          file: {
+            data: imgBuffer,
+            name: filename,
+            mimetype: 'image/jpeg',
+            size: imgBuffer.length,
+          },
+        })
       : await payload.create({
           collection: 'media',
           data: {
@@ -195,10 +229,19 @@ async function seed() {
           file: {
             data: imgBuffer,
             name: filename,
-            mimetype: 'image/png',
+            mimetype: 'image/jpeg',
             size: imgBuffer.length,
           },
         })
+
+    if (galleryItems.length < 12) {
+      galleryItems.push({
+        image: Number(media.id),
+        alt: product.name,
+        category: product.category,
+        categoryLabel: galleryLabels[product.category] ?? 'Realizacje',
+      })
+    }
 
     const existing = await payload.find({ collection: 'products', where: { slug: { equals: product.slug } }, limit: 1 })
     const data = {
@@ -428,7 +471,7 @@ async function seed() {
       _status: 'published' as const,
       sections: [
         { blockType: 'hero', heading: 'Galeria realizacji', subheading: 'Zobacz nasze ostatnie realizacje eventowe i cateringowe' },
-        { blockType: 'galleryFull', heading: 'Nasze realizacje', items: [] },
+        { blockType: 'galleryFull', heading: 'Nasze realizacje', items: galleryItems },
       ],
     },
     {
@@ -447,7 +490,7 @@ async function seed() {
     {
       title: 'Regulamin',
       slug: 'regulamin',
-      sortOrder: 50,
+      sortOrder: 90,
       _status: 'published' as const,
       sections: [
         {
@@ -466,6 +509,111 @@ async function seed() {
                 { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Sklep internetowy Forest Catering prowadzi sprzedaż produktów cateringowych oraz usług eventowych za pośrednictwem sieci Internet.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
                 { type: 'heading', tag: 'h2', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: '§2 Reklamacje', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
                 { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Klient ma prawo złożyć reklamację drogą mailową lub telefoniczną. Reklamacje są rozpatrywane w terminie 14 dni roboczych.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+              ],
+            },
+          },
+        },
+      ],
+    },
+    {
+      title: 'Pakiety',
+      slug: 'pakiety',
+      sortOrder: 50,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'pricing',
+          heading: 'Pakiety oferty',
+          packages: [
+            { name: 'Biznes Lunch', price: 'od 49 zł/os.', ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?pakiet=biznes-lunch', features: [{ text: 'Zupa, danie główne i deser' }, { text: 'Dostawa pod wskazany adres' }] },
+            { name: 'Event Premium', price: 'od 119 zł/os.', featured: true, ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?pakiet=event-premium', features: [{ text: 'Bufet gorący i zimny' }, { text: 'Obsługa kelnerska' }, { text: 'Opcje wege i bez glutenu' }] },
+            { name: 'Bar + Catering', price: 'od 159 zł/os.', ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?pakiet=bar-plus-catering', features: [{ text: 'Mobilny bar i barmani' }, { text: 'Koktajle autorskie' }, { text: 'Kompletny serwis eventowy' }] },
+          ],
+        },
+      ],
+    },
+    {
+      title: 'Cennik',
+      slug: 'cennik',
+      sortOrder: 60,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'pricing',
+          heading: 'Orientacyjny cennik',
+          packages: [
+            { name: 'Lunch firmowy', price: 'od 45 zł/os.', ctaText: 'Sprawdź termin', ctaLink: '/kontakt?usluga=lunch-firmowy', features: [{ text: 'Minimalne zamówienie od 15 osób' }] },
+            { name: 'Wesele', price: 'od 165 zł/os.', ctaText: 'Sprawdź termin', ctaLink: '/kontakt?usluga=wesele', features: [{ text: 'Menu całodniowe' }, { text: 'Tort i słodki stół' }] },
+          ],
+        },
+      ],
+    },
+    {
+      title: 'O nas',
+      slug: 'o-nas',
+      sortOrder: 70,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'about',
+          heading: 'Kim jesteśmy',
+          content: {
+            root: {
+              type: 'root',
+              format: '',
+              indent: 0,
+              version: 1,
+              direction: 'ltr',
+              children: [
+                { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Tworzymy catering dopasowany do charakteru wydarzenia — od kameralnych spotkań po duże eventy firmowe i wesela.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
+              ],
+            },
+          },
+          highlights: [
+            { text: 'Zespół kucharzy i event managerów' },
+            { text: 'Lokalne, świeże składniki' },
+            { text: 'Kompleksowa logistyka wydarzeń' },
+          ],
+          ctaText: 'Skontaktuj się z nami',
+          ctaLink: '/kontakt',
+        },
+      ],
+    },
+    {
+      title: 'FAQ',
+      slug: 'faq',
+      sortOrder: 80,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'faq',
+          items: [
+            { question: 'Jaki jest minimalny próg zamówienia?', answer: 'Standardowo realizujemy zamówienia od 15 osób, ale przygotowujemy też oferty indywidualne.' },
+            { question: 'Czy przygotowujecie menu wegetariańskie i bezglutenowe?', answer: 'Tak, w każdym pakiecie możemy uwzględnić dietę wege, wegańską i bezglutenową.' },
+            { question: 'Ile wcześniej trzeba zarezerwować termin?', answer: 'Najlepiej 2–4 tygodnie wcześniej, ale w miarę dostępności realizujemy też pilne terminy.' },
+          ],
+        },
+      ],
+    },
+    {
+      title: 'Polityka prywatności',
+      slug: 'polityka-prywatnosci',
+      sortOrder: 100,
+      _status: 'published' as const,
+      sections: [
+        {
+          blockType: 'legalText',
+          heading: 'Polityka prywatności',
+          effectiveDate: '2026-03-01',
+          content: {
+            root: {
+              type: 'root',
+              format: '',
+              indent: 0,
+              version: 1,
+              direction: 'ltr',
+              children: [
+                { type: 'paragraph', format: '', indent: 0, version: 1, direction: 'ltr', children: [{ type: 'text', text: 'Szanujemy prywatność użytkowników i przetwarzamy dane wyłącznie w celu obsługi zapytań oraz realizacji zamówień.', format: 0, version: 1, detail: 0, mode: 'normal', style: '' }] },
               ],
             },
           },
@@ -505,8 +653,8 @@ async function seed() {
             blockType: 'pricing',
             heading: 'Pakiety oferty',
             packages: [
-              { name: 'Start', price: 'od 45 zł/os.', ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt' },
-              { name: 'Biznes', price: 'od 85 zł/os.', featured: true, ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt' },
+              { name: 'Biznes Lunch', price: 'od 49 zł/os.', ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?pakiet=biznes-lunch', features: [{ text: 'Zupa, danie główne i deser' }, { text: 'Dostawa pod wskazany adres' }] },
+              { name: 'Event Premium', price: 'od 119 zł/os.', featured: true, ctaText: 'Zapytaj o wycenę', ctaLink: '/kontakt?pakiet=event-premium', features: [{ text: 'Bufet gorący i zimny' }, { text: 'Obsługa kelnerska' }] },
             ],
           },
         ],
