@@ -62,7 +62,7 @@ export default async function CMSPage({ params }: Props) {
   }
 
   const breadcrumbItems = slug.map((segment, i) => ({
-    label: segment.replace(/-/g, ' ').replace(/^\w/, (c) => c.toUpperCase()),
+    label: segment.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
     href: i < slug.length - 1 ? `/${slug.slice(0, i + 1).join('/')}` : undefined,
   }))
 

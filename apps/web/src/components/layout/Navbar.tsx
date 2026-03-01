@@ -24,7 +24,7 @@ export function Navbar({ links, companyName, contactPhone, email, socialFacebook
   const isHome = pathname === '/'
   const { toggleDrawer } = useCart()
   const itemCount = useCartItemCount()
-  const prevItemCount = useRef(itemCount)
+  const prevItemCount = useRef(0)
   const { scrollY } = useScroll()
   const bgOpacity = useTransform(scrollY, [0, 100], [isHome ? 0 : 1, 1])
   const borderOpacity = useTransform(scrollY, [0, 100], [isHome ? 0 : 0.3, 0.3])
