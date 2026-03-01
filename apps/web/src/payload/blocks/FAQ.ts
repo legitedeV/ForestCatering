@@ -15,5 +15,6 @@ export const FAQBlock: Block = {
         { name: 'answer', type: 'textarea', required: true, label: 'Odpowiedź' },
       ],
     },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

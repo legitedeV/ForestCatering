@@ -3,8 +3,8 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import type { PageSection } from '@/components/cms/types'
 import { ANIMATION_CATALOG } from '@/lib/animation-catalog'
-import { resolveBoxShadow } from '@/lib/style-presets'
 import type { BlockStyleOverrides } from '@/lib/page-editor-store'
+import { generateAllBlocksCss } from '@/lib/block-style-injector'
 import type { BlockComment } from '@/lib/block-comments'
 
 // Build a Map for O(1) animation lookups
@@ -58,8 +58,12 @@ function shouldHide(overrides: BlockStyleOverrides | undefined, breakpoint: stri
 /** Build full inline styles from block style overrides */
 function buildInlineStyles(overrides: BlockStyleOverrides | undefined, breakpoint: string): React.CSSProperties {
   if (!overrides) return {}
+  // Only layout/positioning properties on the wrapper div.
+  // Typography, colors, backgrounds, borders, shadows, opacity, backdrop
+  // are now handled by the CSS injector (block-style-injector.ts) with
+  // scoped selectors and !important to override hardcoded Tailwind classes.
   return {
-    // Spacing
+    // Spacing (wrapper)
     paddingTop: px(overrides.paddingTop),
     paddingRight: px(overrides.paddingRight),
     paddingBottom: px(overrides.paddingBottom),
@@ -68,47 +72,12 @@ function buildInlineStyles(overrides: BlockStyleOverrides | undefined, breakpoin
     marginRight: px(overrides.marginRight),
     marginBottom: px(overrides.marginBottom),
     marginLeft: px(overrides.marginLeft),
+
+    // Layout
     width: overrides.width,
     maxWidth: overrides.maxWidth,
     minHeight: overrides.minHeight,
     transform: translate(overrides.offsetX, overrides.offsetY),
-
-    // Typography
-    fontSize: px(overrides.fontSize),
-    fontWeight: overrides.fontWeight,
-    lineHeight: overrides.lineHeight,
-    letterSpacing: overrides.letterSpacing !== undefined ? `${overrides.letterSpacing}em` : undefined,
-    textAlign: overrides.textAlign as React.CSSProperties['textAlign'],
-    textTransform: overrides.textTransform as React.CSSProperties['textTransform'],
-
-    // Colors
-    color: overrides.textColor,
-    backgroundColor: (['gradient', 'image', 'none'] as string[]).includes(overrides.backgroundType ?? '')
-      ? undefined
-      : overrides.backgroundColor,
-    backgroundImage: overrides.backgroundType === 'gradient'
-      ? overrides.backgroundGradient
-      : overrides.backgroundType === 'image' && overrides.backgroundImage
-        ? `url(${overrides.backgroundImage})`
-        : undefined,
-    backgroundSize: overrides.backgroundType === 'image' ? 'cover' : undefined,
-    backgroundPosition: overrides.backgroundType === 'image' ? 'center' : undefined,
-    borderColor: overrides.borderColor,
-
-    // Borders
-    borderRadius: overrides.borderRadius !== undefined ? `${overrides.borderRadius}px` : undefined,
-    borderTopLeftRadius: px(overrides.borderRadiusTL),
-    borderTopRightRadius: px(overrides.borderRadiusTR),
-    borderBottomLeftRadius: px(overrides.borderRadiusBL),
-    borderBottomRightRadius: px(overrides.borderRadiusBR),
-    borderWidth: px(overrides.borderWidth),
-    borderStyle: overrides.borderStyle as React.CSSProperties['borderStyle'],
-    boxShadow: resolveBoxShadow(overrides),
-
-    // Effects
-    opacity: overrides.opacity,
-    overflow: overrides.overflow as React.CSSProperties['overflow'],
-    backdropFilter: overrides.backgroundBlur ? `blur(${overrides.backgroundBlur}px)` : undefined,
 
     // Visibility
     display: shouldHide(overrides, breakpoint) ? 'none' : undefined,
@@ -136,6 +105,25 @@ function buildCustomCssTag(blockId: string, customCss: string | undefined): stri
   const safeId = sanitizeBlockId(blockId)
   const safeCss = sanitizeCss(customCss)
   return safeCss.replace(/\.this/g, `[data-block-id="${safeId}"]`)
+}
+
+/** Build the full injected CSS for all blocks (scoped overrides + custom CSS) */
+function buildAllInjectedCss(sections: PageSection[]): string {
+  const scopedCss = generateAllBlocksCss(
+    sections.map((block, index) => {
+      const blockData = block as Record<string, unknown>
+      return {
+        id: (block.id as string) ?? `block-${index}`,
+        styleOverrides: blockData.styleOverrides as BlockStyleOverrides | undefined,
+        animation: (blockData.animation as string) ?? '',
+      }
+    }),
+  )
+  const customCss = sections.map((block, index) => {
+    const so = (block as Record<string, unknown>).styleOverrides as BlockStyleOverrides | undefined
+    return so?.customCss ? buildCustomCssTag((block.id as string) ?? `block-${index}`, so.customCss) : ''
+  }).join('\n')
+  return scopedCss + customCss
 }
 
 /** Renderuj pojedynczy blok — ten sam switch co BlockRenderer, bez FeaturedProducts (server-only) */
@@ -336,17 +324,11 @@ export function PreviewClient({ initialSections }: Props) {
 
   return (
     <>
-      {/* Inject custom CSS per-block */}
-      {sections.map((block, index) => {
-        const blockData = block as Record<string, unknown>
-        const so = blockData.styleOverrides as BlockStyleOverrides | undefined
-        const customCss = so?.customCss
-        const blockId = (block.id as string) ?? `block-${index}`
-        if (!customCss) return null
-        return (
-          <style key={`css-${blockId}`} dangerouslySetInnerHTML={{ __html: buildCustomCssTag(blockId, customCss) }} />
-        )
-      })}
+      {/* Inject scoped style overrides for ALL blocks */}
+      <style
+        id="editor-block-overrides"
+        dangerouslySetInnerHTML={{ __html: buildAllInjectedCss(sections) }}
+      />
 
       {sections.map((block, index) => {
         const blockData = block as Record<string, unknown>

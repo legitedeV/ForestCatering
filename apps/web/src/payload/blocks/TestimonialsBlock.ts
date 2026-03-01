@@ -18,5 +18,6 @@ export const TestimonialsBlock: Block = {
         { name: 'rating', type: 'number', defaultValue: 5, min: 1, max: 5, label: 'Ocena' },
       ],
     },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

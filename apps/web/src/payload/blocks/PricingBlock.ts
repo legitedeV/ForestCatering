@@ -28,5 +28,6 @@ export const PricingBlock: Block = {
         { name: 'featured', type: 'checkbox', label: 'Wyróżniony', defaultValue: false },
       ],
     },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

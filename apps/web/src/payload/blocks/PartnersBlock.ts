@@ -41,5 +41,6 @@ export const PartnersBlock: Block = {
       ],
     },
     { name: 'grayscale', type: 'checkbox', label: 'Skala szarości logo', defaultValue: true },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

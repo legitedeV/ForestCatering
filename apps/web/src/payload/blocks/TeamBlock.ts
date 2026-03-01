@@ -41,5 +41,6 @@ export const TeamBlock: Block = {
         },
       ],
     },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

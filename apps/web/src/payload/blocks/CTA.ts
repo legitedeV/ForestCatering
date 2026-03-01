@@ -21,5 +21,6 @@ export const CTABlock: Block = {
     { name: 'phoneNumber', type: 'text', label: 'Numer telefonu' },
     { name: 'secondaryButtonText', type: 'text', label: 'Tekst drugiego przycisku' },
     { name: 'secondaryButtonLink', type: 'text', label: 'Link drugiego przycisku' },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

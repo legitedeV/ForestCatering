@@ -19,5 +19,6 @@ export const GalleryFullBlock: Block = {
         { name: 'categoryLabel', type: 'text', label: 'Nazwa kategorii' },
       ],
     },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

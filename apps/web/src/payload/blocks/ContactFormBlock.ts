@@ -6,5 +6,6 @@ export const ContactFormBlock: Block = {
   fields: [
     { name: 'heading', type: 'text', label: 'Nagłówek sekcji' },
     { name: 'subheading', type: 'textarea', label: 'Podnagłówek' },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }

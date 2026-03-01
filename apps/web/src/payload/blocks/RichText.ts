@@ -5,5 +5,6 @@ export const RichTextBlock: Block = {
   labels: { singular: 'Blok tekstowy', plural: 'Bloki tekstowe' },
   fields: [
     { name: 'content', type: 'richText', required: true, label: 'Treść' },
+    { name: 'styleOverrides', type: 'json', admin: { hidden: true } },
   ],
 }
