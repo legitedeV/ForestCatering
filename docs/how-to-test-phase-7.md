@@ -2,7 +2,7 @@
 
 ## Prerequisites
 - Database running (PostgreSQL)
-- Run migration: `npx payload migrate`
+- Run migration: `npm run -w apps/web migrate`
 - Start dev server: `npm run dev`
 
 ## Manual Test Steps
