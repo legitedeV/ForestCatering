@@ -3,6 +3,8 @@
 import { useEffect, useState, useCallback, useRef } from 'react'
 import type { PageSection } from '@/components/cms/types'
 import { ANIMATION_CATALOG } from '@/lib/animation-catalog'
+import { resolveBoxShadow } from '@/lib/style-presets'
+import type { BlockStyleOverrides } from '@/lib/page-editor-store'
 
 // Build a Map for O(1) animation lookups
 const ANIMATION_MAP = new Map(ANIMATION_CATALOG.map((a) => [a.key, a]))
@@ -30,6 +32,109 @@ import { OfferCardsBlock } from '@/components/cms/blocks/OfferCardsBlock'
 
 interface Props {
   initialSections: PageSection[]
+}
+
+/** Helper: px value or undefined */
+function px(v: number | undefined): string | undefined {
+  return v !== undefined ? `${v}px` : undefined
+}
+
+/** Helper: translate transform */
+function translate(x?: number, y?: number): string | undefined {
+  if (!x && !y) return undefined
+  return `translate(${x ?? 0}px, ${y ?? 0}px)`
+}
+
+/** Determine if block should be hidden on given breakpoint */
+function shouldHide(overrides: BlockStyleOverrides | undefined, breakpoint: string): boolean {
+  if (!overrides) return false
+  if (breakpoint === 'desktop' && overrides.hideOnDesktop) return true
+  if (breakpoint === 'tablet' && overrides.hideOnTablet) return true
+  if (breakpoint === 'mobile' && overrides.hideOnMobile) return true
+  return false
+}
+
+/** Build full inline styles from block style overrides */
+function buildInlineStyles(overrides: BlockStyleOverrides | undefined, breakpoint: string): React.CSSProperties {
+  if (!overrides) return {}
+  return {
+    // Spacing
+    paddingTop: px(overrides.paddingTop),
+    paddingRight: px(overrides.paddingRight),
+    paddingBottom: px(overrides.paddingBottom),
+    paddingLeft: px(overrides.paddingLeft),
+    marginTop: px(overrides.marginTop),
+    marginRight: px(overrides.marginRight),
+    marginBottom: px(overrides.marginBottom),
+    marginLeft: px(overrides.marginLeft),
+    width: overrides.width,
+    maxWidth: overrides.maxWidth,
+    minHeight: overrides.minHeight,
+    transform: translate(overrides.offsetX, overrides.offsetY),
+
+    // Typography
+    fontSize: px(overrides.fontSize),
+    fontWeight: overrides.fontWeight,
+    lineHeight: overrides.lineHeight,
+    letterSpacing: overrides.letterSpacing !== undefined ? `${overrides.letterSpacing}em` : undefined,
+    textAlign: overrides.textAlign as React.CSSProperties['textAlign'],
+    textTransform: overrides.textTransform as React.CSSProperties['textTransform'],
+
+    // Colors
+    color: overrides.textColor,
+    backgroundColor: (['gradient', 'image', 'none'] as string[]).includes(overrides.backgroundType ?? '')
+      ? undefined
+      : overrides.backgroundColor,
+    backgroundImage: overrides.backgroundType === 'gradient'
+      ? overrides.backgroundGradient
+      : overrides.backgroundType === 'image' && overrides.backgroundImage
+        ? `url(${overrides.backgroundImage})`
+        : undefined,
+    backgroundSize: overrides.backgroundType === 'image' ? 'cover' : undefined,
+    backgroundPosition: overrides.backgroundType === 'image' ? 'center' : undefined,
+    borderColor: overrides.borderColor,
+
+    // Borders
+    borderRadius: overrides.borderRadius !== undefined ? `${overrides.borderRadius}px` : undefined,
+    borderTopLeftRadius: px(overrides.borderRadiusTL),
+    borderTopRightRadius: px(overrides.borderRadiusTR),
+    borderBottomLeftRadius: px(overrides.borderRadiusBL),
+    borderBottomRightRadius: px(overrides.borderRadiusBR),
+    borderWidth: px(overrides.borderWidth),
+    borderStyle: overrides.borderStyle as React.CSSProperties['borderStyle'],
+    boxShadow: resolveBoxShadow(overrides),
+
+    // Effects
+    opacity: overrides.opacity,
+    overflow: overrides.overflow as React.CSSProperties['overflow'],
+    backdropFilter: overrides.backgroundBlur ? `blur(${overrides.backgroundBlur}px)` : undefined,
+
+    // Visibility
+    display: shouldHide(overrides, breakpoint) ? 'none' : undefined,
+  }
+}
+
+/** Sanitize a blockId to only allow safe characters for CSS selectors */
+function sanitizeBlockId(id: string): string {
+  return id.replace(/[^a-zA-Z0-9_-]/g, '')
+}
+
+/** Sanitize custom CSS to prevent script injection via CSS */
+function sanitizeCss(css: string): string {
+  // Remove any <script> tags, url() with javascript:, expression(), and @import with javascript
+  return css
+    .replace(/<\/?script[^>]*>/gi, '')
+    .replace(/javascript\s*:/gi, '')
+    .replace(/expression\s*\(/gi, '')
+    .replace(/@import\s+url\s*\(\s*['"]?\s*javascript/gi, '')
+}
+
+/** Build scoped custom CSS for a block */
+function buildCustomCssTag(blockId: string, customCss: string | undefined): string {
+  if (!customCss) return ''
+  const safeId = sanitizeBlockId(blockId)
+  const safeCss = sanitizeCss(customCss)
+  return safeCss.replace(/\.this/g, `[data-block-id="${safeId}"]`)
 }
 
 /** Renderuj pojedynczy blok — ten sam switch co BlockRenderer, bez FeaturedProducts (server-only) */
@@ -88,6 +193,7 @@ export function PreviewClient({ initialSections }: Props) {
   const [sections, setSections] = useState<PageSection[]>(initialSections)
   const [highlightedIndex, setHighlightedIndex] = useState<number | null>(null)
   const [spacingInspectorEnabled, setSpacingInspectorEnabled] = useState(false)
+  const [currentBreakpoint, setCurrentBreakpoint] = useState<string>('desktop')
   const blockRefs = useRef<Map<number, HTMLDivElement>>(new Map())
 
   // IntersectionObserver do triggerowania .visible na entrance animations
@@ -158,6 +264,10 @@ export function PreviewClient({ initialSections }: Props) {
       if (data.type === 'editor:enable-spacing-inspector') {
         setSpacingInspectorEnabled(!!data.enabled)
       }
+
+      if (data.type === 'editor:set-breakpoint') {
+        setCurrentBreakpoint((data.breakpoint as string) ?? 'desktop')
+      }
     }
 
     window.addEventListener('message', handler)
@@ -215,6 +325,18 @@ export function PreviewClient({ initialSections }: Props) {
 
   return (
     <>
+      {/* Inject custom CSS per-block */}
+      {sections.map((block, index) => {
+        const blockData = block as Record<string, unknown>
+        const so = blockData.styleOverrides as BlockStyleOverrides | undefined
+        const customCss = so?.customCss
+        const blockId = (block.id as string) ?? `block-${index}`
+        if (!customCss) return null
+        return (
+          <style key={`css-${blockId}`} dangerouslySetInnerHTML={{ __html: buildCustomCssTag(blockId, customCss) }} />
+        )
+      })}
+
       {sections.map((block, index) => {
         const blockData = block as Record<string, unknown>
         const animKey = (blockData.animation as string) ?? ''
@@ -222,11 +344,15 @@ export function PreviewClient({ initialSections }: Props) {
         const animClass = animDef?.className ?? ''
         const delay = (blockData.animationDelay as number) ?? 0
         const duration = (blockData.animationDuration as number) ?? 0
+        const so = blockData.styleOverrides as BlockStyleOverrides | undefined
+        const blockId = (block.id as string) ?? `block-${index}`
+        const blockStyles = buildInlineStyles(so, currentBreakpoint)
 
         return (
           <div
             key={block.id ?? `block-${index}`}
             id={`editor-block-${index}`}
+            data-block-id={blockId}
             ref={setBlockRef(index)}
             onClick={() => handleBlockClick(index)}
             onMouseEnter={() => handleBlockHover(index)}
@@ -240,6 +366,7 @@ export function PreviewClient({ initialSections }: Props) {
               transitionDuration: duration ? `${duration}ms` : undefined,
               animationDelay: delay ? `${delay}ms` : undefined,
               animationDuration: duration ? `${duration}ms` : undefined,
+              ...blockStyles,
             }}
           >
             {renderBlock(block)}

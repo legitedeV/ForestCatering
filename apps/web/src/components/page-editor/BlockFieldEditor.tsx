@@ -14,6 +14,14 @@ import { FieldArrayEditor } from './FieldArrayEditor'
 import type { ArrayFieldConfig } from './FieldArrayEditor'
 import { FieldMediaPicker } from './FieldMediaPicker'
 import { AnimationPicker } from './AnimationPicker'
+import { CollapsibleSection } from './CollapsibleSection'
+import { TypographyPanel } from './TypographyPanel'
+import { ColorsPanel } from './ColorsPanel'
+import { BackgroundPanel } from './BackgroundPanel'
+import { BorderShadowPanel } from './BorderShadowPanel'
+import { VisibilityPanel } from './VisibilityPanel'
+import { StylePresetsPanel } from './StylePresetsPanel'
+import { CustomCssEditor } from './CustomCssEditor'
 
 function PayloadAdminLink({ label, pageId }: { label: string; pageId: number | null }) {
   return (
@@ -394,6 +402,35 @@ export function BlockFieldEditor() {
           </>
         )}
       </div>
+
+      {/* === Deep Styling Panels (collapsible) === */}
+      <CollapsibleSection title="🔤 Typografia" defaultOpen={false}>
+        <TypographyPanel blockIndex={idx} />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="🎨 Kolory" defaultOpen={false}>
+        <ColorsPanel blockIndex={idx} />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="🖼️ Tło" defaultOpen={false}>
+        <BackgroundPanel blockIndex={idx} />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="◻️ Obramowanie i cień" defaultOpen={false}>
+        <BorderShadowPanel blockIndex={idx} />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="👁️ Widoczność" defaultOpen={false}>
+        <VisibilityPanel blockIndex={idx} />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="💾 Style Presets" defaultOpen={false}>
+        <StylePresetsPanel blockIndex={idx} />
+      </CollapsibleSection>
+
+      <CollapsibleSection title="🖥️ Custom CSS" defaultOpen={false}>
+        <CustomCssEditor blockIndex={idx} />
+      </CollapsibleSection>
     </div>
   )
 }
