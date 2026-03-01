@@ -5,6 +5,7 @@ import { Reorder, useDragControls, motion, AnimatePresence } from 'framer-motion
 import { usePageEditor } from '@/lib/page-editor-store'
 import { getBlockMeta } from '@/lib/block-metadata'
 import type { PageSection } from '@/components/cms/types'
+import { GridOverlay } from './GridOverlay'
 
 // Pomocnik — wyciągnij subtitle z bloku (heading lub pierwszy tekst)
 function getBlockSubtitle(block: PageSection): string {
@@ -247,7 +248,9 @@ export function EditorCanvas() {
   }
 
   return (
-    <div className={`mx-auto ${widthClass} space-y-0 p-6 transition-all duration-300`}>
+    <div className={`relative mx-auto ${widthClass} space-y-0 p-6 transition-all duration-300`}>
+      <GridOverlay />
+
       {/* Przycisk dodawania na początku */}
       <InsertButton
         onClick={() => {
