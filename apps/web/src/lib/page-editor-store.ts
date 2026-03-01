@@ -421,7 +421,8 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
     const command = createDuplicateBlockCommand(state.sections, index)
     const { undoStack: newUndo, redoStack: newRedo } = pushCommand(state.undoStack, command)
 
-    const duplicate = { ...JSON.parse(JSON.stringify(block)) as PageSection, id: crypto.randomUUID() }
+    const duplicate = JSON.parse(JSON.stringify(block)) as PageSection
+    duplicate.id = crypto.randomUUID()
     const newSections = [...state.sections]
     newSections.splice(index + 1, 0, duplicate)
     return {

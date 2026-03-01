@@ -91,7 +91,8 @@ export function createDuplicateBlockCommand(
   const blockType = sections[index]?.blockType ?? 'unknown'
 
   const block = sections[index]
-  const duplicate = { ...JSON.parse(JSON.stringify(block)) as PageSection, id: crypto.randomUUID() }
+  const duplicate = JSON.parse(JSON.stringify(block)) as PageSection
+  duplicate.id = crypto.randomUUID()
   const afterSections = [...sections]
   afterSections.splice(index + 1, 0, duplicate)
 
