@@ -20,11 +20,10 @@
 
 #### Phase 1 — Editing depth (next)
 - [ ] Inline array items editing w sidebar (FAQ/Steps/Pricing/Services/Testimonials/OfferCards/Stats/Team)
-- [ ] Nested array editing (np. pricing package → features[])
+- [x] Nested array editing (np. pricing package → features[])
 - [ ] Media picker inline w sidebar (wybór obrazu z kolekcji Media bez wychodzenia do Payload)
-- [ ] Edycja `blockName` per-block w sidebar
 - [x] Keyboard shortcuts: Ctrl+S (save), Delete (remove block), Ctrl+D (duplicate)
-
+- [x] Edycja `blockName` per-block w sidebar
 #### Phase 2 — Visual precision
 - [ ] Grid system overlay (konfigurowalne: 12/16 kolumn, snap-to-grid)
 - [ ] Auto-alignment guides (smart guides jak w Figma/Sketch)
