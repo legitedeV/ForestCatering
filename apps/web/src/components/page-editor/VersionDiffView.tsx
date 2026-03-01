@@ -61,14 +61,14 @@ function DiffItem({ diff }: { diff: SectionDiff }) {
         )}
         {hasFields && (
           <span className="ml-auto text-xs text-forest-500">
-            {expanded ? '▼' : '▶'} {diff.changedFields!.length} pól
+            {expanded ? '▼' : '▶'} {diff.changedFields?.length ?? 0} pól
           </span>
         )}
       </button>
 
       {expanded && hasFields && (
         <div className="mt-2 space-y-1 border-t border-forest-700/50 pt-2">
-          {diff.changedFields!.map((field, i) => (
+          {(diff.changedFields ?? []).map((field, i) => (
             <div key={i} className="text-xs">
               <span className="font-medium text-forest-300">{field.fieldPath}:</span>{' '}
               {field.type === 'added' ? (
