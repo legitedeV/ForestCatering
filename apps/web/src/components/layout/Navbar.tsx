@@ -24,8 +24,8 @@ export function Navbar({ links, companyName, contactPhone }: NavbarProps) {
   const { scrollY } = useScroll()
   const bgOpacity = useTransform(scrollY, [0, 100], [isHome ? 0 : 1, 1])
   const borderOpacity = useTransform(scrollY, [0, 100], [isHome ? 0 : 0.3, 0.3])
-  const backgroundColor = useTransform(bgOpacity, (v) => `rgba(21, 10, 4, ${v * 0.96})`)
-  const borderBottomColor = useTransform(borderOpacity, (v) => `rgba(74, 83, 94, )`)
+  const backgroundColor = useTransform(bgOpacity, (v) => `rgba(18, 22, 27, ${v * 0.96})`)
+  const borderBottomColor = useTransform(borderOpacity, (v) => `rgba(74, 83, 94, ${v})`)
   const backdropFilter = useTransform(bgOpacity, (v) => (v > 0.5 ? 'blur(12px)' : 'none'))
 
   useEffect(() => {

@@ -35,6 +35,7 @@ interface ProductDoc {
   servings?: number | null
   category?: { id: string; name?: string } | string
   images?: Array<{ image: { url?: string; alt?: string } | string }> | null
+  imageUrl?: string | null
 }
 
 interface Props {
@@ -82,7 +83,7 @@ export default async function ProductDetailPage({ params }: Props) {
   if (!product) notFound()
 
   const firstImage = product.images?.[0]?.image
-  const imageUrl = getMediaUrl(firstImage)
+  const imageUrl = getMediaUrl(firstImage) || product.imageUrl || undefined
   const imageAlt = getMediaAlt(firstImage, product.name)
 
   return (

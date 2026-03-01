@@ -16,6 +16,7 @@ type FeaturedProduct = {
   compareAtPrice?: number | null
   shortDescription?: string | null
   images?: Array<{ image: { url?: string } | string }>
+  imageUrl?: string | null
 }
 
 export async function FeaturedProductsBlock({ heading, limit, linkText, linkUrl }: FeaturedProductsProps) {
@@ -55,7 +56,7 @@ export async function FeaturedProductsBlock({ heading, limit, linkText, linkUrl 
             >
               {(() => {
                 const firstImg = product.images?.[0]?.image
-                const imgUrl = getMediaUrl(firstImg)
+                const imgUrl = getMediaUrl(firstImg) || product.imageUrl || undefined
                 return imgUrl ? (
                   <div className="relative aspect-[5/4] overflow-hidden">
                     <Image
