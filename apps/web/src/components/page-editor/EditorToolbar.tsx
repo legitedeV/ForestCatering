@@ -74,6 +74,22 @@ function HistoryIcon() {
   )
 }
 
+function ClockIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /><path d="M22 12A10 10 0 0 0 12 2" strokeDasharray="4 2" />
+    </svg>
+  )
+}
+
+function CommentIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  )
+}
+
 const BREAKPOINTS = [
   { key: 'desktop' as const, label: 'Desktop', Icon: MonitorIcon },
   { key: 'tablet' as const, label: 'Tablet', Icon: TabletIcon },
@@ -105,6 +121,11 @@ export function EditorToolbar() {
   const redoStack = usePageEditor((s) => s.redoStack)
   const historyPanelOpen = usePageEditor((s) => s.historyPanelOpen)
   const toggleHistoryPanel = usePageEditor((s) => s.toggleHistoryPanel)
+  const toggleVersionHistory = usePageEditor((s) => s.toggleVersionHistory)
+  const showComments = usePageEditor((s) => s.showComments)
+  const toggleComments = usePageEditor((s) => s.toggleComments)
+  const blockComments = usePageEditor((s) => s.blockComments)
+  const unresolvedCount = blockComments.filter((c) => !c.resolved).length
 
   return (
     <header
@@ -165,6 +186,33 @@ export function EditorToolbar() {
             <HistoryIcon />
           </button>
           {historyPanelOpen && <HistoryPanel />}
+        </div>
+
+        {/* Version history & comments */}
+        <div className="flex items-center gap-0.5 border-l border-forest-700 pl-2 ml-2">
+          <button
+            onClick={toggleVersionHistory}
+            className="rounded p-1.5 text-forest-400 transition hover:bg-forest-800 hover:text-cream"
+            aria-label="Historia wersji (Payload)"
+            title="Historia wersji"
+          >
+            <ClockIcon />
+          </button>
+          <button
+            onClick={toggleComments}
+            className={`relative rounded p-1.5 transition ${showComments
+              ? 'bg-accent-warm/20 text-accent-warm'
+              : 'text-forest-400 hover:bg-forest-800 hover:text-cream'}`}
+            aria-label={showComments ? 'Ukryj komentarze' : 'Pokaż komentarze'}
+            title="Komentarze"
+          >
+            <CommentIcon />
+            {unresolvedCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-accent-warm text-[8px] font-bold text-forest-950">
+                {unresolvedCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 

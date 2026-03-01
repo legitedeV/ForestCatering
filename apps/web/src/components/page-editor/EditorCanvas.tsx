@@ -1,11 +1,13 @@
 'use client'
 
-import React, { useRef, useCallback } from 'react'
+import React, { useRef, useCallback, useState } from 'react'
 import { Reorder, useDragControls, motion, AnimatePresence } from 'framer-motion'
 import { usePageEditor } from '@/lib/page-editor-store'
 import { getBlockMeta } from '@/lib/block-metadata'
 import type { PageSection } from '@/components/cms/types'
 import { GridOverlay } from './GridOverlay'
+import { BlockCommentIndicator } from './BlockCommentIndicator'
+import { CommentPopover } from './CommentPopover'
 
 // Pomocnik — wyciągnij subtitle z bloku (heading lub pierwszy tekst)
 function getBlockSubtitle(block: PageSection): string {
@@ -53,6 +55,8 @@ function BlockCard({
   const moveBlock = usePageEditor((s) => s.moveBlock)
   const duplicateBlock = usePageEditor((s) => s.duplicateBlock)
   const removeBlock = usePageEditor((s) => s.removeBlock)
+
+  const [commentOpen, setCommentOpen] = useState(false)
 
   const meta = getBlockMeta(block.blockType)
   const isSelected = selectedBlockIndex === index
@@ -149,7 +153,23 @@ function BlockCard({
         >
           🗑️
         </button>
+        {block.id && (
+          <BlockCommentIndicator
+            blockId={block.id}
+            onOpen={() => setCommentOpen(true)}
+          />
+        )}
       </div>
+
+      {/* Comment popover */}
+      {commentOpen && block.id && (
+        <CommentPopover
+          blockId={block.id}
+          blockIndex={index}
+          blockLabel={`${meta?.label ?? block.blockType} #${index + 1}`}
+          onClose={() => setCommentOpen(false)}
+        />
+      )}
     </Reorder.Item>
   )
 }

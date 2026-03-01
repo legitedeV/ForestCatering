@@ -13,6 +13,8 @@ import {
   pushCommand,
   mergeLastCommand,
 } from './undo-redo-engine'
+import type { BlockComment } from './block-comments'
+import { loadComments, saveComments } from './block-comments'
 
 // Domyślne wartości dla nowych bloków
 const BLOCK_DEFAULTS: Record<string, Partial<PageSection>> = {
@@ -223,6 +225,18 @@ interface EditorState {
   canRedo: boolean
   historyPanelOpen: boolean
 
+  // Version History
+  versionHistoryOpen: boolean
+
+  // Comments
+  blockComments: BlockComment[]
+  showComments: boolean
+
+  // Concurrency
+  lastKnownUpdatedAt: string | null
+  conflictDetected: boolean
+  serverUpdatedAt: string | null
+
   // Akcje — strona
   loadPage: (pageId: number) => Promise<void>
   savePage: () => Promise<void>
@@ -242,6 +256,21 @@ interface EditorState {
   redoToIndex: (targetIndex: number) => void
   clearHistory: () => void
   toggleHistoryPanel: () => void
+
+  // Akcje — Version History
+  toggleVersionHistory: () => void
+  restoreVersion: (versionId: string) => Promise<void>
+  loadVersionSections: (sections: PageSection[]) => void
+
+  // Akcje — Comments
+  addComment: (blockId: string, blockIndex: number, text: string, position?: { xPercent: number; yPercent: number }) => void
+  resolveComment: (commentId: string) => void
+  deleteComment: (commentId: string) => void
+  toggleComments: () => void
+
+  // Akcje — Concurrency
+  resolveConflict: (strategy: 'overwrite' | 'reload') => Promise<void>
+  dismissConflict: () => void
 
   // Akcje — UI
   setPreviewBreakpoint: (bp: 'desktop' | 'tablet' | 'mobile') => void
@@ -290,6 +319,12 @@ const initialState = {
   canUndo: false,
   canRedo: false,
   historyPanelOpen: false,
+  versionHistoryOpen: false,
+  blockComments: [] as BlockComment[],
+  showComments: false,
+  lastKnownUpdatedAt: null as string | null,
+  conflictDetected: false,
+  serverUpdatedAt: null as string | null,
 }
 
 export const usePageEditor = create<EditorState>()((set, get) => ({
@@ -311,6 +346,7 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
         title: string
         path: string
         sections: PageSection[]
+        updatedAt?: string
       }
       const sectionsSnapshot = JSON.parse(JSON.stringify(data.sections)) as PageSection[]
       set({
@@ -326,6 +362,10 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
         redoStack: [],
         canUndo: false,
         canRedo: false,
+        lastKnownUpdatedAt: data.updatedAt ?? null,
+        conflictDetected: false,
+        serverUpdatedAt: null,
+        blockComments: loadComments(data.id),
       })
     } catch (err) {
       set({
@@ -337,11 +377,24 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
 
   // Zapisz zmiany sekcji na serwerze
   savePage: async () => {
-    const { pageId, sections } = get()
+    const { pageId, sections, lastKnownUpdatedAt } = get()
     if (!pageId) return
 
     set({ isSaving: true, error: null })
     try {
+      // 1. Check server version for conflicts
+      const checkRes = await fetch(`/api/page-editor/${pageId}`, {
+        headers: { 'x-editor-secret': process.env.NEXT_PUBLIC_EDITOR_SECRET ?? '' },
+      })
+      if (checkRes.ok) {
+        const serverData = await checkRes.json() as { updatedAt?: string }
+        if (lastKnownUpdatedAt && serverData.updatedAt && serverData.updatedAt !== lastKnownUpdatedAt) {
+          set({ isSaving: false, conflictDetected: true, serverUpdatedAt: serverData.updatedAt })
+          return
+        }
+      }
+
+      // 2. Save normally
       const res = await fetch(`/api/page-editor/${pageId}`, {
         method: 'PUT',
         headers: {
@@ -354,11 +407,14 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
         const data = await res.json().catch(() => ({}))
         throw new Error((data as { error?: string }).error ?? `HTTP ${res.status}`)
       }
+      const result = await res.json() as { updatedAt?: string }
       const sectionsSnapshot = JSON.parse(JSON.stringify(sections)) as PageSection[]
       set({
         isSaving: false,
         isDirty: false,
         originalSections: sectionsSnapshot,
+        lastKnownUpdatedAt: result.updatedAt ?? null,
+        conflictDetected: false,
       })
     } catch (err) {
       set({
@@ -607,6 +663,120 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
 
   // Toggle panelu historii
   toggleHistoryPanel: () => set((s) => ({ historyPanelOpen: !s.historyPanelOpen })),
+
+  // Version History
+  toggleVersionHistory: () => set((s) => ({ versionHistoryOpen: !s.versionHistoryOpen })),
+
+  restoreVersion: async (versionId: string) => {
+    const { pageId } = get()
+    if (!pageId) return
+    try {
+      await fetch(`/api/page-editor/${pageId}/versions/${versionId}/restore`, {
+        method: 'POST',
+        headers: { 'x-editor-secret': process.env.NEXT_PUBLIC_EDITOR_SECRET ?? '' },
+      })
+      await get().loadPage(pageId)
+      set({ versionHistoryOpen: false })
+    } catch {
+      // silent
+    }
+  },
+
+  loadVersionSections: (sections: PageSection[]) => set((state) => {
+    const command: EditorCommand = {
+      type: 'loadVersion',
+      label: 'Wczytaj wersję',
+      timestamp: Date.now(),
+      undo: { action: 'setSections' as const, sections: state.sections, selectedBlockIndex: state.selectedBlockIndex },
+      redo: { action: 'setSections' as const, sections, selectedBlockIndex: null },
+    }
+    const { undoStack: newUndo, redoStack: newRedo } = pushCommand(state.undoStack, command)
+    return {
+      sections,
+      isDirty: true,
+      selectedBlockIndex: null,
+      undoStack: newUndo,
+      redoStack: newRedo,
+      canUndo: true,
+      canRedo: false,
+    }
+  }),
+
+  // Comments
+  addComment: (blockId, blockIndex, text, position) => {
+    const { pageId, blockComments } = get()
+    const newComment: BlockComment = {
+      id: crypto.randomUUID(),
+      blockId,
+      blockIndex,
+      text,
+      author: 'editor',
+      createdAt: new Date().toISOString(),
+      resolved: false,
+      position,
+    }
+    const updated = [...blockComments, newComment]
+    set({ blockComments: updated })
+    if (pageId) saveComments(pageId, updated)
+  },
+
+  resolveComment: (commentId) => {
+    const { pageId, blockComments } = get()
+    const updated = blockComments.map((c) => (c.id === commentId ? { ...c, resolved: true } : c))
+    set({ blockComments: updated })
+    if (pageId) saveComments(pageId, updated)
+  },
+
+  deleteComment: (commentId) => {
+    const { pageId, blockComments } = get()
+    const updated = blockComments.filter((c) => c.id !== commentId)
+    set({ blockComments: updated })
+    if (pageId) saveComments(pageId, updated)
+  },
+
+  toggleComments: () => set((s) => ({ showComments: !s.showComments })),
+
+  // Concurrency
+  resolveConflict: async (strategy) => {
+    const { pageId, sections } = get()
+    if (!pageId) return
+
+    if (strategy === 'reload') {
+      set({ conflictDetected: false, serverUpdatedAt: null })
+      await get().loadPage(pageId)
+    } else if (strategy === 'overwrite') {
+      set({ conflictDetected: false, serverUpdatedAt: null, isSaving: true, error: null })
+      try {
+        const res = await fetch(`/api/page-editor/${pageId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-editor-secret': process.env.NEXT_PUBLIC_EDITOR_SECRET ?? '',
+          },
+          body: JSON.stringify({ sections }),
+        })
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}))
+          throw new Error((data as { error?: string }).error ?? `HTTP ${res.status}`)
+        }
+        const result = await res.json() as { updatedAt?: string }
+        const sectionsSnapshot = JSON.parse(JSON.stringify(sections)) as PageSection[]
+        set({
+          isSaving: false,
+          isDirty: false,
+          originalSections: sectionsSnapshot,
+          lastKnownUpdatedAt: result.updatedAt ?? null,
+        })
+      } catch (err) {
+        set({
+          isSaving: false,
+          error: err instanceof Error ? err.message : 'Nieznany błąd zapisu',
+        })
+      }
+    }
+  },
+
+  dismissConflict: () => set({ conflictDetected: false }),
 
   // Ustaw breakpoint podglądu
   setPreviewBreakpoint: (bp) => set({ previewBreakpoint: bp }),

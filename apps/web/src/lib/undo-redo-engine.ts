@@ -11,6 +11,7 @@ export type EditorCommandType =
   | 'addBlock'
   | 'updateBlockField'
   | 'reorderBlocks'
+  | 'loadVersion'
   | 'batch'
 
 export interface EditorCommand {

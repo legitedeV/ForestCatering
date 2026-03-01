@@ -48,11 +48,12 @@
 - [ ] Export/Import layout JSON
 - [ ] Multi-page template apply (zastosuj template do wielu stron)
 
-#### Phase 5 — Workflow & collaboration
+#### Phase 5 — Workflow & collaboration (partial ✅)
 - [x] Undo/Redo stack (Ctrl+Z / Ctrl+Shift+Z) z Command Pattern + historią akcji sesji
-- [ ] Version history diff viewer (porównanie wersji obok siebie)
-- [ ] Collaborative editing (WebSocket real-time sync)
-- [ ] Comments/annotations na blokach
+- [x] Version history diff viewer (Payload versions + structural diff) — PR #5B
+- [x] Optimistic concurrency (conflict detection + resolution dialog) — PR #5B
+- [x] Comments/annotations na blokach (localStorage + piny preview) — PR #5B
+- [ ] Collaborative editing (WebSocket real-time sync) → **wymaga infra, osobny PR**
 
 #### Phase 6 — Advanced
 - [ ] Inline text editing (contentEditable bezpośrednio na canvas/preview)
