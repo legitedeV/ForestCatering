@@ -2,6 +2,17 @@
 
 import { create } from 'zustand'
 import type { PageSection } from '@/components/cms/types'
+import type { EditorCommand } from './undo-redo-engine'
+import {
+  createMoveBlockCommand,
+  createRemoveBlockCommand,
+  createDuplicateBlockCommand,
+  createAddBlockCommand,
+  createUpdateFieldCommand,
+  shouldMergeWithLastCommand,
+  pushCommand,
+  mergeLastCommand,
+} from './undo-redo-engine'
 
 // Domyślne wartości dla nowych bloków
 const BLOCK_DEFAULTS: Record<string, Partial<PageSection>> = {
@@ -87,6 +98,23 @@ function setNestedField(obj: Record<string, unknown>, fieldPath: string, value: 
       value,
     ),
   }
+}
+
+// Odczyt zagnieżdżonego pola po ścieżce (inverse setNestedField)
+function getNestedField(obj: Record<string, unknown>, fieldPath: string): unknown {
+  const keys = fieldPath.split('.')
+  let current: unknown = obj
+  for (const key of keys) {
+    if (current === null || current === undefined) return undefined
+    if (Array.isArray(current)) {
+      current = current[Number(key)]
+    } else if (typeof current === 'object') {
+      current = (current as Record<string, unknown>)[key]
+    } else {
+      return undefined
+    }
+  }
+  return current
 }
 
 // ── Block style overrides per-block ──────────────────────
@@ -188,6 +216,13 @@ interface EditorState {
   cssOverrides: Record<string, string>
   customCss: string
 
+  // Undo/Redo
+  undoStack: EditorCommand[]
+  redoStack: EditorCommand[]
+  canUndo: boolean
+  canRedo: boolean
+  historyPanelOpen: boolean
+
   // Akcje — strona
   loadPage: (pageId: number) => Promise<void>
   savePage: () => Promise<void>
@@ -199,6 +234,14 @@ interface EditorState {
   duplicateBlock: (index: number) => void
   addBlock: (blockType: string, atIndex: number) => void
   updateBlockField: (index: number, fieldPath: string, value: unknown) => void
+
+  // Akcje — Undo/Redo
+  undo: () => void
+  redo: () => void
+  undoToIndex: (targetIndex: number) => void
+  redoToIndex: (targetIndex: number) => void
+  clearHistory: () => void
+  toggleHistoryPanel: () => void
 
   // Akcje — UI
   setPreviewBreakpoint: (bp: 'desktop' | 'tablet' | 'mobile') => void
@@ -242,6 +285,11 @@ const initialState = {
   pageTemplate: null as string | null,
   cssOverrides: {} as Record<string, string>,
   customCss: '',
+  undoStack: [] as EditorCommand[],
+  redoStack: [] as EditorCommand[],
+  canUndo: false,
+  canRedo: false,
+  historyPanelOpen: false,
 }
 
 export const usePageEditor = create<EditorState>()((set, get) => ({
@@ -274,6 +322,10 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
         isLoading: false,
         isDirty: false,
         selectedBlockIndex: null,
+        undoStack: [],
+        redoStack: [],
+        canUndo: false,
+        canRedo: false,
       })
     } catch (err) {
       set({
@@ -321,31 +373,66 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
 
   // Przesuń blok z pozycji fromIndex na toIndex
   moveBlock: (fromIndex, toIndex) => set((state) => {
+    const command = createMoveBlockCommand(state.sections, fromIndex, toIndex, state.selectedBlockIndex)
+    const { undoStack: newUndo, redoStack: newRedo } = pushCommand(state.undoStack, command)
+
     const newSections = [...state.sections]
     const [moved] = newSections.splice(fromIndex, 1)
     newSections.splice(toIndex, 0, moved)
-    return { sections: newSections, isDirty: true, selectedBlockIndex: toIndex }
+
+    return {
+      sections: newSections,
+      isDirty: true,
+      selectedBlockIndex: toIndex,
+      undoStack: newUndo,
+      redoStack: newRedo,
+      canUndo: true,
+      canRedo: false,
+    }
   }),
 
   // Usuń blok
   removeBlock: (index) => set((state) => {
+    const command = createRemoveBlockCommand(state.sections, index, state.selectedBlockIndex)
+    const { undoStack: newUndo, redoStack: newRedo } = pushCommand(state.undoStack, command)
+
     const newSections = state.sections.filter((_, i) => i !== index)
     const selectedBlockIndex = state.selectedBlockIndex === index
       ? null
       : state.selectedBlockIndex !== null && state.selectedBlockIndex > index
         ? state.selectedBlockIndex - 1
         : state.selectedBlockIndex
-    return { sections: newSections, isDirty: true, selectedBlockIndex }
+    return {
+      sections: newSections,
+      isDirty: true,
+      selectedBlockIndex,
+      undoStack: newUndo,
+      redoStack: newRedo,
+      canUndo: true,
+      canRedo: false,
+    }
   }),
 
   // Duplikuj blok
   duplicateBlock: (index) => set((state) => {
     const block = state.sections[index]
     if (!block) return state
+
+    const command = createDuplicateBlockCommand(state.sections, index)
+    const { undoStack: newUndo, redoStack: newRedo } = pushCommand(state.undoStack, command)
+
     const duplicate = { ...JSON.parse(JSON.stringify(block)) as PageSection, id: crypto.randomUUID() }
     const newSections = [...state.sections]
     newSections.splice(index + 1, 0, duplicate)
-    return { sections: newSections, isDirty: true, selectedBlockIndex: index + 1 }
+    return {
+      sections: newSections,
+      isDirty: true,
+      selectedBlockIndex: index + 1,
+      undoStack: newUndo,
+      redoStack: newRedo,
+      canUndo: true,
+      canRedo: false,
+    }
   }),
 
   // Dodaj nowy blok z domyślnymi wartościami
@@ -353,23 +440,172 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
     const defaults = BLOCK_DEFAULTS[blockType]
     if (!defaults) return state
     const newBlock = { ...defaults, id: crypto.randomUUID() } as PageSection
+
+    const command = createAddBlockCommand(state.sections, newBlock, atIndex)
+    const { undoStack: newUndo, redoStack: newRedo } = pushCommand(state.undoStack, command)
+
     const newSections = [...state.sections]
     newSections.splice(atIndex, 0, newBlock)
-    return { sections: newSections, isDirty: true, selectedBlockIndex: atIndex, sidebarTab: 'blocks' }
+    return {
+      sections: newSections,
+      isDirty: true,
+      selectedBlockIndex: atIndex,
+      sidebarTab: 'blocks',
+      undoStack: newUndo,
+      redoStack: newRedo,
+      canUndo: true,
+      canRedo: false,
+    }
   }),
 
   // Zaktualizuj pole bloku (immutable deep update)
   updateBlockField: (index, fieldPath, value) => set((state) => {
     const block = state.sections[index]
     if (!block) return state
+
+    const oldValue = getNestedField(block as unknown as Record<string, unknown>, fieldPath)
+
+    const lastCmd = state.undoStack[state.undoStack.length - 1]
+    const shouldMerge = shouldMergeWithLastCommand(lastCmd, 'updateBlockField', index, fieldPath)
+
+    let newUndoStack: EditorCommand[]
+    let newRedoStack: EditorCommand[]
+
+    if (shouldMerge) {
+      newUndoStack = mergeLastCommand(state.undoStack, value)
+      newRedoStack = []
+    } else {
+      const command = createUpdateFieldCommand(state.sections, index, fieldPath, oldValue, value)
+      const result = pushCommand(state.undoStack, command)
+      newUndoStack = result.undoStack
+      newRedoStack = result.redoStack
+    }
+
     const updatedBlock = setNestedField(
       block as unknown as Record<string, unknown>,
       fieldPath,
       value,
     ) as unknown as PageSection
     const newSections = state.sections.map((s, i) => (i === index ? updatedBlock : s))
-    return { sections: newSections, isDirty: true }
+
+    return {
+      sections: newSections,
+      isDirty: true,
+      undoStack: newUndoStack,
+      redoStack: newRedoStack,
+      canUndo: newUndoStack.length > 0,
+      canRedo: false,
+    }
   }),
+
+  // Undo — cofnij ostatnią akcję
+  undo: () => set((state) => {
+    if (state.undoStack.length === 0) return state
+    const stack = [...state.undoStack]
+    const command = stack.pop()!
+    const payload = command.undo
+
+    if (payload.action === 'setSections') {
+      return {
+        undoStack: stack,
+        redoStack: [...state.redoStack, command],
+        sections: payload.sections,
+        selectedBlockIndex: payload.selectedBlockIndex,
+        isDirty: true,
+        canUndo: stack.length > 0,
+        canRedo: true,
+      }
+    }
+
+    if (payload.action === 'updateField') {
+      const block = state.sections[payload.blockIndex]
+      if (!block) {
+        return { undoStack: stack, redoStack: [...state.redoStack, command], canUndo: stack.length > 0, canRedo: true }
+      }
+      const updatedBlock = setNestedField(
+        block as unknown as Record<string, unknown>,
+        payload.fieldPath,
+        payload.value,
+      ) as unknown as PageSection
+      const newSections = state.sections.map((s, i) => (i === payload.blockIndex ? updatedBlock : s))
+      return {
+        undoStack: stack,
+        redoStack: [...state.redoStack, command],
+        sections: newSections,
+        isDirty: true,
+        canUndo: stack.length > 0,
+        canRedo: true,
+      }
+    }
+
+    return state
+  }),
+
+  // Redo — ponów cofniętą akcję
+  redo: () => set((state) => {
+    if (state.redoStack.length === 0) return state
+    const stack = [...state.redoStack]
+    const command = stack.pop()!
+    const payload = command.redo
+
+    if (payload.action === 'setSections') {
+      return {
+        redoStack: stack,
+        undoStack: [...state.undoStack, command],
+        sections: payload.sections,
+        selectedBlockIndex: payload.selectedBlockIndex,
+        isDirty: true,
+        canUndo: true,
+        canRedo: stack.length > 0,
+      }
+    }
+
+    if (payload.action === 'updateField') {
+      const block = state.sections[payload.blockIndex]
+      if (!block) {
+        return { redoStack: stack, undoStack: [...state.undoStack, command], canUndo: true, canRedo: stack.length > 0 }
+      }
+      const updatedBlock = setNestedField(
+        block as unknown as Record<string, unknown>,
+        payload.fieldPath,
+        payload.value,
+      ) as unknown as PageSection
+      const newSections = state.sections.map((s, i) => (i === payload.blockIndex ? updatedBlock : s))
+      return {
+        redoStack: stack,
+        undoStack: [...state.undoStack, command],
+        sections: newSections,
+        isDirty: true,
+        canUndo: true,
+        canRedo: stack.length > 0,
+      }
+    }
+
+    return state
+  }),
+
+  // Batch undo do punktu w historii
+  undoToIndex: (targetIndex: number) => {
+    const state = get()
+    const stepsToUndo = state.undoStack.length - targetIndex
+    for (let i = 0; i < stepsToUndo; i++) {
+      get().undo()
+    }
+  },
+
+  // Batch redo do punktu w historii
+  redoToIndex: (targetIndex: number) => {
+    const state = get()
+    for (let i = 0; i < targetIndex; i++) {
+      get().redo()
+    }
+  },
+
+  // Wyczyść historię undo/redo
+  clearHistory: () => set({ undoStack: [], redoStack: [], canUndo: false, canRedo: false }),
+
+  // Toggle panelu historii
+  toggleHistoryPanel: () => set((s) => ({ historyPanelOpen: !s.historyPanelOpen })),
 
   // Ustaw breakpoint podglądu
   setPreviewBreakpoint: (bp) => set({ previewBreakpoint: bp }),

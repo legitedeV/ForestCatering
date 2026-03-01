@@ -49,7 +49,7 @@
 - [ ] Multi-page template apply (zastosuj template do wielu stron)
 
 #### Phase 5 — Workflow & collaboration
-- [ ] Undo/Redo stack (Ctrl+Z / Ctrl+Shift+Z) z historią akcji
+- [x] Undo/Redo stack (Ctrl+Z / Ctrl+Shift+Z) z Command Pattern + historią akcji sesji
 - [ ] Version history diff viewer (porównanie wersji obok siebie)
 - [ ] Collaborative editing (WebSocket real-time sync)
 - [ ] Comments/annotations na blokach
