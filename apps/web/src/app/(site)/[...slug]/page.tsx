@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { BlockRenderer } from '@/components/cms/BlockRenderer'
+import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import { getMediaUrl } from '@/lib/media'
 import { getPayload } from '@/lib/payload-client'
 import { getPageByPath, pathFromSegments } from '@/lib/cms-pages'
@@ -60,5 +61,17 @@ export default async function CMSPage({ params }: Props) {
     notFound()
   }
 
-  return <BlockRenderer sections={page.sections} />
+  const breadcrumbItems = slug.map((segment, i) => ({
+    label: segment.replace(/-/g, ' ').replace(/^\w/, (c) => c.toUpperCase()),
+    href: i < slug.length - 1 ? `/${slug.slice(0, i + 1).join('/')}` : undefined,
+  }))
+
+  return (
+    <div className="min-h-screen pt-24 pb-20">
+      <div className="mx-auto max-w-7xl px-4">
+        <Breadcrumbs items={breadcrumbItems} />
+      </div>
+      <BlockRenderer sections={page.sections} />
+    </div>
+  )
 }

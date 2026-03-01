@@ -10,9 +10,12 @@ interface MobileMenuProps {
   onClose: () => void
   links: NavLinkItem[]
   contactPhone?: string | null
+  email?: string | null
+  socialFacebook?: string | null
+  socialInstagram?: string | null
 }
 
-export function MobileMenu({ open, onClose, links, contactPhone }: MobileMenuProps) {
+export function MobileMenu({ open, onClose, links, contactPhone, email, socialFacebook, socialInstagram }: MobileMenuProps) {
   const itemCount = useCartItemCount()
 
   return (
@@ -55,7 +58,7 @@ export function MobileMenu({ open, onClose, links, contactPhone }: MobileMenuPro
                   <Link
                     href={link.href}
                     onClick={onClose}
-                    className="text-2xl font-medium text-cream transition hover:text-accent"
+                    className="text-2xl font-medium text-cream transition hover:text-accent-warm"
                   >
                     {link.label}
                   </Link>
@@ -69,23 +72,38 @@ export function MobileMenu({ open, onClose, links, contactPhone }: MobileMenuPro
                 <Link
                   href="/koszyk"
                   onClick={onClose}
-                  className="text-2xl font-medium text-cream transition hover:text-accent"
+                  className="text-2xl font-medium text-cream transition hover:text-accent-warm"
                 >
                   Koszyk {itemCount > 0 && `(${itemCount})`}
                 </Link>
               </motion.div>
             </nav>
 
-            {contactPhone && (
-              <motion.div
-                className="absolute bottom-10 text-forest-300"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                <a href={`tel:${contactPhone.replace(/\s+/g, '')}`} className="text-sm hover:text-accent">📞 {contactPhone}</a>
-              </motion.div>
-            )}
+            <div className="my-6 h-px w-24 bg-forest-700" />
+
+            <motion.div
+              className="absolute bottom-10 flex flex-col items-center gap-3 text-forest-300"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              {contactPhone && (
+                <a href={`tel:${contactPhone.replace(/\s+/g, '')}`} className="text-sm transition hover:text-accent-warm">📞 {contactPhone}</a>
+              )}
+              {email && (
+                <a href={`mailto:${email}`} className="text-sm transition hover:text-accent-warm">✉️ {email}</a>
+              )}
+              {(socialFacebook || socialInstagram) && (
+                <div className="mt-2 flex gap-4">
+                  {socialFacebook && (
+                    <a href={socialFacebook} aria-label="Facebook" className="text-sm transition hover:text-accent-warm">Facebook</a>
+                  )}
+                  {socialInstagram && (
+                    <a href={socialInstagram} aria-label="Instagram" className="text-sm transition hover:text-accent-warm">Instagram</a>
+                  )}
+                </div>
+              )}
+            </motion.div>
           </motion.div>
         </>
       )}
