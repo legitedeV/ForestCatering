@@ -209,7 +209,7 @@ export interface Product {
   dietary?: ('vegetarian' | 'vegan' | 'gluten-free' | 'low-carb')[] | null;
   weight?: string | null;
   servings?: number | null;
-  productType: 'catering' | 'event' | 'bar';
+  productType: 'catering' | 'event' | 'bar' | 'rental';
   isAvailable?: boolean | null;
   isFeatured?: boolean | null;
   sortOrder?: number | null;
@@ -302,14 +302,29 @@ export interface Order {
   deliveryTimeSlot: '8:00-10:00' | '10:00-12:00' | '12:00-14:00' | '14:00-16:00' | '16:00-18:00';
   items: {
     product?: (number | null) | Product;
+    /**
+     * Wypełniane automatycznie z wybranego produktu
+     */
     productName: string;
     quantity: number;
+    /**
+     * Wypełniane automatycznie z ceny produktu (w groszach)
+     */
     unitPrice: number;
+    /**
+     * Obliczane automatycznie: ilość × cena
+     */
     lineTotal: number;
     id?: string | null;
   }[];
+  /**
+   * Obliczane automatycznie z pozycji
+   */
   subtotal: number;
   deliveryFee?: number | null;
+  /**
+   * Obliczane automatycznie: kwota netto + koszt dostawy
+   */
   total: number;
   paymentMethod?: ('transfer' | 'cash' | 'online') | null;
   paymentStatus?: ('unpaid' | 'paid' | 'refunded') | null;
