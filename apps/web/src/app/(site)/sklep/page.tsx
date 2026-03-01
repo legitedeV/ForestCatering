@@ -4,6 +4,9 @@ import type { Where } from 'payload'
 import { AnimatedSection } from '@/components/ui/AnimatedSection'
 import { ProductCard } from '@/components/shop/ProductCard'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 interface ProductDoc {
   id: string
   name: string
@@ -14,6 +17,7 @@ interface ProductDoc {
   allergens?: string[] | null
   dietary?: string[] | null
   images?: Array<{ image: { url?: string; alt?: string } | string }> | null
+  imageUrl?: string | null
 }
 
 interface Props {

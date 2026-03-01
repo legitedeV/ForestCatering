@@ -3,8 +3,11 @@ import { notFound } from 'next/navigation'
 import { BlockRenderer } from '@/components/cms/BlockRenderer'
 import { getMediaUrl } from '@/lib/media'
 import { getPayload } from '@/lib/payload-client'
-import { getPageByPath, getPublishedPagePaths, pathFromSegments } from '@/lib/cms-pages'
+import { getPageByPath, pathFromSegments } from '@/lib/cms-pages'
 import type { SiteSetting } from '@/payload-types'
+
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 interface Props {
   params: Promise<{ slug: string[] }>
@@ -17,13 +20,6 @@ async function getSiteSettings(): Promise<SiteSetting | null> {
   } catch {
     return null
   }
-}
-
-export async function generateStaticParams() {
-  const paths = await getPublishedPagePaths()
-  return paths
-    .filter((pagePath) => pagePath !== 'home')
-    .map((pagePath) => ({ slug: pagePath.split('/') }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

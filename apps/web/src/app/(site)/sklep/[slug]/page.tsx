@@ -8,6 +8,9 @@ import { AnimatedSection, AnimatedItem } from '@/components/ui/AnimatedSection'
 import { ProductCard } from '@/components/shop/ProductCard'
 import { AddToCartButton } from '@/components/shop/AddToCartButton'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 const allergenLabels: Record<string, string> = {
   gluten: '🌾 Gluten', dairy: '🥛 Nabiał', eggs: '🥚 Jaja', nuts: '🥜 Orzechy',
   soy: '🫘 Soja', fish: '🐟 Ryby', shellfish: '🦐 Skorupiaki', celery: '🥬 Seler',
@@ -35,6 +38,7 @@ interface ProductDoc {
   servings?: number | null
   category?: { id: string; name?: string } | string
   images?: Array<{ image: { url?: string; alt?: string } | string }> | null
+  imageUrl?: string | null
 }
 
 interface Props {
@@ -82,7 +86,7 @@ export default async function ProductDetailPage({ params }: Props) {
   if (!product) notFound()
 
   const firstImage = product.images?.[0]?.image
-  const imageUrl = getMediaUrl(firstImage)
+  const imageUrl = getMediaUrl(firstImage) || product.imageUrl || undefined
   const imageAlt = getMediaAlt(firstImage, product.name)
 
   return (

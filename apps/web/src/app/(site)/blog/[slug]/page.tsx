@@ -6,6 +6,9 @@ import { ShareButton } from '@/components/ui/ShareButton'
 import type { Post } from '@/payload-types'
 import { RichTextRenderer } from '@/components/blog/RichTextRenderer'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 function formatPolishDate(dateStr: string): string {
   const months = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia']
   const d = new Date(dateStr)

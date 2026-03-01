@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from 'next/cache'
 import { Footer } from '@/components/layout/Footer'
 import { CartDrawer } from '@/components/cart/CartDrawer'
 import { ToastProvider } from '@/components/ui/Toast'
@@ -7,7 +8,11 @@ import { mapHeaderLinks, resolveCompanyName } from '@/components/layout/types'
 
 import { Navbar } from '@/components/layout/Navbar'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 async function getLayoutGlobals(): Promise<{ navigation: Navigation | null; settings: SiteSetting | null }> {
+  noStore()
   try {
     const payload = await getPayload()
     const [navigation, settings] = await Promise.all([

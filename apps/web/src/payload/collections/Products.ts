@@ -174,6 +174,7 @@ export const Products: CollectionConfig = {
         { label: 'Catering', value: 'catering' },
         { label: 'Event', value: 'event' },
         { label: 'Bar', value: 'bar' },
+        { label: 'Wypożyczalnia', value: 'rental' },
       ],
     },
 
