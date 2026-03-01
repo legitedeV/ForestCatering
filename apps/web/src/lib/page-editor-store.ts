@@ -684,7 +684,7 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
 
   loadVersionSections: (sections: PageSection[]) => set((state) => {
     const command: EditorCommand = {
-      type: 'setSections',
+      type: 'loadVersion',
       label: 'Wczytaj wersję',
       timestamp: Date.now(),
       undo: { action: 'setSections' as const, sections: state.sections, selectedBlockIndex: state.selectedBlockIndex },

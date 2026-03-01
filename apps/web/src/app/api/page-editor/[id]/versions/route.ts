@@ -32,9 +32,9 @@ export async function GET(
       id: v.id,
       createdAt: v.createdAt,
       updatedAt: v.updatedAt,
-      status: (v.version as Record<string, unknown>)?._status ?? 'draft',
-      title: (v.version as Record<string, unknown>)?.title ?? '',
-      sectionsCount: ((v.version as Record<string, unknown>)?.sections as unknown[] | undefined)?.length ?? 0,
+      status: (v.version as unknown as Record<string, unknown>)?._status ?? 'draft',
+      title: (v.version as unknown as Record<string, unknown>)?.title ?? '',
+      sectionsCount: ((v.version as unknown as Record<string, unknown>)?.sections as unknown[] | undefined)?.length ?? 0,
     }))
 
     return NextResponse.json({ versions: simplified, totalDocs: versions.totalDocs })

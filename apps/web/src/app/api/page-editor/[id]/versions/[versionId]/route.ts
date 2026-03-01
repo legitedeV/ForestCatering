@@ -26,8 +26,8 @@ export async function GET(
       id: version.id,
       createdAt: version.createdAt,
       version: {
-        title: (version.version as Record<string, unknown>)?.title,
-        sections: (version.version as Record<string, unknown>)?.sections ?? [],
+        title: (version.version as unknown as Record<string, unknown>)?.title,
+        sections: (version.version as unknown as Record<string, unknown>)?.sections ?? [],
       },
     })
   } catch (error) {

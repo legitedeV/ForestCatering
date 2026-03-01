@@ -23,7 +23,7 @@ export async function POST(
     return NextResponse.json({
       success: true,
       restoredId: restored.id,
-      updatedAt: (restored as Record<string, unknown>).updatedAt,
+      updatedAt: (restored as unknown as Record<string, unknown>).updatedAt,
     })
   } catch (error) {
     console.error('[page-editor restore] Error:', error)

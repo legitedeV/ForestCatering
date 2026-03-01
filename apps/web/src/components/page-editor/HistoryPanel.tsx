@@ -10,6 +10,7 @@ const COMMAND_ICONS: Record<EditorCommandType, string> = {
   addBlock: '➕',
   updateBlockField: '✏️',
   reorderBlocks: '🔀',
+  loadVersion: '📋',
   batch: '📦',
 }
 
