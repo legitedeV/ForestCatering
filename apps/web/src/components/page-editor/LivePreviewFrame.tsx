@@ -56,13 +56,16 @@ export function LivePreviewFrame() {
     return () => observer.disconnect()
   }, [iframeWidth])
 
-  // Wyślij sekcje do iframe po zmianie
+  // Wyślij sekcje do iframe po zmianie (debounce 150ms)
   useEffect(() => {
     if (!isLoaded) return
-    iframeRef.current?.contentWindow?.postMessage(
-      { type: 'editor:sections-updated', sections },
-      '*',
-    )
+    const timer = setTimeout(() => {
+      iframeRef.current?.contentWindow?.postMessage(
+        { type: 'editor:sections-updated', sections },
+        '*',
+      )
+    }, 150)
+    return () => clearTimeout(timer)
   }, [sections, isLoaded])
 
   // Wyślij wybrany blok do iframe

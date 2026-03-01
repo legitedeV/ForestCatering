@@ -221,20 +221,18 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
     const newSections = [...state.sections]
     const [moved] = newSections.splice(fromIndex, 1)
     newSections.splice(toIndex, 0, moved)
-    const isDirty = JSON.stringify(newSections) !== JSON.stringify(state.originalSections)
-    return { sections: newSections, isDirty, selectedBlockIndex: toIndex }
+    return { sections: newSections, isDirty: true, selectedBlockIndex: toIndex }
   }),
 
   // Usuń blok
   removeBlock: (index) => set((state) => {
     const newSections = state.sections.filter((_, i) => i !== index)
-    const isDirty = JSON.stringify(newSections) !== JSON.stringify(state.originalSections)
     const selectedBlockIndex = state.selectedBlockIndex === index
       ? null
       : state.selectedBlockIndex !== null && state.selectedBlockIndex > index
         ? state.selectedBlockIndex - 1
         : state.selectedBlockIndex
-    return { sections: newSections, isDirty, selectedBlockIndex }
+    return { sections: newSections, isDirty: true, selectedBlockIndex }
   }),
 
   // Duplikuj blok
@@ -244,8 +242,7 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
     const duplicate = { ...JSON.parse(JSON.stringify(block)) as PageSection, id: crypto.randomUUID() }
     const newSections = [...state.sections]
     newSections.splice(index + 1, 0, duplicate)
-    const isDirty = JSON.stringify(newSections) !== JSON.stringify(state.originalSections)
-    return { sections: newSections, isDirty, selectedBlockIndex: index + 1 }
+    return { sections: newSections, isDirty: true, selectedBlockIndex: index + 1 }
   }),
 
   // Dodaj nowy blok z domyślnymi wartościami
@@ -255,8 +252,7 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
     const newBlock = { ...defaults, id: crypto.randomUUID() } as PageSection
     const newSections = [...state.sections]
     newSections.splice(atIndex, 0, newBlock)
-    const isDirty = JSON.stringify(newSections) !== JSON.stringify(state.originalSections)
-    return { sections: newSections, isDirty, selectedBlockIndex: atIndex, sidebarTab: 'blocks' }
+    return { sections: newSections, isDirty: true, selectedBlockIndex: atIndex, sidebarTab: 'blocks' }
   }),
 
   // Zaktualizuj pole bloku (immutable deep update)
@@ -269,8 +265,7 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
       value,
     ) as unknown as PageSection
     const newSections = state.sections.map((s, i) => (i === index ? updatedBlock : s))
-    const isDirty = JSON.stringify(newSections) !== JSON.stringify(state.originalSections)
-    return { sections: newSections, isDirty }
+    return { sections: newSections, isDirty: true }
   }),
 
   // Ustaw breakpoint podglądu
