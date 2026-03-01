@@ -663,3 +663,12 @@ html {
 }
 .swatch:hover { transform: scale(1.15); }
 .swatch.active { border-color: var(--color-cream); }
+
+/* === HISTORY PANEL === */
+.history-item { transition: background-color 0.15s; }
+.history-item:hover { background: rgba(255, 255, 255, 0.03); }
+.history-item-current {
+  background: rgba(212, 168, 83, 0.08);
+  border-left: 2px solid var(--color-accent-warm);
+}
+.history-item-redo { opacity: 0.4; }

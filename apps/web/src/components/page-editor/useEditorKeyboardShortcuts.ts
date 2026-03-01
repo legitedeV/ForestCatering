@@ -11,11 +11,36 @@ export function useEditorKeyboardShortcuts() {
   const duplicateBlock = usePageEditor((s) => s.duplicateBlock)
   const removeBlock = usePageEditor((s) => s.removeBlock)
   const toggleGrid = usePageEditor((s) => s.toggleGrid)
+  const undo = usePageEditor((s) => s.undo)
+  const redo = usePageEditor((s) => s.redo)
+  const canUndo = usePageEditor((s) => s.canUndo)
+  const canRedo = usePageEditor((s) => s.canRedo)
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement
       const isInputFocused = ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName) || target.isContentEditable
+
+      // Ctrl+Z / Cmd+Z — undo (działa ZAWSZE, nawet w inputach)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault()
+        if (canUndo) undo()
+        return
+      }
+
+      // Ctrl+Shift+Z / Cmd+Shift+Z — redo
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'z') {
+        e.preventDefault()
+        if (canRedo) redo()
+        return
+      }
+
+      // Ctrl+Y / Cmd+Y — redo (alternatywne)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
+        e.preventDefault()
+        if (canRedo) redo()
+        return
+      }
 
       // Ctrl+S / Cmd+S — save
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -53,5 +78,5 @@ export function useEditorKeyboardShortcuts() {
 
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [savePage, isDirty, isSaving, selectedBlockIndex, duplicateBlock, removeBlock, toggleGrid])
+  }, [savePage, isDirty, isSaving, selectedBlockIndex, duplicateBlock, removeBlock, toggleGrid, undo, redo, canUndo, canRedo])
 }

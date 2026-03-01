@@ -1,6 +1,7 @@
 'use client'
 
 import { usePageEditor } from '@/lib/page-editor-store'
+import { HistoryPanel } from './HistoryPanel'
 
 // Ikony SVG breakpointów
 function MonitorIcon({ className }: { className?: string }) {
@@ -49,6 +50,30 @@ function Spinner() {
   )
 }
 
+function UndoIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 7v6h6" /><path d="M3 13a9 9 0 0 1 15.36-6.36L21 9" />
+    </svg>
+  )
+}
+
+function RedoIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 7v6h-6" /><path d="M21 13a9 9 0 0 0-15.36-6.36L3 9" />
+    </svg>
+  )
+}
+
+function HistoryIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
+    </svg>
+  )
+}
+
 const BREAKPOINTS = [
   { key: 'desktop' as const, label: 'Desktop', Icon: MonitorIcon },
   { key: 'tablet' as const, label: 'Tablet', Icon: TabletIcon },
@@ -72,6 +97,14 @@ export function EditorToolbar() {
   const toggleRulers = usePageEditor((s) => s.toggleRulers)
   const spacingInspectorEnabled = usePageEditor((s) => s.spacingInspectorEnabled)
   const toggleSpacingInspector = usePageEditor((s) => s.toggleSpacingInspector)
+  const undo = usePageEditor((s) => s.undo)
+  const redo = usePageEditor((s) => s.redo)
+  const canUndo = usePageEditor((s) => s.canUndo)
+  const canRedo = usePageEditor((s) => s.canRedo)
+  const undoStack = usePageEditor((s) => s.undoStack)
+  const redoStack = usePageEditor((s) => s.redoStack)
+  const historyPanelOpen = usePageEditor((s) => s.historyPanelOpen)
+  const toggleHistoryPanel = usePageEditor((s) => s.toggleHistoryPanel)
 
   return (
     <header
@@ -96,6 +129,43 @@ export function EditorToolbar() {
             /{pagePath}
           </span>
         )}
+
+        {/* Undo/Redo/History cluster */}
+        <div className="relative flex items-center gap-0.5 border-l border-forest-700 pl-2 ml-2">
+          <button
+            onClick={undo}
+            disabled={!canUndo}
+            className="rounded p-1.5 text-forest-400 transition hover:bg-forest-800 hover:text-cream disabled:opacity-30 disabled:cursor-not-allowed"
+            aria-label="Cofnij (Ctrl+Z)"
+            title={canUndo && undoStack.length > 0
+              ? `Cofnij: ${undoStack[undoStack.length - 1].label}`
+              : 'Cofnij (Ctrl+Z)'}
+          >
+            <UndoIcon />
+          </button>
+          <button
+            onClick={redo}
+            disabled={!canRedo}
+            className="rounded p-1.5 text-forest-400 transition hover:bg-forest-800 hover:text-cream disabled:opacity-30 disabled:cursor-not-allowed"
+            aria-label="Ponów (Ctrl+Shift+Z)"
+            title={canRedo && redoStack.length > 0
+              ? `Ponów: ${redoStack[redoStack.length - 1].label}`
+              : 'Ponów (Ctrl+Shift+Z)'}
+          >
+            <RedoIcon />
+          </button>
+          <button
+            onClick={toggleHistoryPanel}
+            className={`rounded p-1.5 transition ${historyPanelOpen
+              ? 'bg-accent/20 text-accent'
+              : 'text-forest-400 hover:bg-forest-800 hover:text-cream'}`}
+            aria-label="Historia zmian sesji"
+            title="Historia zmian sesji"
+          >
+            <HistoryIcon />
+          </button>
+          {historyPanelOpen && <HistoryPanel />}
+        </div>
       </div>
 
       {/* Środek — breakpoint selector + grid/inspector toggles */}
