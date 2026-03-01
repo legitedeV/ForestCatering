@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { usePageEditor } from '@/lib/page-editor-store'
 import { EditorToolbar, EditorCanvas, EditorSidebar } from '@/components/page-editor'
 import { LivePreviewFrame } from '@/components/page-editor/LivePreviewFrame'
+import { useEditorKeyboardShortcuts } from '@/components/page-editor/useEditorKeyboardShortcuts'
 
 type ViewMode = 'structure' | 'preview'
 
@@ -19,6 +20,8 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
   const error = usePageEditor((s) => s.error)
 
   const [viewMode, setViewMode] = useState<ViewMode>('structure')
+
+  useEditorKeyboardShortcuts()
 
   // Załaduj stronę na mount, resetuj na unmount
   useEffect(() => {

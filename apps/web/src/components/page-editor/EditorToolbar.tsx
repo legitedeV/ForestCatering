@@ -112,6 +112,7 @@ export function EditorToolbar() {
           onClick={() => void savePage()}
           disabled={isSaving || !isDirty}
           className="flex items-center gap-1.5 rounded-lg bg-forest-800 px-3 py-1.5 text-xs font-medium text-cream transition hover:bg-forest-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          title="Zapisz draft (Ctrl+S)"
           aria-label="Zapisz draft"
         >
           {isSaving ? <Spinner /> : null}
