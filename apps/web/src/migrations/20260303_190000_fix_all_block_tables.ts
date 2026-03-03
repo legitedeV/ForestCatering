@@ -2033,7 +2033,8 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
 }
 
 export async function down({ db }: MigrateDownArgs): Promise<void> {
-  // Down migration is intentionally empty – this is a repair migration.
+  // Down migration is intentionally a no-op – this is a repair migration.
   // Rolling back would mean deleting all block tables, which is destructive.
   // The tables created here are expected by the application schema.
+  void db
 }
