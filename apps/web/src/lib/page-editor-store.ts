@@ -16,6 +16,8 @@ import {
 import type { BlockComment } from './block-comments'
 import { loadComments, saveComments } from './block-comments'
 import type { A11yIssue } from './a11y-checks'
+import type { ForestAmbientConfig } from './forest-ambient-config'
+import { DEFAULT_FOREST_AMBIENT } from './forest-ambient-config'
 
 // Domyślne wartości dla nowych bloków
 const BLOCK_DEFAULTS: Record<string, Partial<PageSection>> = {
@@ -224,6 +226,9 @@ interface EditorState {
   layoutCssOverlay: string
   selectedCssLayer: 'globals' | 'layout'
 
+  // Forest Ambient Config (persisted in Payload)
+  forestAmbientConfig: ForestAmbientConfig
+
   // Undo/Redo
   undoStack: EditorCommand[]
   redoStack: EditorCommand[]
@@ -320,6 +325,9 @@ interface EditorState {
   setLayoutCssOverlay: (css: string) => void
   setSelectedCssLayer: (layer: 'globals' | 'layout') => void
 
+  // Akcje — Forest Ambient
+  setForestAmbientConfig: (config: Partial<ForestAmbientConfig>) => void
+
   // Akcje — Shortcuts
   toggleShortcuts: () => void
 
@@ -365,6 +373,7 @@ const initialState = {
   globalCssOverlay: '',
   layoutCssOverlay: '',
   selectedCssLayer: 'globals' as const,
+  forestAmbientConfig: { ...DEFAULT_FOREST_AMBIENT } as ForestAmbientConfig,
   undoStack: [] as EditorCommand[],
   redoStack: [] as EditorCommand[],
   canUndo: false,
@@ -408,6 +417,7 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
         pageTemplate?: string
         globalCssOverlay?: string
         layoutCssOverlay?: string
+        forestAmbientConfig?: Partial<ForestAmbientConfig>
       }
       const sectionsSnapshot = JSON.parse(JSON.stringify(data.sections)) as PageSection[]
       set({
@@ -430,6 +440,7 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
         pageTemplate: data.pageTemplate ?? null,
         globalCssOverlay: data.globalCssOverlay ?? '',
         layoutCssOverlay: data.layoutCssOverlay ?? '',
+        forestAmbientConfig: { ...DEFAULT_FOREST_AMBIENT, ...(data.forestAmbientConfig ?? {}) },
       })
     } catch (err) {
       set({
@@ -470,6 +481,7 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
           pageTemplate: get().pageTemplate,
           globalCssOverlay: get().globalCssOverlay,
           layoutCssOverlay: get().layoutCssOverlay,
+          forestAmbientConfig: get().forestAmbientConfig,
         }),
       })
       if (!res.ok) {
@@ -884,6 +896,12 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
   setGlobalCssOverlay: (css) => set({ globalCssOverlay: css, isDirty: true }),
   setLayoutCssOverlay: (css) => set({ layoutCssOverlay: css, isDirty: true }),
   setSelectedCssLayer: (layer) => set({ selectedCssLayer: layer }),
+
+  // Forest Ambient
+  setForestAmbientConfig: (partial) => set((s) => ({
+    forestAmbientConfig: { ...s.forestAmbientConfig, ...partial },
+    isDirty: true,
+  })),
 
   // Shortcuts panel
   toggleShortcuts: () => set((s) => ({ shortcutsOpen: !s.shortcutsOpen })),

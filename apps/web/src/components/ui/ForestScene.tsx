@@ -2,23 +2,30 @@
 
 import { useEffect, useRef, useCallback } from 'react'
 import * as THREE from 'three'
+import type { ForestAmbientConfig } from '@/lib/forest-ambient-config'
+import { DEFAULT_FOREST_AMBIENT } from '@/lib/forest-ambient-config'
 
 /* ─────────────────────────────────────────────
    ForestScene — Three.js WebGL background
    Fireflies · Floating leaves · Volumetric fog · Light rays
+   Accepts config from ForestAmbient parent.
    ───────────────────────────────────────────── */
 
-const FIREFLY_COUNT = 80
-const LEAF_COUNT = 30
 const FOG_COLOR = 0x1f242b
 
-function createFireflies(scene: THREE.Scene) {
-  const geo = new THREE.BufferGeometry()
-  const positions = new Float32Array(FIREFLY_COUNT * 3)
-  const sizes = new Float32Array(FIREFLY_COUNT)
-  const phases = new Float32Array(FIREFLY_COUNT)
+/** Parse hex color string to THREE.Color */
+function hexToColor(hex: string): THREE.Color {
+  try { return new THREE.Color(hex) } catch { return new THREE.Color(0xd4a853) }
+}
 
-  for (let i = 0; i < FIREFLY_COUNT; i++) {
+function createFireflies(scene: THREE.Scene, count: number, color: THREE.Color) {
+  if (count <= 0) return null
+  const geo = new THREE.BufferGeometry()
+  const positions = new Float32Array(count * 3)
+  const sizes = new Float32Array(count)
+  const phases = new Float32Array(count)
+
+  for (let i = 0; i < count; i++) {
     positions[i * 3] = (Math.random() - 0.5) * 20
     positions[i * 3 + 1] = Math.random() * 10 - 2
     positions[i * 3 + 2] = (Math.random() - 0.5) * 20
@@ -37,6 +44,7 @@ function createFireflies(scene: THREE.Scene) {
     uniforms: {
       uTime: { value: 0 },
       uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) },
+      uColor: { value: new THREE.Vector3(color.r, color.g, color.b) },
     },
     vertexShader: /* glsl */ `
       uniform float uTime;
@@ -57,15 +65,15 @@ function createFireflies(scene: THREE.Scene) {
       }
     `,
     fragmentShader: /* glsl */ `
+      uniform vec3 uColor;
       varying float vAlpha;
       void main() {
         float d = length(gl_PointCoord - 0.5);
         if (d > 0.5) discard;
         float glow = 1.0 - smoothstep(0.0, 0.5, d);
         glow = pow(glow, 1.5);
-        vec3 warmGold = vec3(0.83, 0.66, 0.33);
         vec3 softGreen = vec3(0.36, 0.60, 0.40);
-        vec3 color = mix(softGreen, warmGold, glow);
+        vec3 color = mix(softGreen, uColor, glow);
         gl_FragColor = vec4(color, glow * vAlpha * 0.7);
       }
     `,
@@ -76,11 +84,12 @@ function createFireflies(scene: THREE.Scene) {
   return { points, mat }
 }
 
-function createLeaves(scene: THREE.Scene) {
+function createLeaves(scene: THREE.Scene, count: number) {
   const leaves: THREE.Mesh[] = []
+  if (count <= 0) return leaves
   const leafGeo = new THREE.PlaneGeometry(0.15, 0.08)
 
-  for (let i = 0; i < LEAF_COUNT; i++) {
+  for (let i = 0; i < count; i++) {
     const mat = new THREE.MeshBasicMaterial({
       color: new THREE.Color().setHSL(0.28 + Math.random() * 0.08, 0.5, 0.25 + Math.random() * 0.15),
       transparent: true,
@@ -107,15 +116,16 @@ function createLeaves(scene: THREE.Scene) {
   return leaves
 }
 
-function createLightRays(scene: THREE.Scene) {
+function createLightRays(scene: THREE.Scene, enabled: boolean, color: THREE.Color) {
   const rays: THREE.Mesh[] = []
+  if (!enabled) return rays
   const rayCount = 5
   for (let i = 0; i < rayCount; i++) {
     const w = 0.3 + Math.random() * 0.5
     const h = 12
     const geo = new THREE.PlaneGeometry(w, h)
     const mat = new THREE.MeshBasicMaterial({
-      color: 0xd4a853,
+      color,
       transparent: true,
       opacity: 0.02 + Math.random() * 0.03,
       side: THREE.DoubleSide,
@@ -132,13 +142,27 @@ function createLightRays(scene: THREE.Scene) {
   return rays
 }
 
-export default function ForestScene() {
+interface ForestSceneProps {
+  config?: ForestAmbientConfig
+}
+
+export default function ForestScene({ config }: ForestSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const cleanupRef = useRef<(() => void) | null>(null)
+  const configRef = useRef(config ?? DEFAULT_FOREST_AMBIENT)
+
+  // Update ref so animation loop always has latest config
+  configRef.current = config ?? DEFAULT_FOREST_AMBIENT
 
   const init = useCallback(() => {
+    // Clean up previous scene if any
+    cleanupRef.current?.()
+    cleanupRef.current = null
+
     const container = containerRef.current
     if (!container) return
+
+    const cfg = configRef.current
 
     /* Respect reduced-motion preference */
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -155,16 +179,18 @@ export default function ForestScene() {
 
     /* Scene + Camera */
     const scene = new THREE.Scene()
-    scene.fog = new THREE.FogExp2(FOG_COLOR, 0.06)
+    scene.fog = new THREE.FogExp2(FOG_COLOR, cfg.fogDensity)
 
     const camera = new THREE.PerspectiveCamera(55, w / h, 0.1, 50)
     camera.position.set(0, 2, 8)
     camera.lookAt(0, 1, 0)
 
     /* Objects */
-    const { mat: fireflyMat } = createFireflies(scene)
-    const leaves = createLeaves(scene)
-    const rays = createLightRays(scene)
+    const fireflyColor = hexToColor(cfg.fireflyColor)
+    const fireflyResult = createFireflies(scene, cfg.fireflyCount, fireflyColor)
+    const leaves = createLeaves(scene, cfg.leafCount)
+    const rayColor = hexToColor(cfg.lightRaysColor)
+    const rays = createLightRays(scene, cfg.lightRaysEnabled, rayColor)
 
     /* Animation loop */
     const clock = new THREE.Clock()
@@ -175,7 +201,9 @@ export default function ForestScene() {
       const t = clock.getElapsedTime()
 
       /* Fireflies */
-      fireflyMat.uniforms.uTime.value = t
+      if (fireflyResult) {
+        fireflyResult.mat.uniforms.uTime.value = t
+      }
 
       /* Leaves: slow drift down + wobble */
       for (const leaf of leaves) {
@@ -215,7 +243,7 @@ export default function ForestScene() {
       /* Update pixel ratio if moved to a different display */
       const newPR = Math.min(window.devicePixelRatio, 2)
       renderer.setPixelRatio(newPR)
-      fireflyMat.uniforms.uPixelRatio.value = newPR
+      if (fireflyResult) fireflyResult.mat.uniforms.uPixelRatio.value = newPR
     }
     window.addEventListener('resize', onResize)
 
@@ -230,10 +258,28 @@ export default function ForestScene() {
     }
   }, [])
 
+  // Initialize on mount
   useEffect(() => {
     init()
     return () => { cleanupRef.current?.() }
   }, [init])
+
+  // Re-initialize when config changes (debounced)
+  useEffect(() => {
+    // Skip initial render (init already called)
+    const timer = setTimeout(() => {
+      init()
+    }, 300)
+    return () => clearTimeout(timer)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    config?.fireflyCount,
+    config?.fireflyColor,
+    config?.leafCount,
+    config?.fogDensity,
+    config?.lightRaysEnabled,
+    config?.lightRaysColor,
+  ])
 
   return (
     <div
@@ -243,3 +289,4 @@ export default function ForestScene() {
     />
   )
 }
+

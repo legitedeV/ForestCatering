@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getPayload } from '@/lib/payload-client'
 import { PreviewClient } from './PreviewClient'
+import ForestAmbient from '@/components/ui/ForestAmbient'
 
 export const dynamic = 'force-dynamic'
 
@@ -41,7 +42,10 @@ export default async function PreviewPage({ params, searchParams }: Props) {
 
   return (
     <main className="min-h-screen bg-forest-900">
-      <PreviewClient initialSections={sections} />
+      <ForestAmbient />
+      <div className="relative z-10">
+        <PreviewClient initialSections={sections} />
+      </div>
     </main>
   )
 }

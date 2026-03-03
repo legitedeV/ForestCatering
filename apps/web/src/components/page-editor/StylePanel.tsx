@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { usePageEditor } from '@/lib/page-editor-store'
 import { TEMPLATES, DEFAULT_CSS_VARIABLES } from '@/lib/template-definitions'
+import { DEFAULT_FOREST_AMBIENT } from '@/lib/forest-ambient-config'
 
 /* ------------------------------------------------------------------ */
 /*  Collapsible Accordion                                              */
@@ -341,12 +342,156 @@ function CssOverlayEditor() {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Forest Ambient Editor                                               */
+/* ------------------------------------------------------------------ */
+function RangeRow({
+  label,
+  value,
+  min,
+  max,
+  step,
+  onChange,
+}: {
+  label: string
+  value: number
+  min: number
+  max: number
+  step: number
+  onChange: (v: number) => void
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <label className="min-w-0 flex-1 truncate text-xs font-medium text-forest-400">{label}</label>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(parseFloat(e.target.value))}
+        className="h-1 w-20 accent-accent-warm"
+        aria-label={label}
+      />
+      <span className="w-10 text-right font-mono text-xs text-forest-300">{value}</span>
+    </div>
+  )
+}
+
+function ToggleRow({
+  label,
+  value,
+  onChange,
+}: {
+  label: string
+  value: boolean
+  onChange: (v: boolean) => void
+}) {
+  return (
+    <div className="flex items-center gap-2">
+      <label className="min-w-0 flex-1 truncate text-xs font-medium text-forest-400">{label}</label>
+      <button
+        onClick={() => onChange(!value)}
+        className={`rounded px-2 py-0.5 text-xs font-medium transition ${
+          value ? 'bg-forest-green text-cream' : 'bg-forest-800 text-forest-500'
+        }`}
+        aria-pressed={value}
+        aria-label={label}
+      >
+        {value ? 'ON' : 'OFF'}
+      </button>
+    </div>
+  )
+}
+
+function ForestAmbientEditor() {
+  const config = usePageEditor((s) => s.forestAmbientConfig)
+  const setConfig = usePageEditor((s) => s.setForestAmbientConfig)
+
+  return (
+    <Accordion title="🌲 Forest Ambient (Three.js)">
+      <div className="space-y-2.5">
+        <ToggleRow label="Włączone" value={config.enabled} onChange={(v) => setConfig({ enabled: v })} />
+        <RangeRow
+          label="Opacity sceny"
+          value={config.sceneOpacity}
+          min={0} max={1} step={0.05}
+          onChange={(v) => setConfig({ sceneOpacity: v })}
+        />
+
+        <p className="pt-1 text-[10px] font-semibold uppercase tracking-widest text-forest-500">Świetliki</p>
+        <RangeRow
+          label="Ilość"
+          value={config.fireflyCount}
+          min={0} max={200} step={10}
+          onChange={(v) => setConfig({ fireflyCount: v })}
+        />
+        <ColorPickerRow
+          label="Kolor"
+          variable="fireflyColor"
+          value={config.fireflyColor}
+          onChange={(_v, c) => setConfig({ fireflyColor: c })}
+        />
+
+        <p className="pt-1 text-[10px] font-semibold uppercase tracking-widest text-forest-500">Liście</p>
+        <RangeRow
+          label="Ilość"
+          value={config.leafCount}
+          min={0} max={100} step={5}
+          onChange={(v) => setConfig({ leafCount: v })}
+        />
+
+        <p className="pt-1 text-[10px] font-semibold uppercase tracking-widest text-forest-500">Mgła</p>
+        <ToggleRow label="CSS mgła" value={config.fogEnabled} onChange={(v) => setConfig({ fogEnabled: v })} />
+        <RangeRow
+          label="Opacity mgły"
+          value={config.fogOpacity}
+          min={0} max={1} step={0.05}
+          onChange={(v) => setConfig({ fogOpacity: v })}
+        />
+        <RangeRow
+          label="Gęstość (3D)"
+          value={config.fogDensity}
+          min={0} max={0.2} step={0.01}
+          onChange={(v) => setConfig({ fogDensity: v })}
+        />
+
+        <p className="pt-1 text-[10px] font-semibold uppercase tracking-widest text-forest-500">Efekty</p>
+        <ToggleRow label="Orby" value={config.orbsEnabled} onChange={(v) => setConfig({ orbsEnabled: v })} />
+        <ToggleRow label="Winieta" value={config.vignetteEnabled} onChange={(v) => setConfig({ vignetteEnabled: v })} />
+        <RangeRow
+          label="Siła winiety"
+          value={config.vignetteOpacity}
+          min={0} max={1} step={0.05}
+          onChange={(v) => setConfig({ vignetteOpacity: v })}
+        />
+        <ToggleRow label="Promienie" value={config.lightRaysEnabled} onChange={(v) => setConfig({ lightRaysEnabled: v })} />
+        <ColorPickerRow
+          label="Kolor promieni"
+          variable="lightRaysColor"
+          value={config.lightRaysColor}
+          onChange={(_v, c) => setConfig({ lightRaysColor: c })}
+        />
+
+        <button
+          onClick={() => setConfig({ ...DEFAULT_FOREST_AMBIENT })}
+          className="mt-2 w-full rounded border border-forest-700 bg-forest-800 px-3 py-1.5 text-xs text-forest-300 transition hover:bg-forest-700 hover:text-cream"
+          aria-label="Reset Forest Ambient do domyślnych"
+        >
+          ↩ Reset do domyślnych
+        </button>
+      </div>
+    </Accordion>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /*  Main StylePanel                                                     */
 /* ------------------------------------------------------------------ */
 export function StylePanel() {
   return (
     <div className="space-y-0">
       <TemplateSelector />
+      <ForestAmbientEditor />
       <CssVariablesEditor />
       <CssOverlayEditor />
       <AdvancedCssEditor />

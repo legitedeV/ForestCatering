@@ -804,12 +804,10 @@ html {
   position: absolute;
   inset: 0;
   z-index: 2;
-  opacity: 0.25;
   background: radial-gradient(ellipse 120% 60% at 50% 100%, rgba(74, 124, 89, 0.12), transparent 70%);
   animation: fog-drift 18s ease-in-out infinite alternate;
 }
 .forest-fog--2 {
-  opacity: 0.15;
   background: radial-gradient(ellipse 100% 50% at 30% 80%, rgba(212, 168, 83, 0.06), transparent 60%);
   animation-duration: 24s;
   animation-direction: alternate-reverse;

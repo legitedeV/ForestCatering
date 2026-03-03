@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { BlockRenderer } from '@/components/cms/BlockRenderer'
 import { BlockRendererClient } from '@/components/cms/BlockRendererClient'
 import { PageCssOverlay } from '@/components/cms/PageCssOverlay'
+import { ForestAmbientOverlay } from '@/components/cms/ForestAmbientOverlay'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
 import { getMediaUrl } from '@/lib/media'
 import { getPayload } from '@/lib/payload-client'
@@ -76,6 +77,9 @@ export default async function CMSPage({ params }: Props) {
       <PageCssOverlay
         globalCssOverlay={(page as unknown as Record<string, unknown>).globalCssOverlay as string | undefined}
         layoutCssOverlay={(page as unknown as Record<string, unknown>).layoutCssOverlay as string | undefined}
+      />
+      <ForestAmbientOverlay
+        config={(page as unknown as Record<string, unknown>).forestAmbientConfig as Record<string, unknown> | undefined}
       />
       <BlockRendererClient>
         <BlockRenderer sections={page.sections} />
