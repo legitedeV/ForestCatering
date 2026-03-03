@@ -12,6 +12,7 @@ import * as migration_20260301_220000_add_page_template_css_overlays from './202
 import * as migration_20260301_230000_add_visual_editor_fields_to_blocks from './20260301_230000_add_visual_editor_fields_to_blocks';
 import * as migration_20260303_102606 from './20260303_102606';
 import * as migration_20260303_180000_add_forest_ambient_config from './20260303_180000_add_forest_ambient_config';
+import * as migration_20260303_190000_fix_all_block_tables from './20260303_190000_fix_all_block_tables';
 
 export const migrations = [
   {
@@ -83,5 +84,10 @@ export const migrations = [
     up: migration_20260303_180000_add_forest_ambient_config.up,
     down: migration_20260303_180000_add_forest_ambient_config.down,
     name: '20260303_180000_add_forest_ambient_config',
+  },
+  {
+    up: migration_20260303_190000_fix_all_block_tables.up,
+    down: migration_20260303_190000_fix_all_block_tables.down,
+    name: '20260303_190000_fix_all_block_tables',
   },
 ];
