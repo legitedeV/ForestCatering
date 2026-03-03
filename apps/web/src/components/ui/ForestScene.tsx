@@ -141,7 +141,7 @@ export default function ForestScene() {
     if (!container) return
 
     /* Respect reduced-motion preference */
-    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const w = container.clientWidth
     const h = container.clientHeight
@@ -212,6 +212,10 @@ export default function ForestScene() {
       camera.aspect = cw / ch
       camera.updateProjectionMatrix()
       renderer.setSize(cw, ch)
+      /* Update pixel ratio if moved to a different display */
+      const newPR = Math.min(window.devicePixelRatio, 2)
+      renderer.setPixelRatio(newPR)
+      fireflyMat.uniforms.uPixelRatio.value = newPR
     }
     window.addEventListener('resize', onResize)
 
