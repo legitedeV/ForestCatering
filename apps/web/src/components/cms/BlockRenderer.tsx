@@ -19,16 +19,65 @@ import { TeamBlock } from './blocks/TeamBlock'
 import { MapAreaBlock } from './blocks/MapAreaBlock'
 import { OfferCardsBlock } from './blocks/OfferCardsBlock'
 import { ANIMATION_CATALOG } from '@/lib/animation-catalog'
+import { generateAllBlocksCss } from '@/lib/block-style-injector'
+import type { BlockStyleOverrides } from '@/lib/page-editor-store'
 
 const ANIMATION_MAP = new Map(ANIMATION_CATALOG.map((a) => [a.key, a]))
+
+/** Sanitize custom CSS to prevent script injection */
+function sanitizeCss(css: string): string {
+  // Loop to handle nested patterns like <scr<script>ipt>
+  let result = css
+  let prev = ''
+  while (prev !== result) {
+    prev = result
+    result = result.replace(/<\/?script[^>]*>/gi, '')
+  }
+  return result
+    .replace(/javascript\s*:/gi, '')
+    .replace(/expression\s*\(/gi, '')
+    .replace(/@import\s+url\s*\(\s*['"]?\s*javascript/gi, '')
+    .replace(/-moz-binding\s*:/gi, '')
+    .replace(/behavior\s*:/gi, '')
+    .replace(/url\s*\(\s*['"]?\s*data\s*:[^)]*script/gi, 'url(about:blank')
+}
 
 interface Props {
   sections: PageSection[]
 }
 
 export function BlockRenderer({ sections }: Props) {
+  // Generate scoped style-override CSS for production rendering
+  const styleOverrideCss = generateAllBlocksCss(
+    sections.map((block, index) => {
+      const blockData = block as Record<string, unknown>
+      return {
+        id: (block.id as string) ?? `block-${index}`,
+        styleOverrides: blockData.styleOverrides as BlockStyleOverrides | undefined,
+        animation: (blockData.animation as string) ?? '',
+      }
+    }),
+  )
+
+  // Generate custom CSS per block (replacing .this with scoped selector)
+  let customCssAll = ''
+  sections.forEach((block, index) => {
+    const so = (block as Record<string, unknown>).styleOverrides as BlockStyleOverrides | undefined
+    if (so?.customCss) {
+      const blockId = (block.id as string) ?? `block-${index}`
+      const safeId = blockId.replace(/[^a-zA-Z0-9_-]/g, '')
+      const safeCss = sanitizeCss(so.customCss)
+      customCssAll += safeCss.replace(/\.this/g, `[data-block-id="${safeId}"]`) + '\n'
+    }
+  })
+
+  const injectedCss = styleOverrideCss + customCssAll
+
   return (
     <>
+      {injectedCss && (
+        <style dangerouslySetInnerHTML={{ __html: injectedCss }} />
+      )}
       {sections.map((block, index) => {
         const key = block.id ?? `block-${index}`
         const blockData = block as Record<string, unknown>

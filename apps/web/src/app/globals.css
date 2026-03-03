@@ -351,6 +351,53 @@ html {
 
 /* --- ENTRANCE ANIMATIONS (trigger: .visible) --- */
 
+/* Fade Up */
+.anim-fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.anim-fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* Fade In */
+.anim-fade-in {
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+.anim-fade-in.visible { opacity: 1; }
+
+/* Slide Left */
+.anim-slide-left {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.anim-slide-left.visible { opacity: 1; transform: translateX(0); }
+
+/* Slide Right */
+.anim-slide-right {
+  opacity: 0;
+  transform: translateX(60px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.anim-slide-right.visible { opacity: 1; transform: translateX(0); }
+
+/* Scale Up */
+.anim-scale-up {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+.anim-scale-up.visible { opacity: 1; transform: scale(1); }
+
+/* Zoom Out */
+.anim-zoom-out {
+  opacity: 0;
+  transform: scale(1.15);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.anim-zoom-out.visible { opacity: 1; transform: scale(1); }
+
 /* 1. Fade Up Soft */
 .anim-fade-up-soft {
   opacity: 0;
@@ -611,6 +658,8 @@ html {
   .anim-pulse-glow, .anim-float, .anim-gentle-rotate, .anim-breathe,
   .anim-shimmer-fast, .anim-shimmer-fast::after, .anim-border-trace::before,
   .anim-gradient-text, .anim-parallax-slow, .anim-morph-bg,
+  .anim-fade-up, .anim-fade-in, .anim-slide-left, .anim-slide-right,
+  .anim-scale-up, .anim-zoom-out,
   .anim-fade-up-soft, .anim-fade-down, .anim-slide-left-bounce, .anim-slide-right-bounce,
   .anim-scale-elastic, .anim-rotate-in, .anim-blur-in, .anim-flip-y, .anim-flip-x,
   .anim-clip-reveal, .anim-clip-left, .anim-bounce-in, .anim-cascade > * {
