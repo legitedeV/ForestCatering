@@ -6158,6 +6158,12 @@
           "primaryKey": false,
           "notNull": false,
           "default": "'draft'"
+        },
+        "forest_ambient_config": {
+          "name": "forest_ambient_config",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {
@@ -11246,6 +11252,12 @@
         "latest": {
           "name": "latest",
           "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_forest_ambient_config": {
+          "name": "version_forest_ambient_config",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         }
