@@ -169,6 +169,12 @@ export const Pages: CollectionConfig = {
       admin: { condition: () => false },
     },
     {
+      name: 'forestAmbientConfig',
+      type: 'json',
+      label: 'Forest Ambient Config',
+      admin: { condition: () => false },
+    },
+    {
       name: 'seo',
       type: 'group',
       label: 'SEO',

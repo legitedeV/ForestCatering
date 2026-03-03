@@ -7,6 +7,7 @@ import type { BlockStyleOverrides } from '@/lib/page-editor-store'
 import { generateAllBlocksCss } from '@/lib/block-style-injector'
 import type { BlockComment } from '@/lib/block-comments'
 import { INLINE_EDITABLE_FIELDS } from '@/lib/inline-editable-fields'
+import { forestConfigToCss } from '@/lib/forest-ambient-config'
 // Build a Map for O(1) animation lookups
 const ANIMATION_MAP = new Map(ANIMATION_CATALOG.map((a) => [a.key, a]))
 
@@ -319,6 +320,19 @@ export function PreviewClient({ initialSections }: Props) {
         const global = (data.globalCssOverlay as string) || ''
         const layout = (data.layoutCssOverlay as string) || ''
         el.textContent = sanitizeCss(`/* Global overlay */\n${global}\n/* Layout overlay */\n${layout}`)
+      }
+
+      // Forest Ambient config injection
+      if (data.type === 'editor:forest-ambient-updated') {
+        let el = document.getElementById('editor-forest-ambient')
+        if (!el) {
+          el = document.createElement('style')
+          el.id = 'editor-forest-ambient'
+          document.head.appendChild(el)
+        }
+        const cfg = data.forestAmbientConfig as Record<string, unknown> | undefined
+        el.textContent = cfg ? forestConfigToCss(cfg) : ''
+        window.dispatchEvent(new CustomEvent('forest-ambient-config-changed'))
       }
     }
 

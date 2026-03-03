@@ -71,6 +71,7 @@ export function LivePreviewFrame() {
   const setA11yIssues = usePageEditor((s) => s.setA11yIssues)
   const globalCssOverlay = usePageEditor((s) => s.globalCssOverlay)
   const layoutCssOverlay = usePageEditor((s) => s.layoutCssOverlay)
+  const forestAmbientConfig = usePageEditor((s) => s.forestAmbientConfig)
 
   const [isLoaded, setIsLoaded] = useState(false)
   const [scale, setScale] = useState(1)
@@ -194,6 +195,18 @@ export function LivePreviewFrame() {
     }, 200)
     return () => clearTimeout(timer)
   }, [globalCssOverlay, layoutCssOverlay, isAnyLoaded, postToAllIframes])
+
+  // Wyślij Forest Ambient config do iframe
+  useEffect(() => {
+    if (!isAnyLoaded) return
+    const timer = setTimeout(() => {
+      postToAllIframes({
+        type: 'editor:forest-ambient-updated',
+        forestAmbientConfig,
+      })
+    }, 200)
+    return () => clearTimeout(timer)
+  }, [forestAmbientConfig, isAnyLoaded, postToAllIframes])
 
   // Odbieraj zdarzenia z iframe (kliknięcie bloku + inline edit + scroll sync + a11y)
   useEffect(() => {

@@ -41,6 +41,7 @@ export async function GET(
       pageTemplate: (page as unknown as Record<string, unknown>).pageTemplate ?? null,
       globalCssOverlay: (page as unknown as Record<string, unknown>).globalCssOverlay ?? '',
       layoutCssOverlay: (page as unknown as Record<string, unknown>).layoutCssOverlay ?? '',
+      forestAmbientConfig: (page as unknown as Record<string, unknown>).forestAmbientConfig ?? null,
     })
   } catch (error) {
     console.error('[page-editor GET] Błąd pobierania strony:', error)
@@ -83,10 +84,11 @@ export async function PUT(
     }
   }
 
-  const { pageTemplate, globalCssOverlay, layoutCssOverlay } = body as {
+  const { pageTemplate, globalCssOverlay, layoutCssOverlay, forestAmbientConfig } = body as {
     pageTemplate?: string
     globalCssOverlay?: string
     layoutCssOverlay?: string
+    forestAmbientConfig?: Record<string, unknown>
   }
 
   try {
@@ -95,6 +97,7 @@ export async function PUT(
     if (pageTemplate !== undefined) updateData.pageTemplate = pageTemplate
     if (globalCssOverlay !== undefined) updateData.globalCssOverlay = globalCssOverlay
     if (layoutCssOverlay !== undefined) updateData.layoutCssOverlay = layoutCssOverlay
+    if (forestAmbientConfig !== undefined) updateData.forestAmbientConfig = forestAmbientConfig
 
     const updated = await payload.update({
       collection: 'pages',
