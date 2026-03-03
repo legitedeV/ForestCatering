@@ -11,15 +11,15 @@ export interface AnimationDefinition {
 
 export const ANIMATION_CATALOG: AnimationDefinition[] = [
   // === ENTRANCE (trigger on scroll) ===
-  { key: 'fade-up', label: 'Fade Up', description: 'Wysuń w górę', category: 'entrance', type: 'framer', framerVariant: 'fadeUp', preview: '↑ opacity + y' },
+  { key: 'fade-up', label: 'Fade Up', description: 'Wysuń w górę', category: 'entrance', type: 'css', className: 'anim-fade-up', preview: '↑ opacity + y' },
   { key: 'fade-up-soft', label: 'Fade Up (Soft)', description: 'Delikatne wysunięcie', category: 'entrance', type: 'css', className: 'anim-fade-up-soft', preview: '↑ subtle' },
   { key: 'fade-down', label: 'Fade Down', description: 'Wysuń z góry', category: 'entrance', type: 'css', className: 'anim-fade-down', preview: '↓ opacity' },
-  { key: 'fade-in', label: 'Fade In', description: 'Pojawienie', category: 'entrance', type: 'framer', framerVariant: 'fadeIn', preview: 'opacity' },
-  { key: 'slide-left', label: 'Slide Left', description: 'Wsuń od lewej', category: 'entrance', type: 'framer', framerVariant: 'slideLeft', preview: '← slide' },
-  { key: 'slide-right', label: 'Slide Right', description: 'Wsuń od prawej', category: 'entrance', type: 'framer', framerVariant: 'slideRight', preview: '→ slide' },
+  { key: 'fade-in', label: 'Fade In', description: 'Pojawienie', category: 'entrance', type: 'css', className: 'anim-fade-in', preview: 'opacity' },
+  { key: 'slide-left', label: 'Slide Left', description: 'Wsuń od lewej', category: 'entrance', type: 'css', className: 'anim-slide-left', preview: '← slide' },
+  { key: 'slide-right', label: 'Slide Right', description: 'Wsuń od prawej', category: 'entrance', type: 'css', className: 'anim-slide-right', preview: '→ slide' },
   { key: 'slide-left-bounce', label: 'Slide Left (Bounce)', description: 'Wsuń od lewej ze sprężyną', category: 'entrance', type: 'css', className: 'anim-slide-left-bounce', preview: '← bounce' },
   { key: 'slide-right-bounce', label: 'Slide Right (Bounce)', description: 'Wsuń od prawej ze sprężyną', category: 'entrance', type: 'css', className: 'anim-slide-right-bounce', preview: '→ bounce' },
-  { key: 'scale-up', label: 'Scale Up', description: 'Powiększ wejście', category: 'entrance', type: 'framer', framerVariant: 'scaleUp', preview: '⤢ scale' },
+  { key: 'scale-up', label: 'Scale Up', description: 'Powiększ wejście', category: 'entrance', type: 'css', className: 'anim-scale-up', preview: '⤢ scale' },
   { key: 'scale-elastic', label: 'Scale Elastic', description: 'Sprężyste powiększenie', category: 'entrance', type: 'css', className: 'anim-scale-elastic', preview: '⤢ spring' },
   { key: 'rotate-in', label: 'Rotate In', description: 'Obrót z fade', category: 'entrance', type: 'css', className: 'anim-rotate-in', preview: '↻ rotate' },
   { key: 'blur-in', label: 'Blur In', description: 'Rozmycie → ostre', category: 'entrance', type: 'css', className: 'anim-blur-in', preview: '◉ blur→clear' },
@@ -28,7 +28,7 @@ export const ANIMATION_CATALOG: AnimationDefinition[] = [
   { key: 'clip-reveal', label: 'Clip Reveal', description: 'Odsłonięcie od dołu', category: 'entrance', type: 'css', className: 'anim-clip-reveal', preview: '▐ wipe up' },
   { key: 'clip-left', label: 'Clip Left', description: 'Odsłonięcie od lewej', category: 'entrance', type: 'css', className: 'anim-clip-left', preview: '▐ wipe right' },
   { key: 'bounce-in', label: 'Bounce In', description: 'Wskocz z bounce', category: 'entrance', type: 'css', className: 'anim-bounce-in', preview: '⊚ bounce' },
-  { key: 'zoom-out', label: 'Zoom Out', description: 'Z dużego do normalnego', category: 'entrance', type: 'framer', framerVariant: 'zoomOut', preview: '⤡ zoom out' },
+  { key: 'zoom-out', label: 'Zoom Out', description: 'Z dużego do normalnego', category: 'entrance', type: 'css', className: 'anim-zoom-out', preview: '⤡ zoom out' },
 
   // === CONTINUOUS (infinite) ===
   { key: 'pulse-glow', label: 'Pulse Glow', description: 'Ciągły puls poświaty', category: 'continuous', type: 'css', className: 'anim-pulse-glow', preview: '💛 pulse' },
