@@ -5,6 +5,7 @@ import { ToastProvider } from '@/components/ui/Toast'
 import { getPayload } from '@/lib/payload-client'
 import type { Navigation, SiteSetting } from '@/payload-types'
 import { mapHeaderLinks, resolveCompanyName } from '@/components/layout/types'
+import ForestAmbient from '@/components/ui/ForestAmbient'
 
 import { Navbar } from '@/components/layout/Navbar'
 
@@ -34,6 +35,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
   return (
     <ToastProvider>
+      <ForestAmbient />
       <Navbar
         links={mapHeaderLinks(navigation)}
         companyName={resolveCompanyName(settings)}
@@ -43,7 +45,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
         socialInstagram={settings?.socialLinks?.instagram}
       />
       <CartDrawer />
-      <main className="min-h-screen">{children}</main>
+      <main className="relative z-10 min-h-screen">{children}</main>
       <Footer navigation={navigation} settings={settings} />
     </ToastProvider>
   )
