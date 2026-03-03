@@ -448,6 +448,20 @@ export interface Page {
         secondaryCtaLink?: string | null;
         showScrollIndicator?: boolean | null;
         fullHeight?: boolean | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'hero';
@@ -460,6 +474,20 @@ export interface Page {
               label: string;
               id?: string | null;
             }[]
+          | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
           | null;
         id?: string | null;
         blockName?: string | null;
@@ -476,6 +504,20 @@ export interface Page {
               id?: string | null;
             }[]
           | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'services';
@@ -485,6 +527,20 @@ export interface Page {
         limit?: number | null;
         linkText?: string | null;
         linkUrl?: string | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'featuredProducts';
@@ -516,6 +572,20 @@ export interface Page {
         image?: (number | null) | Media;
         ctaText?: string | null;
         ctaLink?: string | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'about';
@@ -536,6 +606,20 @@ export interface Page {
           };
           [k: string]: unknown;
         };
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'richText';
@@ -546,6 +630,20 @@ export interface Page {
               image: number | Media;
               id?: string | null;
             }[]
+          | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
           | null;
         id?: string | null;
         blockName?: string | null;
@@ -560,6 +658,20 @@ export interface Page {
           categoryLabel?: string | null;
           id?: string | null;
         }[];
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'galleryFull';
@@ -575,6 +687,20 @@ export interface Page {
               id?: string | null;
             }[]
           | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'testimonials';
@@ -588,6 +714,20 @@ export interface Page {
         phoneNumber?: string | null;
         secondaryButtonText?: string | null;
         secondaryButtonLink?: string | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'cta';
@@ -599,6 +739,20 @@ export interface Page {
               answer: string;
               id?: string | null;
             }[]
+          | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
           | null;
         id?: string | null;
         blockName?: string | null;
@@ -621,6 +775,20 @@ export interface Page {
           featured?: boolean | null;
           id?: string | null;
         }[];
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'pricing';
@@ -633,6 +801,20 @@ export interface Page {
           description: string;
           id?: string | null;
         }[];
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'steps';
@@ -640,6 +822,20 @@ export interface Page {
     | {
         heading?: string | null;
         subheading?: string | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'contactForm';
@@ -662,6 +858,20 @@ export interface Page {
           };
           [k: string]: unknown;
         };
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'legalText';
@@ -676,6 +886,20 @@ export interface Page {
         }[];
         variant?: ('grid' | 'carousel') | null;
         grayscale?: boolean | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'partners';
@@ -696,6 +920,20 @@ export interface Page {
             | null;
           id?: string | null;
         }[];
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'team';
@@ -711,6 +949,20 @@ export interface Page {
             }[]
           | null;
         note?: string | null;
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'mapArea';
@@ -730,11 +982,28 @@ export interface Page {
           ctaLink?: string | null;
           id?: string | null;
         }[];
+        animation?: string | null;
+        animationDuration?: number | null;
+        animationDelay?: number | null;
+        animationEasing?: string | null;
+        animationIterations?: string | null;
+        styleOverrides?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
         id?: string | null;
         blockName?: string | null;
         blockType: 'offerCards';
       }
   )[];
+  pageTemplate?: ('default' | 'template-a' | 'template-b' | 'template-c' | 'template-d') | null;
+  globalCssOverlay?: string | null;
+  layoutCssOverlay?: string | null;
   seo?: {
     metaTitle?: string | null;
     metaDescription?: string | null;
@@ -1087,6 +1356,12 @@ export interface PagesSelect<T extends boolean = true> {
               secondaryCtaLink?: T;
               showScrollIndicator?: T;
               fullHeight?: T;
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1101,6 +1376,12 @@ export interface PagesSelect<T extends boolean = true> {
                     label?: T;
                     id?: T;
                   };
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1117,6 +1398,12 @@ export interface PagesSelect<T extends boolean = true> {
                     link?: T;
                     id?: T;
                   };
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1127,6 +1414,12 @@ export interface PagesSelect<T extends boolean = true> {
               limit?: T;
               linkText?: T;
               linkUrl?: T;
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1145,6 +1438,12 @@ export interface PagesSelect<T extends boolean = true> {
               image?: T;
               ctaText?: T;
               ctaLink?: T;
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1152,6 +1451,12 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               content?: T;
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1164,6 +1469,12 @@ export interface PagesSelect<T extends boolean = true> {
                     image?: T;
                     id?: T;
                   };
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1180,6 +1491,12 @@ export interface PagesSelect<T extends boolean = true> {
                     categoryLabel?: T;
                     id?: T;
                   };
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1196,6 +1513,12 @@ export interface PagesSelect<T extends boolean = true> {
                     rating?: T;
                     id?: T;
                   };
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1210,6 +1533,12 @@ export interface PagesSelect<T extends boolean = true> {
               phoneNumber?: T;
               secondaryButtonText?: T;
               secondaryButtonLink?: T;
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1223,6 +1552,12 @@ export interface PagesSelect<T extends boolean = true> {
                     answer?: T;
                     id?: T;
                   };
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1247,6 +1582,12 @@ export interface PagesSelect<T extends boolean = true> {
                     featured?: T;
                     id?: T;
                   };
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1262,6 +1603,12 @@ export interface PagesSelect<T extends boolean = true> {
                     description?: T;
                     id?: T;
                   };
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1270,6 +1617,12 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               heading?: T;
               subheading?: T;
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1279,6 +1632,12 @@ export interface PagesSelect<T extends boolean = true> {
               heading?: T;
               effectiveDate?: T;
               content?: T;
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1296,6 +1655,12 @@ export interface PagesSelect<T extends boolean = true> {
                   };
               variant?: T;
               grayscale?: T;
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1319,6 +1684,12 @@ export interface PagesSelect<T extends boolean = true> {
                         };
                     id?: T;
                   };
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1335,6 +1706,12 @@ export interface PagesSelect<T extends boolean = true> {
                     id?: T;
                   };
               note?: T;
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
@@ -1359,10 +1736,19 @@ export interface PagesSelect<T extends boolean = true> {
                     ctaLink?: T;
                     id?: T;
                   };
+              animation?: T;
+              animationDuration?: T;
+              animationDelay?: T;
+              animationEasing?: T;
+              animationIterations?: T;
+              styleOverrides?: T;
               id?: T;
               blockName?: T;
             };
       };
+  pageTemplate?: T;
+  globalCssOverlay?: T;
+  layoutCssOverlay?: T;
   seo?:
     | T
     | {
