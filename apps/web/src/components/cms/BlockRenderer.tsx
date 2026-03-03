@@ -26,11 +26,20 @@ const ANIMATION_MAP = new Map(ANIMATION_CATALOG.map((a) => [a.key, a]))
 
 /** Sanitize custom CSS to prevent script injection */
 function sanitizeCss(css: string): string {
-  return css
-    .replace(/<\/?script[^>]*>/gi, '')
+  // Loop to handle nested patterns like <scr<script>ipt>
+  let result = css
+  let prev = ''
+  while (prev !== result) {
+    prev = result
+    result = result.replace(/<\/?script[^>]*>/gi, '')
+  }
+  return result
     .replace(/javascript\s*:/gi, '')
     .replace(/expression\s*\(/gi, '')
     .replace(/@import\s+url\s*\(\s*['"]?\s*javascript/gi, '')
+    .replace(/-moz-binding\s*:/gi, '')
+    .replace(/behavior\s*:/gi, '')
+    .replace(/url\s*\(\s*['"]?\s*data\s*:[^)]*script/gi, 'url(about:blank')
 }
 
 interface Props {
