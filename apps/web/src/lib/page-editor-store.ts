@@ -265,6 +265,12 @@ interface EditorState {
   a11yPanelOpen: boolean
   a11yIssues: A11yIssue[]
 
+  // Canvas mode
+  canvasMode: 'list' | 'canvas'
+  canvasZoom: number
+  canvasPanX: number
+  canvasPanY: number
+
   // Akcje — strona
   loadPage: (pageId: number) => Promise<void>
   savePage: () => Promise<void>
@@ -347,6 +353,12 @@ interface EditorState {
   // Akcje — A11y Audit
   toggleA11yPanel: () => void
   setA11yIssues: (issues: A11yIssue[]) => void
+
+  // Akcje — Canvas
+  setCanvasMode: (mode: 'list' | 'canvas') => void
+  setCanvasZoom: (zoom: number) => void
+  setCanvasPan: (x: number, y: number) => void
+  resetCanvasView: () => void
 }
 
 const initialState = {
@@ -392,6 +404,10 @@ const initialState = {
   splitPreviewBreakpoints: ['desktop', 'tablet', 'mobile'] as ('desktop' | 'tablet' | 'mobile')[],
   a11yPanelOpen: false,
   a11yIssues: [] as A11yIssue[],
+  canvasMode: 'list' as const,
+  canvasZoom: 1,
+  canvasPanX: 0,
+  canvasPanY: 0,
 }
 
 export const usePageEditor = create<EditorState>()((set, get) => ({
@@ -957,4 +973,10 @@ export const usePageEditor = create<EditorState>()((set, get) => ({
   // A11y Audit
   toggleA11yPanel: () => set((s) => ({ a11yPanelOpen: !s.a11yPanelOpen })),
   setA11yIssues: (issues) => set({ a11yIssues: issues }),
+
+  // Canvas mode
+  setCanvasMode: (mode) => set({ canvasMode: mode }),
+  setCanvasZoom: (zoom) => set({ canvasZoom: Math.max(0.25, Math.min(3, zoom)) }),
+  setCanvasPan: (x, y) => set({ canvasPanX: x, canvasPanY: y }),
+  resetCanvasView: () => set({ canvasZoom: 1, canvasPanX: 0, canvasPanY: 0 }),
 }))

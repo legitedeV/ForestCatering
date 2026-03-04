@@ -118,6 +118,38 @@ export function useEditorKeyboardShortcuts() {
         toggleGrid()
         return
       }
+
+      // Ctrl+0 — reset canvas zoom
+      if ((e.ctrlKey || e.metaKey) && e.key === '0') {
+        e.preventDefault()
+        usePageEditor.getState().resetCanvasView()
+        return
+      }
+
+      // Ctrl++ / Ctrl+= — zoom in
+      if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '=')) {
+        e.preventDefault()
+        const store = usePageEditor.getState()
+        store.setCanvasZoom(store.canvasZoom + 0.1)
+        return
+      }
+
+      // Ctrl+- — zoom out
+      if ((e.ctrlKey || e.metaKey) && e.key === '-') {
+        e.preventDefault()
+        const store = usePageEditor.getState()
+        store.setCanvasZoom(store.canvasZoom - 0.1)
+        return
+      }
+
+      // Ctrl+A — select all blocks (canvas mode only, not in inputs)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+        const store = usePageEditor.getState()
+        if (store.canvasMode === 'canvas') {
+          e.preventDefault()
+          store.sections.forEach((_, i) => store.toggleBlockSelection(i))
+        }
+      }
     }
 
     window.addEventListener('keydown', handler)

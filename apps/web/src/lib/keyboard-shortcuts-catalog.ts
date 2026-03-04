@@ -21,6 +21,11 @@ export const KEYBOARD_SHORTCUTS: KeyboardShortcut[] = [
   { id: 'shortcuts', keys: ['?'], description: 'Pokaż skróty klawiszowe', category: 'view' },
   // Navigation
   { id: 'escape', keys: ['Escape'], description: 'Odznacz blok / zamknij panel', category: 'navigation' },
+  // Canvas
+  { id: 'zoom-reset', keys: ['Ctrl', '0'], description: 'Resetuj powiększenie', category: 'view' },
+  { id: 'zoom-in', keys: ['Ctrl', '+'], description: 'Przybliż', category: 'view' },
+  { id: 'zoom-out', keys: ['Ctrl', '-'], description: 'Oddal', category: 'view' },
+  { id: 'select-all', keys: ['Ctrl', 'A'], description: 'Zaznacz wszystkie bloki (tryb płótna)', category: 'editing' },
 ]
 
 export const SHORTCUT_CATEGORY_LABELS: Record<string, string> = {

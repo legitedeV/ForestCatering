@@ -10,6 +10,9 @@ import { GridOverlay } from './GridOverlay'
 import { BlockCommentIndicator } from './BlockCommentIndicator'
 import { CommentPopover } from './CommentPopover'
 import { BatchActionsBar } from './BatchActionsBar'
+import { CanvasBlock } from './CanvasBlock'
+import { SmartGuides } from './SmartGuides'
+import { SelectionRect } from './SelectionRect'
 
 // Pomocnik — wyciągnij subtitle z bloku (heading lub pierwszy tekst)
 function getBlockSubtitle(block: PageSection): string {
@@ -192,6 +195,76 @@ function BlockCard({
   )
 }
 
+// CanvasView — tryb swobodnego płótna (Canva/Figma)
+function CanvasView({ sections }: { sections: PageSection[] }) {
+  const canvasZoom = usePageEditor((s) => s.canvasZoom)
+  const canvasPanX = usePageEditor((s) => s.canvasPanX)
+  const canvasPanY = usePageEditor((s) => s.canvasPanY)
+  const setCanvasZoom = usePageEditor((s) => s.setCanvasZoom)
+  const selectBlock = usePageEditor((s) => s.selectBlock)
+
+  // State for active drag (SmartGuides)
+  const [activeDragIndex, setActiveDragIndex] = useState<number | null>(null)
+  const [activeDragRect, setActiveDragRect] = useState<{ x: number; y: number; width: number; height: number } | null>(null)
+
+  // Zoom: Ctrl+Scroll
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault()
+      const delta = e.deltaY > 0 ? -0.1 : 0.1
+      setCanvasZoom(canvasZoom + delta)
+    }
+  }, [canvasZoom, setCanvasZoom])
+
+  // Click empty → deselect
+  const handleCanvasClick = useCallback((e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) selectBlock(null)
+  }, [selectBlock])
+
+  const handleDragStart = useCallback((index: number) => {
+    setActiveDragIndex(index)
+  }, [])
+
+  const handleDrag = useCallback((index: number, rect: { x: number; y: number; width: number; height: number }) => {
+    setActiveDragIndex(index)
+    setActiveDragRect(rect)
+  }, [])
+
+  const handleDragEnd = useCallback(() => {
+    setActiveDragIndex(null)
+    setActiveDragRect(null)
+  }, [])
+
+  return (
+    <div className="relative h-full w-full overflow-auto bg-forest-950" onWheel={handleWheel}>
+      <GridOverlay />
+      <div
+        className="editor-canvas-surface relative"
+        style={{
+          transform: `scale(${canvasZoom}) translate(${canvasPanX}px, ${canvasPanY}px)`,
+          transformOrigin: '0 0',
+        }}
+        onClick={handleCanvasClick}
+      >
+        <SmartGuides sections={sections} activeDragIndex={activeDragIndex} activeDragRect={activeDragRect} />
+        <SelectionRect sections={sections} />
+        {sections.map((block, index) => (
+          <CanvasBlock
+            key={block.id ?? `canvas-${index}`}
+            block={block}
+            index={index}
+            total={sections.length}
+            onDragStart={handleDragStart}
+            onDrag={handleDrag}
+            onDragEnd={handleDragEnd}
+          />
+        ))}
+      </div>
+      <BatchActionsBar />
+    </div>
+  )
+}
+
 export function EditorCanvas() {
   const sections = usePageEditor((s) => s.sections)
   const isLoading = usePageEditor((s) => s.isLoading)
@@ -200,6 +273,7 @@ export function EditorCanvas() {
   const setSidebarTab = usePageEditor((s) => s.setSidebarTab)
   const loadPage = usePageEditor((s) => s.loadPage)
   const pageId = usePageEditor((s) => s.pageId)
+  const canvasMode = usePageEditor((s) => s.canvasMode)
 
   // Ref przechowujący indeks do wstawienia nowego bloku
   const insertAtIndexRef = useRef<number>(sections.length)
@@ -285,8 +359,14 @@ export function EditorCanvas() {
     )
   }
 
+  // === CANVAS MODE ===
+  if (canvasMode === 'canvas') {
+    return <CanvasView sections={sections} />
+  }
+
+  // === LIST MODE (domyślny) ===
   return (
-    <div className={`relative mx-auto ${widthClass} space-y-0 p-6 transition-all duration-300`}>
+    <div className={`relative mx-auto ${widthClass} space-y-0 p-6 transition-all duration-300 overflow-visible min-h-[600px]`}>
       <GridOverlay />
 
       {/* Przycisk dodawania na początku */}
