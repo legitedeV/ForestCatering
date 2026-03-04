@@ -1,0 +1,50 @@
+/* ==========================================================================
+   Forest Hub – Design Tokens
+   Dark premium palette, typography, timing & spacing variables
+   ========================================================================== */
+
+:root {
+  /* Surface colours */
+  --color-bg-primary: #0A0A0A;
+  --color-bg-secondary: #111111;
+  --color-bg-elevated: #1A1A1A;
+
+  /* Text colours */
+  --color-text-primary: #F5F5F0;
+  --color-text-secondary: #8A8A80;
+  --color-text-accent: #C8A862;
+
+  /* Accent & brand */
+  --color-accent: #C8A862;
+  --color-accent-hover: #D4B872;
+  --color-forest-green: #2D5A3D;
+  --color-forest-green-light: #3D7A52;
+
+  /* Effects */
+  --color-grain-opacity: 0.035;
+  --color-gradient-start: #C8A862;
+  --color-gradient-end: #2D5A3D;
+
+  /* Typography */
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Timing */
+  --ease-smooth: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-slow: 1.2s;
+  --duration-medium: 0.6s;
+  --duration-fast: 0.3s;
+
+  /* Z-index scale */
+  --z-grain: 9999;
+  --z-modal: 1000;
+  --z-header: 100;
+  --z-dropdown: 50;
+
+  /* Spacing */
+  --section-padding: clamp(4rem, 10vh, 8rem);
+  --container-max: 1400px;
+  --container-padding: clamp(1rem, 4vw, 3rem);
+}
