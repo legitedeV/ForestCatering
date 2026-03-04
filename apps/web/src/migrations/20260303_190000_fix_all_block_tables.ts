@@ -1775,6 +1775,107 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     CREATE INDEX IF NOT EXISTS "_pages_v_blocks_offer_cards_cards_features_parent_id_idx" ON "_pages_v_blocks_offer_cards_cards_features" USING btree ("_parent_id");
   `)
 
+  // ── 8b. CLEAN UP ORPHANED MEDIA REFERENCES ─────────────────────────
+  // Before adding foreign keys, null out any media references that point
+  // to non-existent media records (consistent with ON DELETE set null).
+  await db.execute(sql`
+    UPDATE "pages_blocks_hero" SET "background_image_id" = NULL WHERE "background_image_id" IS NOT NULL AND "background_image_id" NOT IN (SELECT "id" FROM "media");
+    UPDATE "pages_blocks_about" SET "image_id" = NULL WHERE "image_id" IS NOT NULL AND "image_id" NOT IN (SELECT "id" FROM "media");
+    UPDATE "pages_blocks_gallery_images" SET "image_id" = NULL WHERE "image_id" IS NOT NULL AND "image_id" NOT IN (SELECT "id" FROM "media");
+    UPDATE "pages_blocks_gallery_full_items" SET "image_id" = NULL WHERE "image_id" IS NOT NULL AND "image_id" NOT IN (SELECT "id" FROM "media");
+    UPDATE "pages_blocks_partners_items" SET "logo_id" = NULL WHERE "logo_id" IS NOT NULL AND "logo_id" NOT IN (SELECT "id" FROM "media");
+    UPDATE "pages_blocks_team_people" SET "photo_id" = NULL WHERE "photo_id" IS NOT NULL AND "photo_id" NOT IN (SELECT "id" FROM "media");
+
+    UPDATE "_pages_v_blocks_hero" SET "background_image_id" = NULL WHERE "background_image_id" IS NOT NULL AND "background_image_id" NOT IN (SELECT "id" FROM "media");
+    UPDATE "_pages_v_blocks_about" SET "image_id" = NULL WHERE "image_id" IS NOT NULL AND "image_id" NOT IN (SELECT "id" FROM "media");
+    UPDATE "_pages_v_blocks_gallery_images" SET "image_id" = NULL WHERE "image_id" IS NOT NULL AND "image_id" NOT IN (SELECT "id" FROM "media");
+    UPDATE "_pages_v_blocks_gallery_full_items" SET "image_id" = NULL WHERE "image_id" IS NOT NULL AND "image_id" NOT IN (SELECT "id" FROM "media");
+    UPDATE "_pages_v_blocks_partners_items" SET "logo_id" = NULL WHERE "logo_id" IS NOT NULL AND "logo_id" NOT IN (SELECT "id" FROM "media");
+    UPDATE "_pages_v_blocks_team_people" SET "photo_id" = NULL WHERE "photo_id" IS NOT NULL AND "photo_id" NOT IN (SELECT "id" FROM "media");
+  `)
+
+  // ── 8c. CLEAN UP ORPHANED _parent_id REFERENCES ──────────────────────
+  // Delete rows whose _parent_id points to a non-existent parent record
+  // (consistent with ON DELETE cascade). Process top-down so that deleting
+  // a level-1 orphan exposes level-2 orphans in the next pass.
+  await db.execute(sql`
+    DELETE FROM "pages_blocks_hero" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_stats" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_services" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_featured_products" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_about" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_rich_text" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_gallery" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_gallery_full" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_testimonials" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_cta" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_faq" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_pricing" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_steps" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_contact_form" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_legal_text" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_partners" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_team" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_map_area" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+    DELETE FROM "pages_blocks_offer_cards" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages");
+
+    DELETE FROM "pages_blocks_stats_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_stats");
+    DELETE FROM "pages_blocks_services_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_services");
+    DELETE FROM "pages_blocks_about_highlights" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_about");
+    DELETE FROM "pages_blocks_gallery_images" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_gallery");
+    DELETE FROM "pages_blocks_gallery_full_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_gallery_full");
+    DELETE FROM "pages_blocks_testimonials_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_testimonials");
+    DELETE FROM "pages_blocks_faq_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_faq");
+    DELETE FROM "pages_blocks_pricing_packages" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_pricing");
+    DELETE FROM "pages_blocks_steps_steps" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_steps");
+    DELETE FROM "pages_blocks_partners_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_partners");
+    DELETE FROM "pages_blocks_team_people" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_team");
+    DELETE FROM "pages_blocks_map_area_cities" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_map_area");
+    DELETE FROM "pages_blocks_offer_cards_cards" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_offer_cards");
+
+    DELETE FROM "pages_blocks_pricing_packages_features" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_pricing_packages");
+    DELETE FROM "pages_blocks_team_people_socials" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_team_people");
+    DELETE FROM "pages_blocks_offer_cards_cards_features" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "pages_blocks_offer_cards_cards");
+
+    DELETE FROM "_pages_v_blocks_hero" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_stats" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_services" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_featured_products" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_about" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_rich_text" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_gallery" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_gallery_full" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_testimonials" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_cta" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_faq" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_pricing" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_steps" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_contact_form" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_legal_text" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_partners" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_team" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_map_area" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+    DELETE FROM "_pages_v_blocks_offer_cards" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v");
+
+    DELETE FROM "_pages_v_blocks_stats_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_stats");
+    DELETE FROM "_pages_v_blocks_services_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_services");
+    DELETE FROM "_pages_v_blocks_about_highlights" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_about");
+    DELETE FROM "_pages_v_blocks_gallery_images" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_gallery");
+    DELETE FROM "_pages_v_blocks_gallery_full_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_gallery_full");
+    DELETE FROM "_pages_v_blocks_testimonials_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_testimonials");
+    DELETE FROM "_pages_v_blocks_faq_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_faq");
+    DELETE FROM "_pages_v_blocks_pricing_packages" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_pricing");
+    DELETE FROM "_pages_v_blocks_steps_steps" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_steps");
+    DELETE FROM "_pages_v_blocks_partners_items" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_partners");
+    DELETE FROM "_pages_v_blocks_team_people" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_team");
+    DELETE FROM "_pages_v_blocks_map_area_cities" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_map_area");
+    DELETE FROM "_pages_v_blocks_offer_cards_cards" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_offer_cards");
+
+    DELETE FROM "_pages_v_blocks_pricing_packages_features" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_pricing_packages");
+    DELETE FROM "_pages_v_blocks_team_people_socials" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_team_people");
+    DELETE FROM "_pages_v_blocks_offer_cards_cards_features" WHERE "_parent_id" IS NOT NULL AND "_parent_id" NOT IN (SELECT "id" FROM "_pages_v_blocks_offer_cards_cards");
+  `)
+
   // ── 9. FOREIGN KEYS (idempotent via DO/EXCEPTION) ──────────────────
   await db.execute(sql`
     DO $$ BEGIN
