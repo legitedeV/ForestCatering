@@ -16,7 +16,7 @@ export const TEMPLATES: TemplateDefinition[] = [
     description: 'Ciepłe złoto, textury noise, elementy floating',
     icon: '🌿',
     appliedTo: 'Strona główna',
-    cssClasses: ['noise-overlay', 'gradient-line', 'floating-stats', 'bg-orbs', 'warm-glow', 'bento-grid', 'product-scroll', 'timeline-connector'],
+    cssClasses: ['noise-overlay', 'floating-stats', 'bg-orbs', 'warm-glow', 'bento-grid', 'product-scroll', 'timeline-connector'],
     colorOverrides: {
       '--color-accent-warm': '#D4A853',
       '--color-accent-warm-light': '#E8C97A',
@@ -41,7 +41,7 @@ export const TEMPLATES: TemplateDefinition[] = [
     description: 'Sticky filtry, wider grid, quick-view overlay',
     icon: '📰',
     appliedTo: 'Sklep',
-    cssClasses: ['gradient-line'],
+    cssClasses: [],
     colorOverrides: {},
     previewGradient: 'linear-gradient(135deg, #333A43 0%, #4A535E 100%)',
   },

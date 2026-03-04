@@ -14,6 +14,8 @@ export const KEYBOARD_SHORTCUTS: KeyboardShortcut[] = [
   // Editing
   { id: 'delete', keys: ['Delete'], description: 'Usuń zaznaczony blok', category: 'editing' },
   { id: 'duplicate', keys: ['Ctrl', 'D'], description: 'Zduplikuj zaznaczony blok', category: 'editing' },
+  { id: 'nudge', keys: ['↑↓←→'], description: 'Przesuń sekcję o 1px', category: 'editing' },
+  { id: 'nudge-fast', keys: ['Shift', '↑↓←→'], description: 'Przesuń sekcję o 10px', category: 'editing' },
   // View
   { id: 'grid', keys: ['Ctrl', 'G'], description: 'Przełącz siatkę', category: 'view' },
   { id: 'shortcuts', keys: ['?'], description: 'Pokaż skróty klawiszowe', category: 'view' },

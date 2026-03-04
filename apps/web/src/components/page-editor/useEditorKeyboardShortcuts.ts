@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { usePageEditor } from '@/lib/page-editor-store'
+import type { BlockStyleOverrides } from '@/lib/page-editor-store'
 
 export function useEditorKeyboardShortcuts() {
   const savePage = usePageEditor((s) => s.savePage)
@@ -54,6 +55,27 @@ export function useEditorKeyboardShortcuts() {
 
       // Shortcuts below only work when not focused in an input
       if (isInputFocused) return
+
+      // Arrow keys — pixel-by-pixel section movement (when block selected)
+      if (selectedBlockIndex !== null && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault()
+        const step = e.shiftKey ? 10 : 1
+        const store = usePageEditor.getState()
+        const block = store.sections[selectedBlockIndex]
+        if (!block) return
+        const so = ((block as Record<string, unknown>).styleOverrides ?? {}) as BlockStyleOverrides
+
+        if (e.key === 'ArrowUp') {
+          store.updateBlockField(selectedBlockIndex, 'styleOverrides.offsetY', (so.offsetY ?? 0) - step)
+        } else if (e.key === 'ArrowDown') {
+          store.updateBlockField(selectedBlockIndex, 'styleOverrides.offsetY', (so.offsetY ?? 0) + step)
+        } else if (e.key === 'ArrowLeft') {
+          store.updateBlockField(selectedBlockIndex, 'styleOverrides.offsetX', (so.offsetX ?? 0) - step)
+        } else if (e.key === 'ArrowRight') {
+          store.updateBlockField(selectedBlockIndex, 'styleOverrides.offsetX', (so.offsetX ?? 0) + step)
+        }
+        return
+      }
 
       // ? — otwórz panel skrótów
       if (e.key === '?') {
