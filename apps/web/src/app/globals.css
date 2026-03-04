@@ -656,9 +656,14 @@ html {
   inset: 0;
   pointer-events: none;
   z-index: 40;
+  min-height: 100%;
+  overflow: visible;
 }
 .editor-grid-col {
-  border-right: 1px solid rgba(212, 168, 83, 0.15);
+  border-right: 1px solid rgba(212, 168, 83, 0.22);
+}
+.editor-grid-col:nth-child(even) {
+  background: rgba(212, 168, 83, 0.03);
 }
 .editor-ruler {
   position: absolute;
@@ -670,6 +675,73 @@ html {
 }
 .editor-ruler-v {
   top: 0; left: 0; bottom: 0; width: 20px;
+}
+
+/* ── Canvas Mode ── */
+.editor-canvas-surface {
+  position: relative;
+  width: 1920px;
+  min-height: 3000px;
+  background-image:
+    radial-gradient(circle, rgba(212,168,83,0.06) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Resize handles */
+.resize-handle {
+  position: absolute;
+  background: var(--color-accent-warm, #D4A853);
+  border: 1px solid rgba(0,0,0,0.3);
+  z-index: 50;
+  pointer-events: auto;
+  transition: transform 0.1s;
+}
+.resize-handle:hover {
+  transform: scale(1.3);
+}
+.resize-handle-corner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.resize-handle-edge-h {
+  width: 16px;
+  height: 6px;
+  border-radius: 3px;
+}
+.resize-handle-edge-v {
+  width: 6px;
+  height: 16px;
+  border-radius: 3px;
+}
+
+/* Smart guides */
+.smart-guide-line {
+  position: absolute;
+  pointer-events: none;
+  z-index: 45;
+}
+.smart-guide-v {
+  width: 0;
+  border-left: 1px dashed rgba(239, 68, 68, 0.7);
+}
+.smart-guide-h {
+  height: 0;
+  border-top: 1px dashed rgba(239, 68, 68, 0.7);
+}
+
+/* Selection rectangle */
+.selection-rect {
+  position: absolute;
+  border: 2px dashed rgba(96, 165, 250, 0.6);
+  background: rgba(96, 165, 250, 0.08);
+  pointer-events: none;
+  z-index: 44;
+}
+
+/* Zoom badge */
+.zoom-badge {
+  font-variant-numeric: tabular-nums;
 }
 
 /* ── Deep Styling Studio CSS ── */

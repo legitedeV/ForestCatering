@@ -68,7 +68,7 @@ export function GridOverlay() {
         </>
       )}
       <div
-        className="absolute inset-0 mx-auto flex"
+        className="absolute inset-0 mx-auto flex h-full"
         style={{ maxWidth: GRID_MAX_WIDTH, paddingLeft: gridShowRulers ? RULER_SIZE : 0, paddingTop: gridShowRulers ? RULER_SIZE : 0 }}
       >
         {cols.map((i) => (

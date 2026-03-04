@@ -41,6 +41,25 @@ function GridIcon({ className }: { className?: string }) {
   )
 }
 
+function ListIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" />
+      <line x1="8" y1="18" x2="21" y2="18" /><circle cx="4" cy="6" r="1" fill="currentColor" />
+      <circle cx="4" cy="12" r="1" fill="currentColor" /><circle cx="4" cy="18" r="1" fill="currentColor" />
+    </svg>
+  )
+}
+
+function CanvasIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="8" height="6" rx="1" /><rect x="14" y="4" width="8" height="8" rx="1" />
+      <rect x="4" y="12" width="10" height="6" rx="1" /><rect x="16" y="16" width="6" height="5" rx="1" />
+    </svg>
+  )
+}
+
 // Spinner do stanu ładowania
 function Spinner() {
   return (
@@ -133,6 +152,11 @@ export function EditorToolbar() {
   const toggleSplitPreview = usePageEditor((s) => s.toggleSplitPreview)
   const a11yPanelOpen = usePageEditor((s) => s.a11yPanelOpen)
   const toggleA11yPanel = usePageEditor((s) => s.toggleA11yPanel)
+  const canvasMode = usePageEditor((s) => s.canvasMode)
+  const setCanvasMode = usePageEditor((s) => s.setCanvasMode)
+  const canvasZoom = usePageEditor((s) => s.canvasZoom)
+  const setCanvasZoom = usePageEditor((s) => s.setCanvasZoom)
+  const resetCanvasView = usePageEditor((s) => s.resetCanvasView)
 
   return (
     <header
@@ -243,6 +267,65 @@ export function EditorToolbar() {
             </button>
           ))}
         </div>
+
+        {/* Canvas mode toggle */}
+        <div className="flex items-center rounded-lg bg-forest-900 p-0.5">
+          <button
+            onClick={() => setCanvasMode('list')}
+            className={`rounded-md px-2 py-1.5 text-xs font-medium transition ${
+              canvasMode === 'list' ? 'bg-accent text-forest-950' : 'text-forest-400 hover:text-cream'
+            }`}
+            title="Tryb listy"
+            aria-label="Tryb listy"
+            aria-pressed={canvasMode === 'list'}
+          >
+            <ListIcon className="inline-block" />
+          </button>
+          <button
+            onClick={() => setCanvasMode('canvas')}
+            className={`rounded-md px-2 py-1.5 text-xs font-medium transition ${
+              canvasMode === 'canvas' ? 'bg-accent text-forest-950' : 'text-forest-400 hover:text-cream'
+            }`}
+            title="Tryb płótna (Canva)"
+            aria-label="Tryb płótna"
+            aria-pressed={canvasMode === 'canvas'}
+          >
+            <CanvasIcon className="inline-block" />
+          </button>
+        </div>
+
+        {/* Zoom controls (canvas mode only) */}
+        {canvasMode === 'canvas' && (
+          <div className="flex items-center gap-1 rounded-lg bg-forest-900 p-1">
+            <button
+              onClick={() => setCanvasZoom(canvasZoom - 0.1)}
+              disabled={canvasZoom <= 0.25}
+              className="rounded px-1.5 py-0.5 text-xs text-forest-400 transition hover:bg-forest-800 hover:text-cream disabled:opacity-30"
+              aria-label="Oddal"
+            >
+              −
+            </button>
+            <span className="zoom-badge min-w-[3rem] text-center text-[10px] font-medium text-forest-300">
+              {Math.round(canvasZoom * 100)}%
+            </span>
+            <button
+              onClick={() => setCanvasZoom(canvasZoom + 0.1)}
+              disabled={canvasZoom >= 3}
+              className="rounded px-1.5 py-0.5 text-xs text-forest-400 transition hover:bg-forest-800 hover:text-cream disabled:opacity-30"
+              aria-label="Przybliż"
+            >
+              +
+            </button>
+            <button
+              onClick={resetCanvasView}
+              className="rounded px-1.5 py-0.5 text-[10px] text-forest-500 transition hover:text-cream"
+              title="Resetuj widok"
+              aria-label="Resetuj powiększenie"
+            >
+              ⊡
+            </button>
+          </div>
+        )}
 
         {/* Grid toggle */}
         <button
