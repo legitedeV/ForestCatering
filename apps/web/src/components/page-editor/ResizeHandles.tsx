@@ -87,46 +87,6 @@ export function ResizeHandles({ width, minHeight, onResize, zoom }: ResizeHandle
     },
   ]
 
-  const onPointerDown = useCallback((e: React.PointerEvent, handle: Handle) => {
-    e.preventDefault()
-    e.stopPropagation()
-    handleRef.current = handle
-    startRef.current = { x: e.clientX, y: e.clientY, w: width, h: minHeight }
-    setResizing(true)
-
-    const onPointerMove = (ev: PointerEvent) => {
-      const h = handleRef.current
-      if (!h) return
-      const dx = Math.round((ev.clientX - startRef.current.x) / zoom)
-      const dy = Math.round((ev.clientY - startRef.current.y) / zoom)
-      const newSize = h.getNewSize(dx, dy, startRef.current.w, startRef.current.h)
-      newSize.w = Math.max(MIN_WIDTH, newSize.w)
-      newSize.h = Math.max(MIN_HEIGHT, newSize.h)
-      setLiveSize(newSize)
-    }
-
-    const onPointerUp = () => {
-      document.removeEventListener('pointermove', onPointerMove)
-      document.removeEventListener('pointerup', onPointerUp)
-      setResizing(false)
-      if (liveSize) {
-        // We read latest liveSize via a microtask since state might be stale
-      }
-      handleRef.current = null
-    }
-
-    document.addEventListener('pointermove', onPointerMove)
-    document.addEventListener('pointerup', onPointerUp)
-  }, [width, minHeight, zoom, liveSize])
-
-  // Commit resize on liveSize change end
-  const prevLiveSize = useRef<{ w: number; h: number } | null>(null)
-  if (liveSize && !resizing && prevLiveSize.current !== liveSize) {
-    prevLiveSize.current = liveSize
-    onResize(liveSize.w, liveSize.h)
-    setLiveSize(null)
-  }
-
   // Use a ref-based approach to commit resize
   const liveSizeRef = useRef(liveSize)
   liveSizeRef.current = liveSize

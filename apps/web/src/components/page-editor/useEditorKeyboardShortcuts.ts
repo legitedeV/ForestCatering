@@ -147,6 +147,8 @@ export function useEditorKeyboardShortcuts() {
         const store = usePageEditor.getState()
         if (store.canvasMode === 'canvas') {
           e.preventDefault()
+          // Clear existing selection first, then select all
+          store.clearBlockSelection()
           store.sections.forEach((_, i) => store.toggleBlockSelection(i))
         }
       }
