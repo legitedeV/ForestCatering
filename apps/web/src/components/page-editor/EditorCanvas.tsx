@@ -123,7 +123,7 @@ function BlockCard({
           )}
           {hasOffset && (
             <span className="rounded bg-forest-800 px-1 py-0.5 text-[10px] tabular-nums text-forest-400">
-              {so.offsetX ?? 0},{so.offsetY ?? 0}px
+              x:{so.offsetX ?? 0} y:{so.offsetY ?? 0}
             </span>
           )}
         </div>

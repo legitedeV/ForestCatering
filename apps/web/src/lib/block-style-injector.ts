@@ -149,8 +149,8 @@ export function generateBlockScopedCss(
   // ═══════════════════════════════════════════
 
   if (overrides.offsetX !== undefined || overrides.offsetY !== undefined) {
-    const tx = overrides.offsetX ? `${overrides.offsetX}px` : '0'
-    const ty = overrides.offsetY ? `${overrides.offsetY}px` : '0'
+    const tx = overrides.offsetX !== undefined ? `${overrides.offsetX}px` : '0'
+    const ty = overrides.offsetY !== undefined ? `${overrides.offsetY}px` : '0'
     css += `${scope} { transform: translate(${tx}, ${ty}) !important; }\n`
   }
 
