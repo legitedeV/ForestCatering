@@ -49,7 +49,7 @@ export async function GET(
   }
 }
 
-// PUT — zapis zmian sekcji (draft)
+// PUT — zapis zmian sekcji (publish)
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -103,7 +103,6 @@ export async function PUT(
       collection: 'pages',
       id: Number(id),
       data: updateData,
-      draft: true,
     })
 
     return NextResponse.json({
