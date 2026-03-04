@@ -73,25 +73,7 @@ html {
   outline-offset: 2px;
 }
 
-/* Animated gradient line (used in headings) */
-.gradient-line {
-  height: 3px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, 
-    var(--color-accent-warm-dark), 
-    var(--color-accent-warm), 
-    var(--color-forest-green), 
-    var(--color-accent-warm),
-    var(--color-accent-warm-dark)
-  );
-  background-size: 300% auto;
-  animation: gradient-shift var(--gradient-line-speed, 6s) ease-in-out infinite;
-}
 
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% center; }
-  50% { background-position: 200% center; }
-}
 
 /* Noise texture overlay for premium sections */
 .noise-overlay {
@@ -676,7 +658,7 @@ html {
   z-index: 40;
 }
 .editor-grid-col {
-  border-right: 1px solid rgba(212, 168, 83, 0.06);
+  border-right: 1px solid rgba(212, 168, 83, 0.15);
 }
 .editor-ruler {
   position: absolute;

@@ -3,6 +3,7 @@
 import React, { useRef, useCallback, useState } from 'react'
 import { Reorder, useDragControls, motion, AnimatePresence } from 'framer-motion'
 import { usePageEditor } from '@/lib/page-editor-store'
+import type { BlockStyleOverrides } from '@/lib/page-editor-store'
 import { getBlockMeta } from '@/lib/block-metadata'
 import type { PageSection } from '@/components/cms/types'
 import { GridOverlay } from './GridOverlay'
@@ -66,6 +67,8 @@ function BlockCard({
   const isBatchSelected = selectedBlockIndices.includes(index)
   const subtitle = getBlockSubtitle(block)
   const blockName = (block as Record<string, unknown>).blockName as string | undefined
+  const so = ((block as Record<string, unknown>).styleOverrides ?? {}) as BlockStyleOverrides
+  const hasOffset = (so.offsetX ?? 0) !== 0 || (so.offsetY ?? 0) !== 0
 
   const handleSelect = useCallback((e?: React.MouseEvent) => {
     if (e && (e.ctrlKey || e.metaKey)) {
@@ -117,6 +120,11 @@ function BlockCard({
           <span className="text-sm font-medium text-cream">{meta?.label ?? block.blockType}</span>
           {blockName && (
             <span className="truncate text-xs text-forest-400">— {blockName}</span>
+          )}
+          {hasOffset && (
+            <span className="rounded bg-forest-800 px-1 py-0.5 text-[10px] tabular-nums text-forest-400">
+              x:{so.offsetX ?? 0} y:{so.offsetY ?? 0}
+            </span>
           )}
         </div>
         {subtitle && (

@@ -139,6 +139,21 @@ export function generateBlockScopedCss(
   if (overrides.paddingLeft !== undefined) css += `${scope} > section { padding-left: ${overrides.paddingLeft}px !important; }\n`
   if (overrides.paddingRight !== undefined) css += `${scope} > section { padding-right: ${overrides.paddingRight}px !important; }\n`
 
+  if (overrides.marginTop !== undefined) css += `${scope} { margin-top: ${overrides.marginTop}px !important; }\n`
+  if (overrides.marginBottom !== undefined) css += `${scope} { margin-bottom: ${overrides.marginBottom}px !important; }\n`
+  if (overrides.marginLeft !== undefined) css += `${scope} { margin-left: ${overrides.marginLeft}px !important; }\n`
+  if (overrides.marginRight !== undefined) css += `${scope} { margin-right: ${overrides.marginRight}px !important; }\n`
+
+  // ═══════════════════════════════════════════
+  // POSITION OFFSET (pixel-perfect)
+  // ═══════════════════════════════════════════
+
+  if (overrides.offsetX !== undefined || overrides.offsetY !== undefined) {
+    const tx = overrides.offsetX !== undefined ? `${overrides.offsetX}px` : '0'
+    const ty = overrides.offsetY !== undefined ? `${overrides.offsetY}px` : '0'
+    css += `${scope} { transform: translate(${tx}, ${ty}) !important; }\n`
+  }
+
   // ═══════════════════════════════════════════
   // OPACITY, OVERFLOW
   // ═══════════════════════════════════════════

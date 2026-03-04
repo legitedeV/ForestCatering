@@ -32,7 +32,7 @@ export function HeroBlock({ heading, subheading, backgroundImage, ctaText, ctaLi
           <h1 className="text-4xl font-bold leading-tight tracking-tight text-cream sm:text-5xl md:text-7xl">
             {heading}
           </h1>
-          <div className="mx-auto mt-4 h-[3px] w-32 gradient-line" />
+          <div className="mx-auto mt-4 h-[2px] w-24 rounded-full bg-accent-warm/40" />
         </AnimatedSection>
         {subheading && (
           <AnimatedSection>

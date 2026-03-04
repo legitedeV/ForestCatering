@@ -73,7 +73,7 @@ export default async function ShopPage({ searchParams }: Props) {
       <div className="mx-auto max-w-7xl px-4">
         <AnimatedSection>
           <h1 className="text-3xl font-bold text-cream md:text-4xl">Nasz sklep</h1>
-          <div className="mt-3 w-20 gradient-line" />
+          <div className="mt-3 h-[2px] w-16 rounded-full bg-accent-warm/40" />
           <p className="mt-4 text-forest-200">Sprawdź co dla Ciebie przygotowaliśmy</p>
         </AnimatedSection>
 
