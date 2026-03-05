@@ -28,16 +28,7 @@ const FogPlaneMaterial = shaderMaterial(
 
 extend({ FogPlaneMaterial });
 
-// Augment JSX for R3F
-declare module '@react-three/fiber' {
-  interface ThreeElements {
-    fogPlaneMaterial: JSX.IntrinsicElements['shaderMaterial'] & {
-      uTime?: number;
-      uDensity?: number;
-      uColor?: THREE.Color;
-    };
-  }
-}
+
 
 const PLANE_COUNT = 4;
 

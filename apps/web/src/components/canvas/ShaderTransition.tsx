@@ -70,7 +70,7 @@ export default function ShaderTransition({
     }
   });
 
-  // Invisible when progress is 0
+  // Nothing to render when fully un-dissolved; avoids an unnecessary draw call
   if (progress <= 0) return null;
 
   return (
