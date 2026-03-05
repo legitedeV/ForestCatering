@@ -11,6 +11,10 @@
     "typecheck": "npm run typecheck -w apps/web",
     "migrate:web": "npm run migrate -w apps/web"
   },
+  "overrides": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
   "engines": {
     "node": ">=22.0.0"
   }
