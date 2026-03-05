@@ -1,7 +1,8 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
+import { useState } from 'react';
 import dynamic from 'next/dynamic';
 
 const ForestScene = dynamic(
@@ -11,6 +12,7 @@ const ForestScene = dynamic(
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [sceneProgress, setSceneProgress] = useState(0);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
@@ -18,7 +20,10 @@ export default function HeroSection() {
 
   const textOpacity = useTransform(scrollYProgress, [0, 0.35], [1, 0]);
   const textY = useTransform(scrollYProgress, [0, 0.35], [0, -120]);
-  const sceneProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
+
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+    setSceneProgress(latest);
+  });
 
   return (
     <section
@@ -29,7 +34,7 @@ export default function HeroSection() {
       {/* Three.js Forest Background */}
       <div className="sticky top-0 h-screen w-full overflow-hidden">
         <motion.div className="absolute inset-0">
-          <ForestScene scrollProgress={sceneProgress.get()} />
+          <ForestScene scrollProgress={sceneProgress} />
         </motion.div>
 
         {/* Overlay Text */}

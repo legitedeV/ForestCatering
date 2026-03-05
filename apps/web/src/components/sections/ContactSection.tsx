@@ -13,8 +13,8 @@ const serviceOptions = [
   'Inne',
 ];
 
-async function submitContactForm(formData: FormData) {
-  // Server action placeholder — logs form data for now
+function handleSubmit(formData: FormData) {
+  // Placeholder — logs form data to console. Replace with a server action.
   const data = {
     name: formData.get('name'),
     email: formData.get('email'),
@@ -91,7 +91,7 @@ export default function ContactSection() {
 
         <div className="grid gap-16 lg:grid-cols-[1fr_auto]">
           {/* Contact Form */}
-          <form action={submitContactForm} className="space-y-6">
+          <form action={handleSubmit} className="space-y-6">
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
                 <label htmlFor="name" className="sr-only">
