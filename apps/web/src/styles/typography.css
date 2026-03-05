@@ -3,10 +3,9 @@
    Font-face declarations & fluid type scale
    ========================================================================== */
 
-/* ---- Google Fonts CDN imports ------------------------------------------ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
+/* ---- Fonts are loaded via next/font/local in layout.tsx ---------------- */
+/* The CSS variables --font-display, --font-body, and --font-mono are set  */
+/* on the <html> element by Next.js font optimization.                     */
 
 /* ---- Fluid type scale -------------------------------------------------- */
 :root {

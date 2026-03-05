@@ -15,9 +15,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    reactCompiler: false,
-  },
   webpack(config) {
     // GLSL shader support
     config.module.rules.push({

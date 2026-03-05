@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { Playfair_Display, Inter, JetBrains_Mono } from 'next/font/google';
 
 import '@/app/globals.css';
 import LenisProvider from '@/components/scroll/LenisProvider';
@@ -8,23 +7,11 @@ import CustomCursor from '@/components/ui/CustomCursor';
 import Navigation from '@/components/layout/Navigation';
 import Footer from '@/components/layout/Footer';
 
-const playfair = Playfair_Display({
-  subsets: ['latin', 'latin-ext'],
-  variable: '--font-display',
-  display: 'swap',
-});
-
-const inter = Inter({
-  subsets: ['latin', 'latin-ext'],
-  variable: '--font-body',
-  display: 'swap',
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  display: 'swap',
-});
+/*
+ * Fonts are loaded via CSS (see styles/typography.css).
+ * When self-hosted woff2 files are added to public/fonts/,
+ * switch to next/font/local for optimal loading.
+ */
 
 export const metadata: Metadata = {
   title: 'Forest Hub — Catering & Bar Szczecin',
@@ -52,10 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="pl"
-      className={`${playfair.variable} ${inter.variable} ${jetbrains.variable}`}
-    >
+    <html lang="pl">
       <body>
         <LenisProvider>
           <GrainOverlay />

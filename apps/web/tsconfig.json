@@ -19,7 +19,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@payload-config": ["./payload.config.ts"]
     }
   },
   "include": [
@@ -29,5 +30,5 @@
     ".next/types/**/*.ts",
     "src/shaders/*.d.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "e2e"]
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { builder } from '@/lib/builder-client';
+import { fetchOneEntry, BUILDER_API_KEY, BUILDER_MODEL_NAME } from '@/lib/builder-client';
 import { BuilderPage } from '@/components/builder/BuilderPage';
 
 type Args = {
@@ -9,9 +9,12 @@ type Args = {
 };
 
 async function getBuilderContent(urlPath: string) {
-  return builder
-    .get('page', { userAttributes: { urlPath } })
-    .toPromise();
+  if (!BUILDER_API_KEY) return null;
+  return fetchOneEntry({
+    model: BUILDER_MODEL_NAME,
+    apiKey: BUILDER_API_KEY,
+    userAttributes: { urlPath },
+  });
 }
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
@@ -34,5 +37,5 @@ export default async function CatchAllPage({ params }: Args) {
     notFound();
   }
 
-  return <BuilderPage content={content} model="page" />;
+  return <BuilderPage content={content} model={BUILDER_MODEL_NAME} />;
 }

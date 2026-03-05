@@ -1,12 +1,6 @@
-import { builder } from '@builder.io/sdk-react-nextjs';
+export const BUILDER_API_KEY =
+  process.env.NEXT_PUBLIC_BUILDER_API_KEY ?? '';
 
-const apiKey = process.env.NEXT_PUBLIC_BUILDER_API_KEY;
-if (!apiKey) {
-  throw new Error(
-    'NEXT_PUBLIC_BUILDER_API_KEY is not set. Add it to your .env file.',
-  );
-}
+export const BUILDER_MODEL_NAME = 'page';
 
-builder.init(apiKey);
-
-export { builder };
+export { fetchOneEntry, Content } from '@builder.io/sdk-react-nextjs';
