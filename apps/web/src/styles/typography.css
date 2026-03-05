@@ -1,0 +1,105 @@
+/* ==========================================================================
+   Forest Hub – Typography
+   Font-face declarations & fluid type scale
+   ========================================================================== */
+
+/* ---- Fonts are loaded via next/font/local in layout.tsx ---------------- */
+/* The CSS variables --font-display, --font-body, and --font-mono are set  */
+/* on the <html> element by Next.js font optimization.                     */
+
+/* ---- Fluid type scale -------------------------------------------------- */
+:root {
+  --text-xs: clamp(0.694rem, 0.66vi + 0.53rem, 0.8rem);
+  --text-sm: clamp(0.833rem, 0.78vi + 0.64rem, 0.95rem);
+  --text-base: clamp(1rem, 0.95vi + 0.76rem, 1.125rem);
+  --text-lg: clamp(1.2rem, 1.15vi + 0.91rem, 1.35rem);
+  --text-xl: clamp(1.44rem, 1.38vi + 1.1rem, 1.7rem);
+  --text-2xl: clamp(1.728rem, 1.7vi + 1.3rem, 2.15rem);
+  --text-3xl: clamp(2.074rem, 2.1vi + 1.55rem, 2.7rem);
+  --text-4xl: clamp(2.488rem, 2.6vi + 1.84rem, 3.4rem);
+  --text-5xl: clamp(2.986rem, 3.2vi + 2.18rem, 4.25rem);
+}
+
+/* ---- Base typography --------------------------------------------------- */
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: -0.01em;
+  font-feature-settings: 'liga' 1, 'kern' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---- Headings ---------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6,
+.heading {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
+}
+
+h1 { font-size: var(--text-5xl); }
+h2 { font-size: var(--text-4xl); }
+h3 { font-size: var(--text-3xl); }
+h4 { font-size: var(--text-2xl); }
+h5 { font-size: var(--text-xl); }
+h6 { font-size: var(--text-lg); }
+
+/* ---- Prose helpers ----------------------------------------------------- */
+p {
+  max-width: 68ch;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+small,
+.text-sm {
+  font-size: var(--text-sm);
+}
+
+.text-xs {
+  font-size: var(--text-xs);
+}
+
+.text-lg {
+  font-size: var(--text-lg);
+}
+
+.text-xl {
+  font-size: var(--text-xl);
+}
+
+.text-2xl {
+  font-size: var(--text-2xl);
+}
+
+.text-3xl {
+  font-size: var(--text-3xl);
+}
+
+.text-4xl {
+  font-size: var(--text-4xl);
+}
+
+.text-5xl {
+  font-size: var(--text-5xl);
+}
