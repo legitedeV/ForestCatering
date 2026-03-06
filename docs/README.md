@@ -17,13 +17,22 @@ Premium catering & bar website for **Forest Bar** (forestbar.pl).
 ## Getting Started
 
 ```bash
-# Install dependencies
+# 1. Create PostgreSQL role & database (local development defaults)
+sudo -u postgres createuser -P foresthub   # enter password: foresthub
+sudo -u postgres createdb -O foresthub foresthub
+
+# 2. Install dependencies
 npm ci
 
-# Copy environment variables
-cp ops/.env.example apps/web/.env.local
+# 3. Generate environment file (auto-creates apps/web/.env)
+bash ops/scripts/gen-secrets.sh
+# — or copy the template manually:
+# cp ops/.env.example apps/web/.env
 
-# Start development server
+# 4. Run database migrations
+npm run migrate:web
+
+# 5. Start development server
 npm run dev
 ```
 
