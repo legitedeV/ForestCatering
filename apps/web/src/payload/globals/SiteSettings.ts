@@ -1,7 +1,7 @@
 import type { GlobalConfig } from 'payload';
 
-import { isAdmin } from '../access/isAdmin';
-import { isAdminOrEditor } from '../access/isAdminOrEditor';
+import { isAdmin } from '../access/isAdmin.ts';
+import { isAdminOrEditor } from '../access/isAdminOrEditor.ts';
 
 export const SiteSettings: GlobalConfig = {
   slug: 'site-settings',

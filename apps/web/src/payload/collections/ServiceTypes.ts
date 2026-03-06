@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload';
 
-import { isAdminOrEditor } from '../access/isAdminOrEditor';
+import { isAdminOrEditor } from '../access/isAdminOrEditor.ts';
 
 export const ServiceTypes: CollectionConfig = {
   slug: 'service-types',
