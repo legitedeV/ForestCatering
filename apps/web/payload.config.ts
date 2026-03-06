@@ -1,7 +1,6 @@
 import path from 'path';
 import { buildConfig } from 'payload';
 import { postgresAdapter } from '@payloadcms/db-postgres';
-import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { fileURLToPath } from 'url';
 
 import { Users } from './src/payload/collections/Users.ts';
@@ -33,31 +32,37 @@ if (!process.env.DATABASE_URI) {
   );
 }
 
-export default buildConfig({
-  editor: lexicalEditor(),
-  collections: [
-    Users,
-    Media,
-    Products,
-    Categories,
-    ServiceTypes,
-    EventPackages,
-    Leads,
-    Orders,
-    Testimonials,
-    GalleryItems,
-  ],
-  globals: [SiteSettings],
-  secret: process.env.PAYLOAD_SECRET,
-  typescript: {
-    outputFile: path.resolve(dirname, 'src/payload/payload-types.ts'),
-  },
-  db: postgresAdapter({
-    pool: {
-      connectionString: process.env.DATABASE_URI,
+// Dynamic import to avoid @lexical/* top-level await breaking
+// Node.js require() in the tsx CJS register hook used by `payload migrate`.
+export default (async () => {
+  const { lexicalEditor } = await import('@payloadcms/richtext-lexical');
+
+  return buildConfig({
+    editor: lexicalEditor(),
+    collections: [
+      Users,
+      Media,
+      Products,
+      Categories,
+      ServiceTypes,
+      EventPackages,
+      Leads,
+      Orders,
+      Testimonials,
+      GalleryItems,
+    ],
+    globals: [SiteSettings],
+    secret: process.env.PAYLOAD_SECRET!,
+    typescript: {
+      outputFile: path.resolve(dirname, 'src/payload/payload-types.ts'),
     },
-  }),
-  admin: {
-    user: Users.slug,
-  },
-});
+    db: postgresAdapter({
+      pool: {
+        connectionString: process.env.DATABASE_URI,
+      },
+    }),
+    admin: {
+      user: Users.slug,
+    },
+  });
+})();
