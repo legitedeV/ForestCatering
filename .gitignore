@@ -37,6 +37,7 @@ Thumbs.db
 
 # Payload
 apps/web/src/payload-types.ts
+apps/web/src/payload/payload-types.ts
 
 # Misc
 *.log
