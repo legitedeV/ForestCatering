@@ -4,17 +4,17 @@ import { postgresAdapter } from '@payloadcms/db-postgres';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { fileURLToPath } from 'url';
 
-import { Users } from './src/payload/collections/Users';
-import { Media } from './src/payload/collections/Media';
-import { Products } from './src/payload/collections/Products';
-import { Categories } from './src/payload/collections/Categories';
-import { ServiceTypes } from './src/payload/collections/ServiceTypes';
-import { EventPackages } from './src/payload/collections/EventPackages';
-import { Leads } from './src/payload/collections/Leads';
-import { Orders } from './src/payload/collections/Orders';
-import { Testimonials } from './src/payload/collections/Testimonials';
-import { GalleryItems } from './src/payload/collections/GalleryItems';
-import { SiteSettings } from './src/payload/globals/SiteSettings';
+import { Users } from './src/payload/collections/Users.ts';
+import { Media } from './src/payload/collections/Media.ts';
+import { Products } from './src/payload/collections/Products.ts';
+import { Categories } from './src/payload/collections/Categories.ts';
+import { ServiceTypes } from './src/payload/collections/ServiceTypes.ts';
+import { EventPackages } from './src/payload/collections/EventPackages.ts';
+import { Leads } from './src/payload/collections/Leads.ts';
+import { Orders } from './src/payload/collections/Orders.ts';
+import { Testimonials } from './src/payload/collections/Testimonials.ts';
+import { GalleryItems } from './src/payload/collections/GalleryItems.ts';
+import { SiteSettings } from './src/payload/globals/SiteSettings.ts';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
