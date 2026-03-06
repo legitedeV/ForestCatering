@@ -28,7 +28,7 @@ if (!process.env.PAYLOAD_SECRET) {
 if (!process.env.DATABASE_URI) {
   throw new Error(
     'DATABASE_URI environment variable is required. ' +
-      'Example: postgresql://user:pass@localhost:5432/foresthub',
+      'Example: postgresql://foresthub:foresthub@localhost:5432/foresthub',
   );
 }
 

@@ -73,7 +73,7 @@ cat > "$ENV_FILE" <<EOF
 # ─────────────────────────────────────────────
 
 # Database
-DATABASE_URI=postgresql://user:pass@localhost:5432/foresthub
+DATABASE_URI=postgresql://foresthub:foresthub@localhost:5432/foresthub
 
 # Payload CMS
 PAYLOAD_SECRET=${PAYLOAD_SECRET}
